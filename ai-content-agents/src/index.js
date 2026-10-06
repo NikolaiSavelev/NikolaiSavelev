@@ -130,17 +130,24 @@ app.post('/reject/:id', requireAdmin, async (req, res) => {
   res.json(item);
 });
 
-// Telegram-first launch: refresh UDS/system-marketing knowledge weekly.
 cron.schedule('30 7 * * 0', () => refreshResearch('system_marketing').catch(console.error), { timezone: TZ });
-
-// Weekday Telegram draft generation. Approval mode creates a draft only.
 cron.schedule('20 9 * * 1-5', () => runBrand('system_marketing').catch(console.error), { timezone: TZ });
 
-// MAX/Santehsila remains available for later, but is completely dormant until ENABLE_MAX=true.
 if (maxEnabled()) {
   cron.schedule('50 7 * * 0', () => refreshResearch('santehsila').catch(console.error), { timezone: TZ });
   cron.schedule('10 10 * * 1-5', () => runBrand('santehsila').catch(console.error), { timezone: TZ });
 }
 
 const port = Number(process.env.PORT || 3000);
-app.listen(port, () => console.log(`AI Content Agents listening on :${port}; TZ=${TZ}; approval=${approvalMode()}; max=${maxEnabled()}`));
+app.listen(port, async () => {
+  console.log(`AI Content Agents listening on :${port}; TZ=${TZ}; approval=${approvalMode()}; max=${maxEnabled()}`);
+
+  if (String(process.env.TEST_ON_START || 'false').toLowerCase() === 'true') {
+    try {
+      const item = await runBrand('system_marketing');
+      console.log(`TEST_DRAFT_CREATED ${JSON.stringify({ id: item.id, status: item.status, topic: item.topic, text: item.text, visualPrompt: item.visualPrompt })}`);
+    } catch (error) {
+      console.error('TEST_DRAFT_FAILED', error);
+    }
+  }
+});
