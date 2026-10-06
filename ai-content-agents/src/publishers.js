@@ -58,6 +58,30 @@ async function maxRequest(path, options = {}) {
   return json;
 }
 
+export async function verifyMaxBot() {
+  return maxRequest('/me', { method: 'GET' });
+}
+
+export async function discoverMaxChannel() {
+  const result = await maxRequest('/updates?limit=100&timeout=0&types=bot_added,bot_admin_permissions_changed', { method: 'GET' });
+  const updates = Array.isArray(result?.updates) ? result.updates : [];
+  const channelUpdates = updates.filter(update => update?.is_channel === true || update?.chat_id);
+  const latest = [...channelUpdates].reverse().find(update => update?.chat_id != null);
+
+  return {
+    marker: result?.marker ?? null,
+    bot: await verifyMaxBot(),
+    latestChannelId: latest?.chat_id ?? null,
+    latestUpdateType: latest?.update_type ?? null,
+    updates: channelUpdates.map(update => ({
+      updateType: update?.update_type,
+      chatId: update?.chat_id,
+      isChannel: update?.is_channel,
+      timestamp: update?.timestamp
+    }))
+  };
+}
+
 async function uploadMaxImage(imageBuffer) {
   const init = await maxRequest('/uploads?type=image', { method: 'POST' });
   if (!init.url) throw new Error(`MAX upload URL missing: ${JSON.stringify(init)}`);
@@ -98,5 +122,9 @@ export async function publishMax({ text, imageBuffer }) {
     body: JSON.stringify(body)
   });
 
-  return [{ type: 'post', messageId: msg?.body?.mid || msg?.message?.id || msg?.id || null }];
+  return [{
+    type: 'post',
+    messageId: msg?.message?.body?.mid || msg?.message?.id || msg?.body?.mid || msg?.id || null,
+    link: msg?.message?.link || msg?.link || null
+  }];
 }
