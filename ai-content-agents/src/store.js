@@ -59,3 +59,15 @@ export async function addHistory(item) {
   await writeJson('history.json', items.slice(0, 1000));
   return item;
 }
+
+export async function getResearch(brand) {
+  const all = await readJson('research.json', {});
+  return all[brand] || null;
+}
+
+export async function saveResearch(brand, snapshot) {
+  const all = await readJson('research.json', {});
+  all[brand] = snapshot;
+  await writeJson('research.json', all);
+  return snapshot;
+}
