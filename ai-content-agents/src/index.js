@@ -142,6 +142,15 @@ const port = Number(process.env.PORT || 3000);
 app.listen(port, async () => {
   console.log(`AI Content Agents listening on :${port}; TZ=${TZ}; approval=${approvalMode()}; max=${maxEnabled()}`);
 
+  if (String(process.env.RESEARCH_ON_START || 'false').toLowerCase() === 'true') {
+    try {
+      const snapshot = await refreshResearch('system_marketing');
+      console.log(`RESEARCH_REFRESH_CREATED ${JSON.stringify({ checkedAt: snapshot.checkedAt, summary: snapshot.summary, niches: snapshot.niches?.map(n => ({ name: n.name, evidenceLevel: n.evidenceLevel })) })}`);
+    } catch (error) {
+      console.error('RESEARCH_REFRESH_FAILED', error);
+    }
+  }
+
   if (String(process.env.TEST_ON_START || 'false').toLowerCase() === 'true') {
     try {
       const item = await runBrand('system_marketing');
