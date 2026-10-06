@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import OpenAI from 'openai';
-import { listHistory } from './store.js';
+import { listHistory, getResearch, saveResearch } from './store.js';
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const ROOT = path.resolve(process.cwd());
@@ -16,14 +16,39 @@ function safeJson(text) {
   return JSON.parse(cleaned);
 }
 
+export async function refreshResearch(brand) {
+  const isSanteh = brand === 'santehsila';
+  if (!isSanteh && brand !== 'system_marketing') throw new Error('Unknown brand');
+
+  const prompt = isSanteh
+    ? `Ты — research analyst инженерной редакции САНТЕХСИЛА. Выполни свежий веб-поиск по официальным/первичным источникам по внутренним инженерным системам квартир: водоснабжение, канализация, отопление, коллекторные системы, тёплый пол, защита от протечек, материалы и инструкции производителей. Приоритет: официальные сайты и документация производителей (REHAU, VALTEC, STOUT, Oventrop и сопоставимые первичные источники), официальные нормативные ресурсы, если доступны. Не выдавай универсальные технические нормы без прямого подтверждения. Собери только полезные для контента обновления и новые углы. Не копируй длинные тексты. Верни JSON: {"checkedAt":"ISO","summary":"...","facts":[{"claim":"...","sourceUrl":"...","volatile":false,"note":"..."}],"contentIdeas":["..."],"warnings":["..."]}.`
+    : `Ты — senior research analyst по UDS, CRM, retention и loyalty marketing. Выполни свежий веб-поиск. Для фактов о UDS используй в первую очередь официальные домены uds.app и help.uds.app. Проверь актуальные возможности: клиентская база, сегментация, RFM, программа лояльности, push/Telegram-коммуникации, сертификаты, реферальные механики, онлайн-продажи, тарифные различия. Любые цены, акции и состав тарифов помечай volatile=true. Не утверждай наличие интеграции с Ozon без официального подтверждения. Верни JSON: {"checkedAt":"ISO","summary":"...","facts":[{"claim":"...","sourceUrl":"...","volatile":false,"note":"..."}],"contentIdeas":["..."],"warnings":["..."]}.`;
+
+  const response = await client.responses.create({
+    model: process.env.OPENAI_TEXT_MODEL || 'gpt-5',
+    tools: [{ type: 'web_search' }],
+    input: prompt
+  });
+
+  const parsed = safeJson(response.output_text);
+  const snapshot = {
+    ...parsed,
+    checkedAt: parsed.checkedAt || new Date().toISOString(),
+    brand
+  };
+  await saveResearch(brand, snapshot);
+  return snapshot;
+}
+
 export async function generatePost(brand) {
-  const [agents, kbUds, kbEng, plan, visuals, recent] = await Promise.all([
+  const [agents, kbUds, kbEng, plan, visuals, recent, liveResearch] = await Promise.all([
     read('agents.md'),
     read('knowledge-uds.md'),
     read('knowledge-engineering.md'),
     read('content-plan-30-days.md'),
     read('visual-style.md'),
-    listHistory(30)
+    listHistory(30),
+    getResearch(brand)
   ]);
 
   const isSanteh = brand === 'santehsila';
@@ -42,7 +67,8 @@ ${brandContext}
 - Один пост = одна мысль.
 - Не повторяй темы/углы из recent history.
 - Никаких выдуманных кейсов, отзывов, цен, акций, технических норм и интеграций.
-- Если тема требует факта, которого нет в базе, верни status NEEDS_FACT_CHECK.
+- Live research — дополнительный контекст, а не автоматическая истина. Volatile facts нельзя использовать в коммерческом утверждении без свежего подтверждения.
+- Если тема требует факта, которого нет в базе или он помечен volatile, верни status NEEDS_FACT_CHECK.
 - Текст живой, профессиональный, по-русски, без AI-штампов.
 - Мягкая продажа, без давления.
 - Для визуального поста держи основной текст примерно 600–1000 символов, чтобы он хорошо работал в канале.
@@ -68,8 +94,11 @@ ${plan}
 VISUAL SYSTEM:
 ${visuals}
 
-RELEVANT KNOWLEDGE:
+CURATED KNOWLEDGE:
 ${isSanteh ? kbEng : kbUds}
+
+LATEST LIVE RESEARCH:
+${liveResearch ? JSON.stringify(liveResearch, null, 2) : 'Пока нет свежего research snapshot. Используй curated knowledge и избегай меняющихся фактов.'}
 
 RECENT HISTORY:
 ${JSON.stringify(recent.map(x => ({brand:x.brand, topic:x.topic, text:x.text?.slice(0,240), publishedAt:x.publishedAt})), null, 2)}
