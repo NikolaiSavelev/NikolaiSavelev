@@ -61,27 +61,38 @@ export async function generatePost(brand) {
   const prompt = `
 ${brandContext}
 
-Ты работаешь как объединённая редакция из Strategist + Copywriter + Visual Director + Fact Editor.
+Ты работаешь как объединённая редакция из Strategist + Human Copywriter + Premium Visual/Motion Director + Fact/Human Editor.
 
-ВАЖНО:
+КРИТИЧЕСКИ ВАЖНО:
+- Текст должен звучать как умный живой человек, а не как AI, пресс-релиз или SEO-статья.
+- Первые 1–2 строки обязаны создавать реальную причину читать дальше: наблюдение, конкретная боль, сцена, контраст, честный вопрос или сильная мысль.
+- Не начинай с общих фраз и не объясняй очевидное.
 - Один пост = одна мысль.
 - Не повторяй темы/углы из recent history.
 - Никаких выдуманных кейсов, отзывов, цен, акций, технических норм и интеграций.
 - Live research — дополнительный контекст, а не автоматическая истина. Volatile facts нельзя использовать в коммерческом утверждении без свежего подтверждения.
 - Если тема требует факта, которого нет в базе или он помечен volatile, верни status NEEDS_FACT_CHECK.
-- Текст живой, профессиональный, по-русски, без AI-штампов.
-- Мягкая продажа, без давления.
-- Для визуального поста держи основной текст примерно 600–1000 символов, чтобы он хорошо работал в канале.
+- Мягкая продажа, без давления и рекламных штампов.
+- Для визуального поста держи основной текст примерно 500–900 символов, но естественность важнее длины.
+- После написания прочитай текст мысленно вслух. Если звучит «мертво», перепиши до человеческого звучания.
+- Editor обязан поставить humanScore. APPROVED допустим только если hook, naturalness, value и memorability >= 8/10.
+- Сам выбери лучший визуальный формат: image, motion, carousel или mini_reel. Для простого сильного тезиса предпочитай image/motion; для последовательного объяснения — carousel; для beauty/lifestyle — premium hero visual или elegant mini_reel.
+- Визуал не должен пересказывать весь пост. Одна идея, один фокус, минимум текста.
 - Если сегодня нет достаточно сильной темы, можно вернуть status SKIP.
 
 Верни ТОЛЬКО JSON без markdown:
 {
-  "status":"APPROVED|NEEDS_FACT_CHECK|SKIP",
+  "status":"APPROVED|NEEDS_FACT_CHECK|SKIP|REWRITE",
   "topic":"короткая тема",
-  "funnelStage":"expert|trust|diagnostic|offer",
-  "text":"готовый пост",
+  "funnelStage":"expert|trust|diagnostic|offer|engagement",
+  "hook":"первые 1-2 строки",
+  "text":"готовый живой пост целиком",
   "cta":"короткий CTA или пустая строка",
-  "visualPrompt":"готовый промпт для изображения на английском, 4:5, без текста",
+  "visualType":"image|motion|carousel|mini_reel",
+  "visualPrompt":"готовый промпт для статичного изображения на английском или пустая строка, если визуал не статичный",
+  "motionBrief":"если visualType motion/mini_reel: краткий production brief с first-frame hook, 2-4 сценами, движением, on-screen text максимум 2-6 слов на сцену, формат и длительность; иначе пустая строка",
+  "carouselBrief":"если carousel: 3-5 слайдов, один тезис на слайд, минимум текста; иначе пустая строка",
+  "humanScore":{"hook":0,"naturalness":0,"value":0,"memorability":0},
   "editorNote":"почему одобрено/что надо проверить"
 }
 
@@ -110,6 +121,15 @@ ${JSON.stringify(recent.map(x => ({brand:x.brand, topic:x.topic, text:x.text?.sl
   });
 
   const draft = safeJson(response.output_text);
+
+  if (draft.status === 'APPROVED' && draft.humanScore) {
+    const scores = ['hook', 'naturalness', 'value', 'memorability'].map(k => Number(draft.humanScore[k] || 0));
+    if (scores.some(score => score < 8)) {
+      draft.status = 'REWRITE';
+      draft.editorNote = `${draft.editorNote || ''} Auto-blocked: humanScore below 8/10.`.trim();
+    }
+  }
+
   return {
     id: crypto.randomUUID(),
     brand,
