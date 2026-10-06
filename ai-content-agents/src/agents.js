@@ -16,6 +16,37 @@ function safeJson(text) {
   return JSON.parse(cleaned);
 }
 
+async function jsonResponse(input) {
+  const response = await client.responses.create({
+    model: process.env.OPENAI_TEXT_MODEL || 'gpt-5',
+    input
+  });
+  return safeJson(response.output_text);
+}
+
+function mechanicalSignals(text = '') {
+  const lower = text.toLowerCase();
+  const banned = [
+    'в современном мире',
+    'ни для кого не секрет',
+    'эффективное решение',
+    'уникальное решение',
+    'вывести бизнес на новый уровень',
+    'наша команда профессионалов',
+    'индивидуальный подход',
+    'хотите увеличить продажи',
+    'сегодня поговорим',
+    'давайте разберемся',
+    'давайте разберёмся'
+  ];
+  const bulletCount = (text.match(/(^|\n)\s*[-—•]\s/g) || []).length;
+  return {
+    bannedPhrase: banned.some(x => lower.includes(x)),
+    tooManyBullets: bulletCount >= 5,
+    bulletCount
+  };
+}
+
 export async function refreshResearch(brand) {
   const isSanteh = brand === 'santehsila';
   if (!isSanteh && brand !== 'system_marketing') throw new Error('Unknown brand');
@@ -46,9 +77,9 @@ export async function refreshResearch(brand) {
 - идеи полезного контента, которые дают ценность даже без продажи UDS;
 - идеи человеческих hooks;
 - визуальный/motion-угол;
-- риски и ограничения (персональные данные, медицина, маркетплейсы, дети и т.п.).
+- риски и ограничения.
 
-Отдельно изучи практики CRM/retention, которые полезно объяснять предпринимателям человеческим языком: первая → вторая покупка, активная база vs мёртвая база, RFM простыми словами, частота покупок, время между покупками, реактивация, VIP без бесконечной скидки, персонализация без ощущения слежки, employee adoption, referral mechanics, feedback loops, source tracking.
+Отдельно изучи практики CRM/retention: первая → вторая покупка, активная база vs мёртвая база, RFM простыми словами, частота покупок, время между покупками, реактивация, VIP без бесконечной скидки, персонализация без ощущения слежки, employee adoption, referral mechanics, feedback loops, source tracking.
 
 Для фактов о UDS используй в первую очередь официальные домены. Любые цены, акции, состав тарифов и меняющиеся условия помечай volatile=true. Не утверждай наличие интеграции с Ozon или другой площадкой без официального подтверждения. Не обещай финансовый результат.
 
@@ -108,36 +139,58 @@ export async function generatePost(brand) {
 
   const brandContext = isSanteh
     ? `Бренд: САНТЕХСИЛА. Платформа: MAX. Цель: заявки на инженерные работы в Москве и МО. Используй engineering KB.`
-    : `Бренд: Системный маркетинг. Платформа: Telegram @biznesss_life. Цель: доверие, консультации и мягкая продажа UDS/CRM/автоматизации. Используй UDS KB и нишевую карту. Не зацикливайся на одной нише: ротируй направления и углы.`;
+    : `Бренд: Системный маркетинг. Платформа: Telegram @biznesss_life. Цель: доверие, консультации и мягкая продажа UDS/CRM/автоматизации. Используй UDS KB и нишевую карту.`;
 
-  const prompt = `
+  const recentCompact = recent.slice(0, 18).map(x => ({
+    brand: x.brand,
+    niche: x.niche,
+    topic: x.topic,
+    storyForm: x.storyForm,
+    hook: x.hook,
+    text: x.text?.slice(0, 260),
+    publishedAt: x.publishedAt
+  }));
+
+  const authorPrompt = `
 ${brandContext}
 
-Ты работаешь как объединённая редакция из Strategist + Human Copywriter + Premium Visual/Motion Director + Fact/Human Editor.
+Ты — автор сильного авторского Telegram/MAX-медиа. Не пиши "контент". Напиши пост, который человек реально захочет дочитать.
 
-КРИТИЧЕСКИ ВАЖНО:
-- Текст должен звучать как умный живой человек, а не как AI, пресс-релиз или SEO-статья.
-- Первые 1–2 строки обязаны создавать реальную причину читать дальше: наблюдение, конкретная боль, сцена, контраст, честный вопрос или сильная мысль.
-- Не начинай с общих фраз и не объясняй очевидное.
-- Один пост = одна мысль.
-- Не повторяй темы/углы из recent history.
-- Для System Marketing чередуй ниши. Не публикуй одну и ту же нишу чаще двух раз в 10 постов, если нет сильного нового угла.
-- Перед выбором темы сначала выбери нишу, затем этап клиента, затем механику клиентской базы, затем форму истории.
-- Никаких выдуманных кейсов, отзывов, цен, акций, технических норм и интеграций.
-- Live research — дополнительный контекст, а не автоматическая истина. Volatile facts нельзя использовать в коммерческом утверждении без свежего подтверждения.
-- Если тема требует факта, которого нет в базе или он помечен volatile, верни status NEEDS_FACT_CHECK.
-- Если ниша относится к adjacent_hypothesis, пиши как образовательную гипотезу/сценарий, а не как официальное утверждение UDS.
-- Каждый пост должен содержать полезную мысль, применимую предпринимателем даже без покупки UDS.
-- UDS вводи естественно как возможный инструмент после объяснения проблемы/подхода. Не делай продукт главным героем каждого поста.
-- Мягкая продажа, без давления и рекламных штампов.
-- Для визуального поста держи основной текст примерно 500–900 символов, но естественность важнее длины.
-- После написания прочитай текст мысленно вслух. Если звучит «мертво», перепиши до человеческого звучания.
-- Editor обязан поставить humanScore. APPROVED допустим только если hook, naturalness, value и memorability >= 8/10.
-- Сам выбери лучший визуальный формат: image, motion, carousel или mini_reel. Для простого сильного тезиса предпочитай image/motion; для последовательного объяснения — carousel; для beauty/lifestyle — premium hero visual или elegant mini_reel.
-- Визуал не должен пересказывать весь пост. Одна идея, один фокус, минимум текста.
-- Если сегодня нет достаточно сильной темы, можно вернуть status SKIP.
+ГЛАВНОЕ:
+1. Начни с конкретной сцены, детали, парадокса или наблюдения ИМЕННО из выбранной ниши.
+2. Первые две строки должны быть настолько конкретными, чтобы их нельзя было без изменений вставить в пост про другую нишу.
+3. Покажи напряжение: где бизнес теряет клиента, деньги, внимание, повторный визит или понимание базы.
+4. Дай один полезный вывод, который можно применить без покупки продукта.
+5. Только потом, если уместно, естественно свяжи решение с UDS/CRM.
+6. Не превращай пост в инструкцию из 7 пунктов. Список допустим только если без него действительно хуже.
+7. Не пиши как преподаватель. Не объясняй термин раньше проблемы.
+8. Не используй рекламные слова: "эффективный", "уникальный", "современное решение", "индивидуальный подход", "увеличьте продажи".
+9. Не пиши "клиенты — это...", "база — это..." как словарное определение, если можно показать это сценой.
+10. Не выдумывай личный опыт, цифры, клиента или кейс.
 
-Верни ТОЛЬКО JSON без markdown:
+ЖИВОЙ РИТМ:
+- абзацы 1–3 предложения;
+- смесь коротких и средних фраз;
+- допускается одна фраза из 2–6 слов отдельным абзацем;
+- разговорность без фамильярности;
+- максимум 0–2 эмодзи и только если естественно;
+- не ставь CTA в каждом посте: иногда сильный финальный вопрос лучше продажи.
+
+ОБЯЗАТЕЛЬНО выбери storyForm из:
+scene | observation | contrast | mini_story | dialogue_fragment | myth_break | diagnostic | checklist
+Не повторяй тот же storyForm, что доминирует в последних постах.
+
+ПРОВЕРКА ПЕРВОГО ЭКРАНА:
+Если первые 180 символов можно заменить на "Бизнесу важно работать с клиентской базой" без потери смысла — начало слабое, перепиши.
+
+ПРИМЕР ПРИНЦИПА, НЕ КОПИРОВАТЬ:
+Слабое: "Важно работать с постоянными клиентами."
+Сильнее: "Бариста уже знает, что Илье нужен капучино без сахара. А система каждый раз видит Илью как нового человека."
+
+Слабое: "Салонам важно возвращать клиентов."
+Сильнее: "Администратор узнаёт клиентку по голосу. Но если она пропала на три месяца — бизнес замечает это слишком поздно."
+
+Верни ТОЛЬКО JSON:
 {
   "status":"APPROVED|NEEDS_FACT_CHECK|SKIP|REWRITE",
   "topic":"короткая тема",
@@ -146,15 +199,15 @@ ${brandContext}
   "clientStage":"first_contact|second_purchase|active|vip|at_risk|reactivation|referral",
   "mechanic":"base|segmentation|rfm|loyalty|certificate|referral|feedback|online_store|traffic_source|employee_adoption|other",
   "funnelStage":"expert|trust|diagnostic|offer|engagement",
+  "storyForm":"scene|observation|contrast|mini_story|dialogue_fragment|myth_break|diagnostic|checklist",
   "hook":"первые 1-2 строки",
-  "text":"готовый живой пост целиком",
-  "cta":"короткий CTA или пустая строка",
+  "text":"готовый пост",
+  "cta":"CTA или пустая строка",
   "visualType":"image|motion|carousel|mini_reel",
-  "visualPrompt":"готовый промпт для статичного изображения на английском или пустая строка, если визуал не статичный",
-  "motionBrief":"если visualType motion/mini_reel: краткий production brief с first-frame hook, 2-4 сценами, движением, on-screen text максимум 2-6 слов на сцену, формат и длительность; иначе пустая строка",
-  "carouselBrief":"если carousel: 3-5 слайдов, один тезис на слайд, минимум текста; иначе пустая строка",
-  "humanScore":{"hook":0,"naturalness":0,"value":0,"memorability":0},
-  "editorNote":"почему одобрено/что надо проверить"
+  "visualPrompt":"английский промпт для image или пустая строка",
+  "motionBrief":"brief для motion/mini_reel или пустая строка",
+  "carouselBrief":"brief для carousel или пустая строка",
+  "authorNote":"какое человеческое напряжение держит пост"
 }
 
 SYSTEM ROLES:
@@ -170,32 +223,88 @@ CURATED KNOWLEDGE:
 ${isSanteh ? kbEng : `${kbUds}\n\nNICHE PLAYBOOK:\n${kbUdsNiches}`}
 
 LATEST LIVE RESEARCH:
-${liveResearch ? JSON.stringify(liveResearch, null, 2) : 'Пока нет свежего research snapshot. Используй curated knowledge и избегай меняющихся фактов.'}
+${liveResearch ? JSON.stringify(liveResearch, null, 2) : 'Нет свежего research snapshot. Избегай меняющихся фактов.'}
 
 RECENT HISTORY:
-${JSON.stringify(recent.map(x => ({brand:x.brand, niche:x.niche, topic:x.topic, text:x.text?.slice(0,240), publishedAt:x.publishedAt})), null, 2)}
+${JSON.stringify(recentCompact, null, 2)}
 `;
 
-  const response = await client.responses.create({
-    model: process.env.OPENAI_TEXT_MODEL || 'gpt-5',
-    input: prompt
-  });
+  const draft = await jsonResponse(authorPrompt);
 
-  const draft = safeJson(response.output_text);
+  if (['SKIP', 'NEEDS_FACT_CHECK'].includes(draft.status)) {
+    return {
+      id: crypto.randomUUID(),
+      brand,
+      platforms: isSanteh ? ['max'] : ['telegram'],
+      ...draft,
+      createdAt: new Date().toISOString(),
+      approvedAt: null,
+      published: []
+    };
+  }
 
-  if (draft.status === 'APPROVED' && draft.humanScore) {
-    const scores = ['hook', 'naturalness', 'value', 'memorability'].map(k => Number(draft.humanScore[k] || 0));
-    if (scores.some(score => score < 8)) {
-      draft.status = 'REWRITE';
-      draft.editorNote = `${draft.editorNote || ''} Auto-blocked: humanScore below 8/10.`.trim();
-    }
+  const styleSignals = mechanicalSignals(draft.text);
+
+  const editorPrompt = `
+Ты — независимый главный редактор. Перед тобой черновик другого автора. Твоя работа — не похвалить его, а сделать текст таким, чтобы он звучал как живой умный предприниматель/маркетолог, а не как нейросеть.
+
+Бренд: ${isSanteh ? 'САНТЕХСИЛА' : 'Системный маркетинг / UDS / CRM'}.
+
+ЧЕРНОВИК:
+${JSON.stringify(draft, null, 2)}
+
+АВТОМАТИЧЕСКИЕ СИГНАЛЫ:
+${JSON.stringify(styleSignals)}
+
+РЕДАКТОРСКИЕ ПРАВИЛА:
+- Перепиши текст, даже если он уже "нормальный". Финальная версия должна быть заметно живее.
+- Сохрани все проверяемые факты и не добавляй новые неподтверждённые факты.
+- Первые 2 строки: конкретика выбранной ниши. Никаких универсальных фраз.
+- Убери канцелярит, определения, симметричные "AI-абзацы" и одинаковые конструкции.
+- Если в черновике 4+ буллета — попробуй превратить их в историю/наблюдение. Список оставляй только если он действительно нужен.
+- Не используй фразы "вопрос не в..., вопрос в..." чаще одного раза и только если она реально сильная. Лучше вообще обойтись без шаблона.
+- Не злоупотребляй "Вот где...", "И тут...", "На практике...".
+- Не повторяй слово "клиент" в каждом предложении.
+- Не делай UDS героем текста. Сначала ситуация и смысл.
+- Если продукт можно убрать, а пост всё равно полезен — это плюс.
+- Финал должен либо оставлять мысль, либо вызывать желание ответить. Не обязательно продавать.
+- Длина ориентир 650–1200 знаков для Telegram. Можно короче, если сильнее.
+
+ПРОВЕРКА "ЖИВОЙ ЧЕЛОВЕК":
+1) Есть ли в первых 180 символах конкретная деталь ниши?
+2) Есть ли хотя бы одна фраза, которую хочется запомнить или переслать?
+3) Нет ли ощущения учебника/чек-листа?
+4) Нет ли рекламного пафоса?
+5) Можно ли прочитать вслух без ощущения, что это презентация?
+
+Оцени строго. 9/10 ставь только действительно сильному тексту. Если naturalness или memorability < 8 — перепиши ещё раз внутри своей работы и верни только финальную версию.
+
+Верни ТОЛЬКО JSON:
+{
+  "status":"APPROVED|REWRITE",
+  "hook":"финальные первые 1-2 строки",
+  "text":"финальный пост",
+  "cta":"финальный CTA или пустая строка",
+  "humanScore":{"hook":0,"naturalness":0,"value":0,"memorability":0},
+  "editorNote":"коротко: что было исправлено и почему текст теперь работает"
+}
+`;
+
+  const edited = await jsonResponse(editorPrompt);
+  const merged = { ...draft, ...edited };
+  const finalSignals = mechanicalSignals(merged.text);
+
+  const scores = ['hook', 'naturalness', 'value', 'memorability'].map(k => Number(merged.humanScore?.[k] || 0));
+  if (merged.status === 'APPROVED' && (scores.some(score => score < 8) || finalSignals.bannedPhrase || finalSignals.tooManyBullets)) {
+    merged.status = 'REWRITE';
+    merged.editorNote = `${merged.editorNote || ''} Auto-blocked by final human-style gate.`.trim();
   }
 
   return {
     id: crypto.randomUUID(),
     brand,
     platforms: isSanteh ? ['max'] : ['telegram'],
-    ...draft,
+    ...merged,
     createdAt: new Date().toISOString(),
     approvedAt: null,
     published: []
