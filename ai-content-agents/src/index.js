@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cron from 'node-cron';
 import { generatePost, generateImage, refreshResearch } from './agents.js';
-import { publishTelegram, publishMax } from './publishers.js';
+import { publishTelegram, publishMax, discoverMaxChannel, verifyMaxBot } from './publishers.js';
 import { addPending, addHistory, getPending, listPending, updatePending } from './store.js';
 
 const app = express();
@@ -77,6 +77,8 @@ app.get('/health', (_req, res) => {
     approvalMode: approvalMode(),
     telegramEnabled: true,
     maxEnabled: maxEnabled(),
+    maxTokenConfigured: Boolean(process.env.MAX_ACCESS_TOKEN),
+    maxChannelConfigured: Boolean(process.env.MAX_CHANNEL_ID),
     timezone: TZ,
     now: new Date().toISOString()
   });
@@ -84,6 +86,22 @@ app.get('/health', (_req, res) => {
 
 app.get('/pending', requireAdmin, async (_req, res) => {
   res.json(await listPending());
+});
+
+app.get('/max/verify', requireAdmin, async (_req, res) => {
+  try {
+    res.json(await verifyMaxBot());
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/max/discover', requireAdmin, async (_req, res) => {
+  try {
+    res.json(await discoverMaxChannel());
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post('/research/:brand', requireAdmin, async (req, res) => {
@@ -157,6 +175,15 @@ app.listen(port, async () => {
       console.log(`TEST_DRAFT_CREATED ${JSON.stringify({ id: item.id, status: item.status, topic: item.topic, text: item.text, visualPrompt: item.visualPrompt })}`);
     } catch (error) {
       console.error('TEST_DRAFT_FAILED', error);
+    }
+  }
+
+  if (String(process.env.MAX_DISCOVER_ON_START || 'false').toLowerCase() === 'true') {
+    try {
+      const discovery = await discoverMaxChannel();
+      console.log(`MAX_DISCOVERY_RESULT ${JSON.stringify(discovery)}`);
+    } catch (error) {
+      console.error('MAX_DISCOVERY_FAILED', error);
     }
   }
 });
