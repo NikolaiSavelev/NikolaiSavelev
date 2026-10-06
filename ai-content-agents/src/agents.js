@@ -16,9 +16,9 @@ function safeJson(text) {
   return JSON.parse(cleaned);
 }
 
-async function jsonResponse(input) {
+async function jsonResponse(input, model) {
   const response = await client.responses.create({
-    model: process.env.OPENAI_TEXT_MODEL || 'gpt-5',
+    model: model || process.env.OPENAI_TEXT_MODEL || 'gpt-5',
     input
   });
   return safeJson(response.output_text);
@@ -137,6 +137,9 @@ export async function generatePost(brand) {
   const isSanteh = brand === 'santehsila';
   if (!isSanteh && brand !== 'system_marketing') throw new Error('Unknown brand');
 
+  const writerModel = process.env.OPENAI_WRITER_MODEL || process.env.OPENAI_TEXT_MODEL || 'gpt-6.1-sol';
+  const editorModel = process.env.OPENAI_EDITOR_MODEL || process.env.OPENAI_TEXT_MODEL || 'gpt-6-astra';
+
   const brandContext = isSanteh
     ? `Бренд: САНТЕХСИЛА. Платформа: MAX. Цель: заявки на инженерные работы в Москве и МО. Используй engineering KB.`
     : `Бренд: Системный маркетинг. Платформа: Telegram @biznesss_life. Цель: доверие, консультации и мягкая продажа UDS/CRM/автоматизации. Используй UDS KB и нишевую карту.`;
@@ -229,13 +232,15 @@ RECENT HISTORY:
 ${JSON.stringify(recentCompact, null, 2)}
 `;
 
-  const draft = await jsonResponse(authorPrompt);
+  const draft = await jsonResponse(authorPrompt, writerModel);
 
   if (['SKIP', 'NEEDS_FACT_CHECK'].includes(draft.status)) {
     return {
       id: crypto.randomUUID(),
       brand,
       platforms: isSanteh ? ['max'] : ['telegram'],
+      writerModel,
+      editorModel,
       ...draft,
       createdAt: new Date().toISOString(),
       approvedAt: null,
@@ -290,7 +295,7 @@ ${JSON.stringify(styleSignals)}
 }
 `;
 
-  const edited = await jsonResponse(editorPrompt);
+  const edited = await jsonResponse(editorPrompt, editorModel);
   const merged = { ...draft, ...edited };
   const finalSignals = mechanicalSignals(merged.text);
 
@@ -304,6 +309,8 @@ ${JSON.stringify(styleSignals)}
     id: crypto.randomUUID(),
     brand,
     platforms: isSanteh ? ['max'] : ['telegram'],
+    writerModel,
+    editorModel,
     ...merged,
     createdAt: new Date().toISOString(),
     approvedAt: null,
