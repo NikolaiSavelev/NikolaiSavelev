@@ -10,6 +10,7 @@ app.use(express.json({ limit: '1mb' }));
 
 const TZ = process.env.TZ || 'Europe/Moscow';
 const approvalMode = () => String(process.env.APPROVAL_MODE || 'true').toLowerCase() !== 'false';
+const maxEnabled = () => String(process.env.ENABLE_MAX || 'false').toLowerCase() === 'true';
 
 function requireAdmin(req, res, next) {
   const key = process.env.ADMIN_KEY;
@@ -31,6 +32,7 @@ async function publishItem(item) {
       const result = await publishTelegram({ text: item.text, imageBuffer });
       published.push({ platform, result, publishedAt: new Date().toISOString() });
     } else if (platform === 'max') {
+      if (!maxEnabled()) throw new Error('MAX publishing is disabled. Set ENABLE_MAX=true only when MAX is configured.');
       const result = await publishMax({ text: item.text, imageBuffer });
       published.push({ platform, result, publishedAt: new Date().toISOString() });
     }
@@ -49,6 +51,10 @@ async function publishItem(item) {
 }
 
 async function runBrand(brand) {
+  if (brand === 'santehsila' && !maxEnabled()) {
+    throw new Error('Santehsila/MAX agent is disabled while Telegram-only mode is active');
+  }
+
   const item = await generatePost(brand);
 
   if (item.status === 'SKIP') {
@@ -66,7 +72,14 @@ async function runBrand(brand) {
 }
 
 app.get('/health', (_req, res) => {
-  res.json({ ok: true, approvalMode: approvalMode(), timezone: TZ, now: new Date().toISOString() });
+  res.json({
+    ok: true,
+    approvalMode: approvalMode(),
+    telegramEnabled: true,
+    maxEnabled: maxEnabled(),
+    timezone: TZ,
+    now: new Date().toISOString()
+  });
 });
 
 app.get('/pending', requireAdmin, async (_req, res) => {
@@ -75,6 +88,9 @@ app.get('/pending', requireAdmin, async (_req, res) => {
 
 app.post('/research/:brand', requireAdmin, async (req, res) => {
   try {
+    if (req.params.brand === 'santehsila' && !maxEnabled()) {
+      return res.status(409).json({ error: 'MAX/Santehsila research is disabled in Telegram-only mode' });
+    }
     res.json(await refreshResearch(req.params.brand));
   } catch (error) {
     console.error(error);
@@ -114,13 +130,17 @@ app.post('/reject/:id', requireAdmin, async (req, res) => {
   res.json(item);
 });
 
-// Weekly fresh knowledge refresh: Sunday morning Moscow time.
+// Telegram-first launch: refresh UDS/system-marketing knowledge weekly.
 cron.schedule('30 7 * * 0', () => refreshResearch('system_marketing').catch(console.error), { timezone: TZ });
-cron.schedule('50 7 * * 0', () => refreshResearch('santehsila').catch(console.error), { timezone: TZ });
 
-// Weekday candidate generation. In approval mode these only create drafts in the queue.
+// Weekday Telegram draft generation. Approval mode creates a draft only.
 cron.schedule('20 9 * * 1-5', () => runBrand('system_marketing').catch(console.error), { timezone: TZ });
-cron.schedule('10 10 * * 1-5', () => runBrand('santehsila').catch(console.error), { timezone: TZ });
+
+// MAX/Santehsila remains available for later, but is completely dormant until ENABLE_MAX=true.
+if (maxEnabled()) {
+  cron.schedule('50 7 * * 0', () => refreshResearch('santehsila').catch(console.error), { timezone: TZ });
+  cron.schedule('10 10 * * 1-5', () => runBrand('santehsila').catch(console.error), { timezone: TZ });
+}
 
 const port = Number(process.env.PORT || 3000);
-app.listen(port, () => console.log(`AI Content Agents listening on :${port}; TZ=${TZ}; approval=${approvalMode()}`));
+app.listen(port, () => console.log(`AI Content Agents listening on :${port}; TZ=${TZ}; approval=${approvalMode()}; max=${maxEnabled()}`));
