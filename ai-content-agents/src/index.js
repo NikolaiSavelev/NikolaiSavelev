@@ -178,6 +178,16 @@ app.listen(port, async () => {
     }
   }
 
+  if (String(process.env.TELEGRAM_TEST_ON_START || 'false').toLowerCase() === 'true') {
+    try {
+      const text = 'Тест AI-контент агента ✅\n\nСвязка с Telegram работает. Михалыч на связи — следующий шаг: живые полезные посты, визуалы и контент по расписанию.';
+      const result = await publishTelegram({ text, imageBuffer: null });
+      console.log(`TELEGRAM_TEST_SENT ${JSON.stringify(result)}`);
+    } catch (error) {
+      console.error('TELEGRAM_TEST_FAILED', error);
+    }
+  }
+
   if (String(process.env.MAX_DISCOVER_ON_START || 'false').toLowerCase() === 'true') {
     try {
       const discovery = await discoverMaxChannel();
