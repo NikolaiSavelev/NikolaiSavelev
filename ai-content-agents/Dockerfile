@@ -13,12 +13,11 @@ COPY . .
 
 # MAX API platform-api2.max.ru uses the Russian Ministry of Digital Development CA chain.
 # Install official certificates into the container trust store without disabling TLS verification.
-RUN curl -fsSL https://gu-st.ru/content/Other/doc/russian_trusted_root_ca.cer -o /tmp/russian_trusted_root_ca.cer \
-  && curl -fsSL https://gu-st.ru/content/Other/doc/russian_trusted_sub_ca.cer -o /tmp/russian_trusted_sub_ca.cer \
-  && (openssl x509 -inform DER -in /tmp/russian_trusted_root_ca.cer -out /usr/local/share/ca-certificates/russian_trusted_root_ca.crt || cp /tmp/russian_trusted_root_ca.cer /usr/local/share/ca-certificates/russian_trusted_root_ca.crt) \
-  && (openssl x509 -inform DER -in /tmp/russian_trusted_sub_ca.cer -out /usr/local/share/ca-certificates/russian_trusted_sub_ca.crt || cp /tmp/russian_trusted_sub_ca.cer /usr/local/share/ca-certificates/russian_trusted_sub_ca.crt) \
+RUN curl -fsSL https://gu-st.ru/content/Other/doc/russian_trusted_root_ca.cer -o /usr/local/share/ca-certificates/russian_trusted_root_ca.crt \
+  && curl -fsSL https://gu-st.ru/content/Other/doc/russian_trusted_sub_ca.cer -o /usr/local/share/ca-certificates/russian_trusted_sub_ca.crt \
   && update-ca-certificates
 
-ENV NODE_OPTIONS=--use-system-ca
+# Node 20 supports extending its default CA set with a PEM bundle via NODE_EXTRA_CA_CERTS.
+ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 
 CMD ["npm","start"]
