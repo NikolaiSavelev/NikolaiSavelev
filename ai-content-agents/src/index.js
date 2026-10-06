@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cron from 'node-cron';
-import { generatePost, generateImage } from './agents.js';
+import { generatePost, generateImage, refreshResearch } from './agents.js';
 import { publishTelegram, publishMax } from './publishers.js';
 import { addPending, addHistory, getPending, listPending, updatePending } from './store.js';
 
@@ -73,6 +73,15 @@ app.get('/pending', requireAdmin, async (_req, res) => {
   res.json(await listPending());
 });
 
+app.post('/research/:brand', requireAdmin, async (req, res) => {
+  try {
+    res.json(await refreshResearch(req.params.brand));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/generate/:brand', requireAdmin, async (req, res) => {
   try {
     const item = await runBrand(req.params.brand);
@@ -104,6 +113,10 @@ app.post('/reject/:id', requireAdmin, async (req, res) => {
   if (!item) return res.status(404).json({ error: 'Not found' });
   res.json(item);
 });
+
+// Weekly fresh knowledge refresh: Sunday morning Moscow time.
+cron.schedule('30 7 * * 0', () => refreshResearch('system_marketing').catch(console.error), { timezone: TZ });
+cron.schedule('50 7 * * 0', () => refreshResearch('santehsila').catch(console.error), { timezone: TZ });
 
 // Weekday candidate generation. In approval mode these only create drafts in the queue.
 cron.schedule('20 9 * * 1-5', () => runBrand('system_marketing').catch(console.error), { timezone: TZ });
