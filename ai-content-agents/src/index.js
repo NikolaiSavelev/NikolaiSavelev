@@ -124,7 +124,7 @@ app.get('/health', (_req, res) => {
     maxChannelConfigured: Boolean(process.env.MAX_CHANNEL_ID),
     timezone: TZ,
     editorialSystem: 'v3-separate-bots',
-    schedule: 'Tue/Thu/Sat',
+    schedule: 'Tue/Thu/Sat: 2 system_marketing drafts + SantehSila',
     now: new Date().toISOString()
   });
 });
@@ -292,11 +292,14 @@ app.get('/performance-summary', requireAdmin, async (_req, res) => {
   });
 });
 
-// 3 публикации/черновика в неделю. В approval-mode это только очередь на согласование.
+// Beauty + Cosmetics Retail: по 3 редакционных запуска в неделю на КАЖДЫЙ трек.
+// Порядок в плане идёт парами beauty/retail, поэтому два последовательных запуска берут два разных слота одного контентного дня.
+// В approval-mode это только черновики на согласование — автоматической публикации нет.
 cron.schedule('30 7 * * 0', () => refreshResearch('system_marketing').catch(console.error), { timezone: TZ });
 cron.schedule('20 9 * * 2,4,6', () => runBrand('system_marketing').catch(console.error), { timezone: TZ });
+cron.schedule('40 9 * * 2,4,6', () => runBrand('system_marketing').catch(console.error), { timezone: TZ });
 
-// САНТЕХСИЛА может готовить контент через отдельный Telegram-бот даже пока MAX не включён.
+// САНТЕХСИЛА продолжает жить отдельным направлением в MAX.
 cron.schedule('50 7 * * 0', () => refreshResearch('santehsila').catch(console.error), { timezone: TZ });
 if (santehBotConfigured() || maxEnabled()) {
   cron.schedule('10 10 * * 2,4,6', () => runBrand('santehsila').catch(console.error), { timezone: TZ });
