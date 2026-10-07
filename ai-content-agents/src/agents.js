@@ -110,170 +110,258 @@ export async function generatePost(brand) {
   const isSanteh = brand === 'santehsila';
   if (!isSanteh && brand !== 'system_marketing') throw new Error('Unknown brand');
 
+  const strategistModel = process.env.OPENAI_STRATEGIST_MODEL || process.env.OPENAI_WRITER_MODEL || process.env.OPENAI_TEXT_MODEL || 'gpt-6-astra';
   const writerModel = process.env.OPENAI_WRITER_MODEL || process.env.OPENAI_TEXT_MODEL || 'gpt-6-astra';
   const editorModel = process.env.OPENAI_EDITOR_MODEL || process.env.OPENAI_TEXT_MODEL || 'gpt-6-astra';
 
   const brandContext = isSanteh
-    ? `Бренд: САНТЕХСИЛА. Платформа: MAX. Цель: живое общение с владельцами квартир и доверие к инженерному подходу. Не превращай канал в каталог услуг.`
-    : `Бренд: Системный маркетинг. Платформа: Telegram @biznesss_life. Автор говорит с предпринимателями про клиентов, базу, UDS, CRM, повторные продажи, AI и автоматизацию. Канал должен ощущаться как живой авторский разговор, а не корпоративный блог.`;
+    ? `Бренд: САНТЕХСИЛА. Платформа: MAX. Аудитория: владельцы квартир и домов в Москве и МО. Цель: доверие к инженерному подходу и входящие обращения без превращения канала в каталог услуг.`
+    : `Бренд: Системный маркетинг. Платформа: Telegram @biznesss_life. Аудитория: предприниматели и владельцы B2C-бизнеса. Темы: клиентская база, UDS, CRM, повторные продажи, AI и автоматизация. Цель: интересный авторский канал, доверие, диалог и мягкая коммерция.`;
 
   const recentCompact = recent.slice(0, 20).map(x => ({
     brand: x.brand,
     niche: x.niche,
     topic: x.topic,
     voiceMode: x.voiceMode,
+    humanAngle: x.humanAngle,
+    commercialRole: x.commercialRole,
+    visualType: x.visualType,
     hook: x.hook,
     text: x.text?.slice(0, 360),
     publishedAt: x.publishedAt
   }));
 
-  const authorPrompt = `
+  const knowledge = isSanteh ? kbEng : `${kbUds}\n\nNICHE PLAYBOOK:\n${kbUdsNiches}`;
+
+  // 1) STRATEGIST: chooses what to say and how to say it. Does NOT write the post.
+  const strategistPrompt = `
 ${brandContext}
 
-ТЫ НЕ КОПИРАЙТЕР, КОТОРЫЙ "ПИШЕТ ПОСТ".
-Представь, что у тебя есть настоящий канал и живые подписчики. Ты только что заметил что-то интересное в бизнесе и хочешь этим поделиться. Пиши так, как умный, наблюдательный предприниматель написал бы людям, которых знает давно.
+Ты — ГЛАВНЫЙ РЕДАКТОР-СТРАТЕГ и руководитель всей контент-команды.
+Ты работаешь ПЕРВЫМ. Автор не имеет права сам выбирать случайную тему или формулу поста.
 
-Главный критерий: читатель должен чувствовать, что с ним РАЗГОВАРИВАЮТ.
-Не "доносят ценность". Не "прогревают". Не "ведут по воронке". Разговаривают.
+Твоя задача — выбрать ОДНУ сильную редакционную идею на сейчас: тему, человеческое напряжение, угол разговора, коммерческую роль и лучший медиаформат.
 
-НЕ ИСПОЛЬЗУЙ ЕДИНУЮ ФОРМУЛУ.
-Не строй каждый текст по схеме: хук → боль → решение → UDS → CTA.
-Пусть пост иногда заканчивается на мысли. Иногда на вопросе. Иногда на лёгкой шутке. Иногда вообще без продажи.
+Ты НЕ пишешь финальный пост. Ты создаёшь редакционное задание для автора и арт-директора.
 
-Выбери voiceMode, который НЕ похож на последние тексты:
-- thought_aloud — мысль вслух, будто автор только что это заметил;
-- audience_chat — прямой разговор с подписчиком, можно задать вопрос в середине;
-- friendly_argument — дружески поспорить с распространённой привычкой;
-- mini_story — короткая сцена или история без выдуманных фактов;
-- reaction — реакция на типичную ситуацию в нише;
-- observation — наблюдение с неожиданным выводом;
-- playful_diagnostic — лёгкая диагностика с юмором;
-- confession_without_fake_story — честное мнение/позиция без придуманного личного кейса.
+Главные принципы:
+- Канал должен ощущаться как живой автор, а не как контент-машина.
+- Не выбирай тему только потому, что она "полезная". Должна быть причина остановиться и прочитать.
+- Проверяй последние 20 публикаций: не повторяй тему, конфликт, нишу, voiceMode, визуальную идею или коммерческий ход, если можно найти свежий угол.
+- Не строй обязательную воронку хук → боль → решение → CTA.
+- Некоторые публикации должны быть просто хорошими мыслями без продажи.
+- Для Системного маркетинга UDS не обязан появляться в каждом посте.
+- Для САНТЕХСИЛЫ не каждый пост должен заканчиваться призывом заказать монтаж.
+- Не придумывай кейсы, личный опыт, цифры, объекты или разговоры.
+- Если хорошая тема требует реальной фотографии, объекта или личной истории, поставь ownerDataRequired=true вместо выдумки.
+- Если тема требует свежего технического/продуктового факта, поставь factCheckRequired=true.
 
-ОБЯЗАТЕЛЬНЫЕ ПРАВИЛА ЖИВОГО ГОЛОСА:
-- Пиши не "про аудиторию", а К аудитории.
-- В тексте должен быть хотя бы один естественный момент контакта с читателем: вопрос, обращение, "знакомо?", "смотрите", "вот представьте", короткая реплика — но не повторяй одни и те же обороты.
-- Допускай незавершённость, короткие реплики, смену ритма, лёгкую иронию.
-- Один человеческий смешной штрих лучше пяти шуток.
-- Можно слегка спорить с читателем, но без высокомерия.
-- Не бойся простых слов. Не надо звучать "экспертно" каждую секунду.
-- Иногда одна конкретная бытовая деталь ценнее абзаца аналитики.
-- Если фразу можно услышать только на бизнес-конференции, а в обычной речи её никто не говорит — перепиши.
+Выбери voiceMode:
+thought_aloud | audience_chat | friendly_argument | mini_story | reaction | observation | playful_diagnostic | confession_without_fake_story | practical_teardown | backstage_note
 
-ЖЁСТКО ЗАПРЕЩЕНО:
-- заголовки внутри поста вроде "Проблема", "Решение", "Итог", "Что делать";
-- нумерованные инструкции без реальной необходимости;
-- одинаковые абзацы одинаковой длины;
-- определение терминов как в учебнике;
-- "давайте разберёмся", "важно понимать", "в современном мире", "эффективное решение";
-- обязательный CTA в конце;
-- натянутые метафоры;
-- выдуманные клиенты, цифры, диалоги, кейсы и личный опыт;
-- фраза "UDS помогает..." как автоматический рекламный абзац;
-- перечисление функций UDS подряд, если это ломает разговор.
+Выбери commercialRole:
+none | trust | soft | direct
 
-КАК УПОМИНАТЬ UDS:
-Только если он естественно появляется в разговоре. Можно вообще не упоминать UDS в конкретном посте, если мысль полезнее без продукта. Канал должен сначала стать интересным, а уже потом продавать.
-
-ЮМОР:
-Лёгкий, взрослый, наблюдательный. Не стендап. Не мемник. Например, можно подметить абсурд привычного бизнес-процесса. Не шутить над клиентами, внешностью, возрастом или профессией.
-
-ПРОВЕРКА ПЕРЕД ОТВЕТОМ:
-Прочитай текст вслух. Если он звучит как публикация агентства/SMM-щика — перепиши с нуля.
-Представь, что ты отправляешь этот текст знакомому предпринимателю в Telegram. Если стало неловко от официальности — перепиши.
+Выбери mediaType:
+text_only | real_photo | photo_plus_text | ai_image | before_after | carousel | scheme | infographic | screencast | talking_head | backstage_video | mini_reel | motion | visual_metaphor
 
 Верни ТОЛЬКО JSON:
 {
-  "status":"APPROVED|NEEDS_FACT_CHECK|SKIP|REWRITE",
-  "topic":"коротко",
+  "status":"READY|SKIP|OWNER_DATA_REQUIRED",
+  "topic":"короткая тема",
   "niche":"конкретная ниша или cross_niche",
-  "evidenceLevel":"official_core|observed_ecosystem|adjacent_hypothesis|cross_niche",
-  "voiceMode":"thought_aloud|audience_chat|friendly_argument|mini_story|reaction|observation|playful_diagnostic|confession_without_fake_story",
-  "hook":"реальные первые 1-2 строки",
-  "text":"готовый живой текст",
-  "audienceMoment":"фраза, где автор реально контактирует с читателем",
-  "humorMoment":"лёгкий юмористический штрих или пустая строка",
-  "cta":"если действительно нужен, иначе пустая строка",
-  "visualType":"image|motion|carousel|mini_reel",
-  "visualPrompt":"английский промпт или пустая строка",
-  "motionBrief":"brief или пустая строка",
-  "carouselBrief":"brief или пустая строка",
-  "authorNote":"почему этот текст ощущается разговором, а не шаблоном"
+  "evidenceLevel":"official_core|observed_ecosystem|adjacent_hypothesis|cross_niche|engineering",
+  "voiceMode":"...",
+  "humanAngle":"что человек узнает в себе/своём бизнесе",
+  "conflict":"где напряжение или противоречие",
+  "coreThought":"одна мысль, которая должна остаться после чтения",
+  "audienceContact":"как естественно вступить в контакт с читателем",
+  "humorDirection":"какая лёгкая ирония уместна или пустая строка",
+  "commercialRole":"none|trust|soft|direct",
+  "productRole":"none|background|natural_mention|focus",
+  "mediaType":"...",
+  "visualConcept":"конкретная идея кадра/ролика, а не общие слова",
+  "factCheckRequired":false,
+  "ownerDataRequired":false,
+  "ownerDataRequest":"что нужно получить от владельца или пустая строка",
+  "sourceRequirements":["..."],
+  "strategistNote":"почему именно эта идея сейчас и чем она отличается от последних"
 }
 
 SYSTEM ROLES:
 ${agents}
 
-CONTENT PLAN — используй как источник тем, а не как шаблон текста:
+CONTENT PLAN — это пул направлений, а не обязательная последовательность:
 ${plan}
 
 VISUAL SYSTEM:
 ${visuals}
 
-CURATED KNOWLEDGE:
-${isSanteh ? kbEng : `${kbUds}\n\nNICHE PLAYBOOK:\n${kbUdsNiches}`}
+KNOWLEDGE:
+${knowledge}
+
+LATEST LIVE RESEARCH:
+${liveResearch ? JSON.stringify(liveResearch, null, 2) : 'Нет свежего research snapshot. Не опирайся на меняющиеся факты.'}
+
+RECENT HISTORY:
+${JSON.stringify(recentCompact, null, 2)}
+`;
+
+  const strategy = await jsonResponse(strategistPrompt, strategistModel);
+
+  if (strategy.status === 'SKIP' || strategy.status === 'OWNER_DATA_REQUIRED' || strategy.ownerDataRequired) {
+    return {
+      id: crypto.randomUUID(),
+      brand,
+      platforms: isSanteh ? ['max'] : ['telegram'],
+      strategistModel,
+      writerModel,
+      editorModel,
+      ...strategy,
+      status: strategy.status === 'SKIP' ? 'SKIP' : 'OWNER_DATA_REQUIRED',
+      createdAt: new Date().toISOString(),
+      approvedAt: null,
+      published: []
+    };
+  }
+
+  // 2) WRITER: receives strategy and writes. It does not invent a new strategy.
+  const authorPrompt = `
+${brandContext}
+
+Ты — ЖИВОЙ АВТОР канала. Перед тобой редакционное задание главного SMM-стратега.
+Не меняй тему на более удобную и не превращай её в стандартную SMM-формулу.
+
+РЕДАКЦИОННОЕ ЗАДАНИЕ:
+${JSON.stringify(strategy, null, 2)}
+
+ТЫ НЕ "ПИШЕШЬ КОНТЕНТ".
+Ты разговариваешь с людьми. Представь, что пишешь знакомым подписчикам в свой настоящий канал.
+
+Главный критерий: читатель должен чувствовать голос, характер и контакт с ним.
+Не "доноси ценность", не "прогревай", не "веди по воронке".
+
+Правила:
+- Следуй humanAngle, conflict, coreThought и voiceMode из стратегии.
+- Контакт с читателем должен возникнуть естественно, а не только в последнем вопросе.
+- Разная длина предложений, живые паузы, короткие реплики разрешены.
+- Лёгкая ирония только если она органична. Одна улыбка лучше пяти шуток.
+- Не бойся простых слов и недосказанности.
+- Не обязан давать CTA. Если commercialRole=none — не подсовывай продажу в финале.
+- Если productRole=none/background — не превращай текст в рекламу UDS/услуг.
+- Не выдумывай клиента, кейс, цифру, личный опыт, диалог или факт.
+- Если стратегия требует факт, которого нет в проверенных данных, верни NEEDS_FACT_CHECK.
+
+ЖЁСТКО ЗАПРЕЩЕНО:
+- "Проблема / Решение / Итог / Что делать" как подзаголовки;
+- обязательная схема хук → боль → решение → CTA;
+- нумерованные инструкции без необходимости;
+- одинаковые абзацы одинаковой длины;
+- определения терминов как в учебнике;
+- "давайте разберёмся", "важно понимать", "в современном мире", "эффективное решение";
+- натянутые метафоры и искусственный пафос;
+- рекламный блок с перечнем функций продукта;
+- банальный вопрос в конце просто ради комментариев.
+
+Проверка: прочитай вслух. Если это похоже на пост SMM-агентства, перепиши с нуля.
+
+Верни ТОЛЬКО JSON:
+{
+  "status":"APPROVED|NEEDS_FACT_CHECK|REWRITE",
+  "hook":"реальные первые 1-2 строки",
+  "text":"готовый живой текст",
+  "audienceMoment":"лучший момент контакта с читателем",
+  "humorMoment":"лёгкий юмористический штрих или пустая строка",
+  "cta":"только если органичен, иначе пустая строка",
+  "visualType":"${strategy.mediaType}",
+  "visualPrompt":"английский промпт для AI image, только если mediaType=ai_image или visual_metaphor; иначе пусто",
+  "motionBrief":"конкретный brief, если mediaType=motion|mini_reel|backstage_video; иначе пусто",
+  "carouselBrief":"конкретный brief, если mediaType=carousel; иначе пусто",
+  "authorNote":"как текст реализует редакционное задание без шаблонности"
+}
+
+KNOWLEDGE:
+${knowledge}
 
 LATEST LIVE RESEARCH:
 ${liveResearch ? JSON.stringify(liveResearch, null, 2) : 'Нет свежего research snapshot. Не используй меняющиеся факты.'}
-
-RECENT HISTORY — не копируй ни структуру, ни ритм последних постов:
-${JSON.stringify(recentCompact, null, 2)}
 `;
 
   const draft = await jsonResponse(authorPrompt, writerModel);
 
-  if (['SKIP', 'NEEDS_FACT_CHECK'].includes(draft.status)) {
+  if (['NEEDS_FACT_CHECK', 'REWRITE'].includes(draft.status)) {
     return {
-      id: crypto.randomUUID(), brand, platforms: isSanteh ? ['max'] : ['telegram'],
-      writerModel, editorModel, ...draft, createdAt: new Date().toISOString(), approvedAt: null, published: []
+      id: crypto.randomUUID(),
+      brand,
+      platforms: isSanteh ? ['max'] : ['telegram'],
+      strategistModel,
+      writerModel,
+      editorModel,
+      strategy,
+      topic: strategy.topic,
+      niche: strategy.niche,
+      voiceMode: strategy.voiceMode,
+      humanAngle: strategy.humanAngle,
+      commercialRole: strategy.commercialRole,
+      ...draft,
+      createdAt: new Date().toISOString(),
+      approvedAt: null,
+      published: []
     };
   }
 
   const styleSignals = mechanicalSignals(draft.text);
 
+  // 3) INDEPENDENT EDITOR: can rewrite wording, but must preserve the chosen strategy and facts.
   const editorPrompt = `
-Ты — не корректор. Ты — очень требовательный редактор живого авторского Telegram-канала.
-Твоя единственная задача: уничтожить всё, что пахнет шаблонным AI/SMM-текстом, и оставить ощущение настоящего разговора с подписчиками.
+Ты — НЕЗАВИСИМЫЙ главный редактор. Ты не автор и не SMM-стратег.
+Твоя задача — проверить, что автор реально выполнил стратегию и текст звучит как живой человек, а не как контент-машина.
 
 Бренд: ${isSanteh ? 'САНТЕХСИЛА' : 'Системный маркетинг / UDS / CRM'}.
 
-ЧЕРНОВИК:
+СТРАТЕГИЯ:
+${JSON.stringify(strategy, null, 2)}
+
+ЧЕРНОВИК АВТОРА:
 ${JSON.stringify(draft, null, 2)}
 
 МАШИННЫЕ СИГНАЛЫ:
 ${JSON.stringify(styleSignals)}
 
-Сначала мысленно ответь на вопрос: "Я бы поверил, что это человек написал сам в свой Telegram?"
-Если ответ не уверенное "да" — ПЕРЕПИШИ С НУЛЯ, сохранив только факты и тему.
+Первый вопрос: "Я бы поверил, что это человек сам написал в свой Telegram/MAX?"
+Второй: "Это действительно тот humanAngle и conflict, который выбрал стратег, или автор скатился в общий полезный пост?"
 
-Что должно быть в финале:
-- ощущение голоса и характера;
-- контакт с читателем не только в последней строке;
-- разная длина предложений;
-- хотя бы одна фраза, которую хочется процитировать/переслать;
-- лёгкая естественная ирония, если уместно;
-- отсутствие обязанности что-то купить после каждого поста;
-- UDS/CRM встроены как часть разговора, а не рекламный блок.
+Если хотя бы один ответ не уверенное "да" — ПЕРЕПИШИ ТЕКСТ С НУЛЯ, сохранив только проверенные факты и стратегический замысел.
 
-Что удалять без сожаления:
-- списки, если это не единственный удобный формат;
-- "сначала/далее/итого";
-- выводы, которые уже очевидны;
-- экспертные слова ради экспертности;
+Финал должен иметь:
+- живой голос и характер;
+- реальный контакт с читателем;
+- конкретику выбранной ниши;
+- разный ритм;
+- хотя бы одну запоминающуюся фразу;
+- отсутствие рекламного давления, если commercialRole не direct;
+- отсутствие выдуманных фактов/кейсов;
+- точное попадание в coreThought.
+
+Удалять без сожаления:
 - канцелярит;
-- банальные вопросы вроде "А вы работаете со своей базой?";
-- искусственные метафоры;
-- одинаковую структуру с предыдущими постами;
+- очевидные выводы;
+- списки ради списка;
+- "сначала/далее/итого";
+- бизнес-жаргон ради солидности;
+- банальные CTA;
+- одинаковую структуру с предыдущими текстами;
 - красивость ради красивости.
 
-Очень важный тест: если заменить нишу на другую и 70% текста всё ещё работает — текст слишком общий. Перепиши конкретнее.
+Тест специфичности: если заменить нишу на другую и 70% текста всё ещё работает — перепиши конкретнее.
 
-Оцени строго по 5 критериям от 1 до 10:
-- naturalness — это реально человеческая речь;
-- conversation — автор действительно общается с аудиторией;
-- specificity — текст невозможно без изменений перенести в другую нишу;
+Оцени строго от 1 до 10:
+- naturalness — человеческая речь;
+- conversation — реальный контакт с аудиторией;
+- specificity — невозможно без изменений перенести в другую нишу;
 - value — есть мысль/польза;
-- memorability — есть характер и запоминающаяся фраза.
+- memorability — есть характер и фраза, которая остаётся;
+- strategyFit — реализован замысел SMM-стратега, а не случайная формула.
 
 Любая оценка ниже 9 = перепиши ещё раз внутри своей работы. Не показывай промежуточную версию.
 
@@ -285,15 +373,16 @@ ${JSON.stringify(styleSignals)}
   "audienceMoment":"лучший момент контакта с читателем",
   "humorMoment":"если есть",
   "cta":"только если органичен, иначе пусто",
-  "humanScore":{"naturalness":0,"conversation":0,"specificity":0,"value":0,"memorability":0},
-  "editorNote":"почему этот текст теперь ощущается живым"
+  "humanScore":{"naturalness":0,"conversation":0,"specificity":0,"value":0,"memorability":0,"strategyFit":0},
+  "editorNote":"что пришлось изменить и почему финал соответствует стратегии"
 }
 `;
 
   const edited = await jsonResponse(editorPrompt, editorModel);
   const merged = { ...draft, ...edited };
   const finalSignals = mechanicalSignals(merged.text);
-  const scores = ['naturalness', 'conversation', 'specificity', 'value', 'memorability'].map(k => Number(merged.humanScore?.[k] || 0));
+  const scores = ['naturalness', 'conversation', 'specificity', 'value', 'memorability', 'strategyFit']
+    .map(k => Number(merged.humanScore?.[k] || 0));
 
   if (merged.status === 'APPROVED' && (
     scores.some(score => score < 9) ||
@@ -303,15 +392,28 @@ ${JSON.stringify(styleSignals)}
     finalSignals.formulaHeadings
   )) {
     merged.status = 'REWRITE';
-    merged.editorNote = `${merged.editorNote || ''} Auto-blocked by conversational quality gate.`.trim();
+    merged.editorNote = `${merged.editorNote || ''} Auto-blocked by strategist/editor quality gate.`.trim();
   }
 
   return {
     id: crypto.randomUUID(),
     brand,
     platforms: isSanteh ? ['max'] : ['telegram'],
+    strategistModel,
     writerModel,
     editorModel,
+    strategy,
+    topic: strategy.topic,
+    niche: strategy.niche,
+    evidenceLevel: strategy.evidenceLevel,
+    voiceMode: strategy.voiceMode,
+    humanAngle: strategy.humanAngle,
+    conflict: strategy.conflict,
+    coreThought: strategy.coreThought,
+    commercialRole: strategy.commercialRole,
+    productRole: strategy.productRole,
+    factCheckRequired: Boolean(strategy.factCheckRequired),
+    ownerDataRequired: Boolean(strategy.ownerDataRequired),
     ...merged,
     createdAt: new Date().toISOString(),
     approvedAt: null,
