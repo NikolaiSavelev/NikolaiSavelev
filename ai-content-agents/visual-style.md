@@ -1,154 +1,221 @@
 # Visual system
 
-## Общий принцип
+## Главный принцип
 
-Визуал должен выглядеть как контент сильного современного бренда, а не как случайная нейросетевая картинка. Один визуал = одна мысль + одна эмоция. Если смысл можно показать проще — показывать проще.
+Визуал должен быть не «картинкой к посту», а самостоятельным вторым слоем истории.
 
-### Правило остановки взгляда
-Первый кадр/обложка должен быть понятен за 1 секунду:
+Если убрать текст поста, картинка всё равно должна вызывать вопрос, эмоцию или узнавание ситуации.
+
+Один визуал = одна идея + одна эмоция + один главный объект.
+
+Запрещена логика «пост про бизнес → человек с ноутбуком». Это выглядит как сток.
+
+## Визуальная иерархия
+
+Приоритет:
+1. Реальный объект / процесс / фото владельца, когда именно реальность создаёт доверие.
+2. Сильная визуальная метафора.
+3. Editorial-сцена, похожая на кадр из рекламной кампании.
+4. Clean schematic / cutaway / explainer, когда смысл сложный.
+5. Текстовая карточка — только если картинка не нужна.
+
+## Anti-stock gate
+
+Перед генерацией спросить:
+- есть ли один главный объект?
+- есть ли конкретный момент, а не абстрактная «деловая ситуация»?
+- есть ли визуальное напряжение: пустое кресло, незаконченный процесс, одна деталь не на месте, контраст «до/после»?
+- можно ли узнать этот кадр среди 20 других AI-картинок?
+- есть ли причина смотреть дольше секунды?
+
+Если нет — придумать другой концепт.
+
+## Camera language
+
+Для реалистичных editorial-кадров:
+- 35mm или 50mm documentary/editorial feeling;
+- shallow depth of field только когда помогает смыслу;
+- natural directional light / practical light sources;
+- realistic skin, glass, steel, wood, tile, pipe textures;
+- легкая бытовая несовершенность, но не грязь;
+- asymmetrical composition;
+- foreground / midground / background depth;
+- real-world perspective, no impossible geometry;
+- no synthetic plastic faces;
+- no generic smiling business people looking at camera.
+
+## Первый кадр
+
+Понятен за 1 секунду:
 - один главный объект;
 - один сильный контраст;
-- чистый фон;
+- чистая композиция;
 - максимум 2–6 слов текста, если текст вообще нужен;
-- никакой попытки «впихнуть весь пост» в изображение.
+- не пересказывать пост на картинке.
 
-### Выбор формата
-- `image` — сильная статичная сцена;
-- `motion` — 5–10 секунд системной анимации;
-- `carousel` — 3–5 экранов для последовательного объяснения;
-- `mini_reel` — 8–15 секунд, когда движение усиливает идею.
-
-## Motion system
+## Системный маркетинг
 
 ### Визуальный язык
-- clean kinetic typography;
-- мягкие reveal/mask переходы;
-- лёгкий camera push-in / parallax;
-- morphing простых форм;
-- плавная сборка схем/узлов;
-- аккуратные data dots/lines;
-- motion blur только очень умеренно;
-- 2–4 сцены максимум;
-- финальный кадр должен быть чистым и запоминающимся.
 
-### Что запрещено
-- бешеные переходы;
-- glitch ради glitch;
-- 10 объектов одновременно;
-- мелкий текст;
-- длинные предложения внутри ролика;
-- кислотный неон без причины;
-- stock-looking corporate animation;
-- визуальные клише «AI brain», робот, голографические панели.
+Не «CRM на экране», а человеческие последствия работы с базой.
 
-### Шаблон motion brief
+Хорошие направления:
+- пустое место там, где обычно был постоянный клиент;
+- заказ уже на столе, а автоматическая система всё ещё считает человека «ушедшим»;
+- две одинаковые коммуникации для очень разных клиентов;
+- администратор смотрит на пустое расписание, а рядом лежит список тех, кто давно не приходил;
+- покупатель уходит из магазина, а продавец не знает, вернётся ли он;
+- визуальная метафора памяти бизнеса: след, карточка, отметка, повторяющийся предмет;
+- один человек «теряется» из ряда клиентов;
+- хаотичный поток превращается в понятную систему без фейковых интерфейсов.
 
-`Core idea: [ONE IDEA]. First-frame hook: [WHAT STOPS THE EYE]. Duration: 6–10s. Format: 9:16 or 4:5. Scene 1: [simple visual setup]. Scene 2: [single transformation]. Scene 3: [payoff/result]. Motion language: clean kinetic typography, soft masks, subtle parallax, premium easing, minimal objects, elegant lighting. On-screen text: max 2–6 words per scene. No clutter, no fake UI, no generic AI visuals, no noisy transitions.`
+### Beauty / salon
 
-## Beauty / lifestyle direction
+Лучше:
+- пустое кресло в красивом салоне, где чувствуется, что клиент должен был быть;
+- зеркало с размытым отражением уходящего человека;
+- чашка кофе, которая осталась после клиента;
+- мастер готов, место готово, а человека нет;
+- детали: полотенце, расчёска, свет, зеркало, тёплая кожа, стекло, металл.
 
-### Арт-направление
-- tactile luxury;
-- стекло, металл, перламутр, кремовые текстуры;
-- macro beauty;
-- мягкий directional light;
-- clean premium composition;
-- кожа/волосы/упаковка как главный объект;
-- ощущение дорогой beauty-кампании, а не рекламного баннера.
+Стиль: premium beauty campaign, tactile luxury, warm editorial light, minimal composition.
 
-### Motion для beauty
-- медленный поворот продукта;
-- мягкий световой sweep;
-- macro detail → reveal;
-- капля/текстура/шелковая поверхность;
-- плавное появление одного короткого тезиса;
-- finish на чистом hero-shot.
+### Retail
 
-### Текст на экране
-Обычно 2–6 слов. Примеры структуры:
-- «Клиент вернулся»
-- «Не скидка. Система.»
-- «Красиво — это мало»
-- «Своя база клиентов»
+Лучше:
+- последний размер на полке и сообщение, которое ещё ждёт подтверждения;
+- покупатель уже с пакетом, а «возвратная» коммуникация приходит слишком поздно;
+- две корзины: одна активная, одна забытая;
+- чек / пакет / ключевая вещь как главный предмет кадра.
+
+### HoReCa
+
+Лучше:
+- знакомый стол пустует в привычное время;
+- чашка/чек/бронь как визуальный след постоянного гостя;
+- очередь у кассы, но один постоянный гость исчез из общей сцены.
+
+### Запрещено
+
+- бизнесмен с планшетом без причины;
+- рукопожатия;
+- график вверх;
+- монеты, купюры, «денежный дождь»;
+- неоновые AI-мозги;
+- роботы;
+- синие hologram dashboards;
+- выдуманный интерфейс UDS;
+- слова SALE/CRM/AI крупно на картинке;
+- стерильный офисный сток;
+- три человека, которые улыбаются в камеру.
 
 ## САНТЕХСИЛА
 
-### Арт-направление
-- фотореализм;
-- современная квартира/техпомещение;
-- аккуратные инженерные трассы;
-- правильная геометрия и чистый монтаж;
-- крупные планы коллекторов, труб, узлов;
-- премиальный предметный свет;
-- натуральные материалы и реалистичная фактура;
-- минимум визуального шума.
+### Главная визуальная стратегия
 
-### Motion идеи
-- трасса собирается слой за слоем;
-- коллекторный узел раскрывается по функциональным зонам;
-- water-flow animation по реальной схеме;
-- before/after: хаос → аккуратная система;
-- «что скрывается за стеной» через clean cutaway.
+Реальная инженерная эстетика выше AI.
 
-### Запрещено
-- невозможные соединения труб;
-- абсурдная геометрия фитингов;
-- случайные манометры/краны;
-- мокрые/аварийные сцены как постоянный способ запугивания;
-- текст, встроенный генератором в картинку;
-- логотипы брендов, если модель искажает их.
+Лучшие реальные форматы:
+- macro узла;
+- аккуратный сантехнический шкаф;
+- трассы до закрытия стен;
+- коллектор крупным планом;
+- манометр при опрессовке;
+- тёплый пол перед стяжкой;
+- радиаторный узел;
+- последовательность монтажа;
+- before / after.
 
-### Шаблон промпта
+### AI допускается для
 
-`Premium photorealistic editorial image for a professional plumbing engineering company in Moscow. [SUBJECT]. Clean modern apartment engineering cabinet, accurate realistic pipe routing, well-organized manifolds, premium workmanship, architectural lighting, calm confident mood, high-detail materials, realistic proportions, professional DSLR photography, 4:5 vertical composition, clear focal point, negative space in upper third for optional headline. No text, no watermark, no distorted fittings, no impossible pipe connections, no clutter, no flooding, no exaggerated cinematic effects.`
+- clean cutaway;
+- exploded view;
+- объяснения потока воды;
+- схемы ошибки и правильного решения;
+- «что скрывается за стеной»;
+- визуализации системы, которую невозможно снять в готовом ремонте.
 
-## Системный маркетинг / UDS
+### Фотореализм
 
-### Арт-направление
-- premium business editorial;
-- современный предприниматель;
-- clean data visualization motifs;
-- клиентские сегменты, повторные покупки, CRM-потоки;
-- тёплый бизнес-контекст: кафе, магазин, салон, услуги;
-- tasteful 3D/isometric только когда полезно для объяснения.
+Если AI делает инженерную сцену:
+- реальные диаметры и масштабы;
+- логичные соединения;
+- физически правдоподобная трассировка;
+- минимум элементов;
+- качественная квартира / техзона;
+- предметный архитектурный свет;
+- чистая геометрия;
+- никакого случайного набора кранов и манометров.
 
-### Motion идеи
-- один покупатель → база → сегмент → повторное касание → возврат;
-- несколько чеков → понятные группы клиентов;
-- «поток продаж» превращается в структурированную базу;
-- одна хаотичная линия → чистая система;
-- один короткий тезис на каждый motion beat.
+Если точную техническую схему нельзя гарантировать — делать stylized educational cutaway, а не выдавать сцену за реальный монтаж.
 
 ### Запрещено
-- робот в костюме;
-- светящийся мозг;
-- неоновая голова с микросхемами;
-- бесконечные голограммы;
-- фальшивые интерфейсы UDS с выдуманными цифрами;
-- кричащие «SALE» и купюры.
 
-### Шаблон промпта
+- невозможные соединения;
+- трубы, проходящие друг через друга;
+- 10 случайных вентилей;
+- фейковая авария ради страха;
+- мокрый подвал как основной визуальный стиль;
+- улыбающийся мастер с разводным ключом в камеру;
+- генерация логотипов внутри картинки.
 
-`Premium business editorial visual about [TOPIC]. Modern small-business owner using a clear customer-retention system, subtle visual metaphor for customer segments and repeat purchases, sophisticated contemporary brand aesthetic, clean composition, natural light, realistic business environment, restrained data motifs, high-end commercial photography, 4:5 vertical, negative space for optional headline. No text, no logos, no fake dashboards, no robots, no neon AI brain, no money rain.`
+## Motion
 
-## Карточки с текстом
+Motion нужен, когда движение объясняет смысл.
 
-Текст лучше накладывать программно после генерации изображения.
+### Системный маркетинг
 
-Правила:
-- один заголовок до 6 слов;
-- крупная типографика;
-- не больше одной мысли на карточке;
-- safe-area 10% по краям;
-- высокий контраст;
-- брендовый логотип добавлять отдельным слоем, а не генерировать моделью.
+Примеры:
+- один клиент → первая покупка → исчезновение → своевременное касание → возврат;
+- список клиентов меняется во времени: активный → реже → пауза;
+- одна массовая рассылка разделяется на несколько уместных сценариев;
+- клиент уже купил → старое сообщение автоматически исчезает.
 
-## Выбор формата
+### САНТЕХСИЛА
 
-- Экспертный пост: фото/реалистичная сцена.
-- Простая сильная мысль: image или 5–7s motion.
-- Чек-лист: carousel 3–5 экранов.
-- Кейс: реальное фото объекта всегда выше генерации.
-- Сложная механика: минимальная инфографика или motion.
-- Продажа: результат/процесс/человек, а не рекламный баннер.
-- Beauty: hero visual или elegant mini-reel; не перегруженная карточка.
+Примеры:
+- труба собирается по слоям;
+- поток воды проходит через узел;
+- ошибка → корректный узел;
+- exploded view сантехнического шкафа;
+- скрытая трасса появляется за стеной.
+
+Motion brief:
+`Core idea: [ONE IDEA]. First frame: [VISUAL EVENT THAT STOPS THE EYE]. Duration: 6–12s. Format: 9:16 or 4:5. Scene 1 (0-2s): concrete setup. Scene 2 (2-7s): one transformation. Scene 3 (7-12s): visual payoff. Premium easing, subtle parallax, restrained motion blur, max 2-6 words on screen, no noisy transitions, no fake UI.`
+
+## Visual prompt formula
+
+Каждый AI prompt должен содержать:
+- exact subject;
+- exact moment in time;
+- environment;
+- one visual tension;
+- camera/lens feeling;
+- composition;
+- lighting;
+- tactile materials;
+- realistic imperfections;
+- emotional tone;
+- 4:5 vertical composition;
+- no text, no logos, no watermark;
+- explicit anti-stock constraints.
+
+### Пример формулы для маркетинга
+
+`Premium editorial photograph showing [EXACT HUMAN BUSINESS MOMENT]. The visual idea is [METAPHOR/CONFLICT]. One clear focal subject, asymmetrical composition, natural directional light, realistic small-business environment, tactile details, subtle human traces, 35mm documentary-advertising photography, shallow depth only where useful, believable imperfections, sophisticated restrained mood, 4:5 vertical. No text, no logos, no dashboards, no charts, no robots, no neon AI imagery, no generic business pose, no people smiling at camera, no stock-photo feeling.`
+
+### Пример формулы для САНТЕХСИЛЫ
+
+`High-end architectural editorial image about professional apartment plumbing engineering. [EXACT SUBJECT/MOMENT]. One technically coherent system, realistic scale, clean routing, believable fittings, premium workmanship, architectural practical lighting, tactile metal and polymer materials, calm confident mood, professional DSLR/architectural photography, 4:5 vertical. No text, no watermark, no fake logos, no impossible pipe connections, no random valves, no clutter, no flooding, no stock worker posing for camera.`
+
+## Кнопка «Другая картинка»
+
+При повторной генерации нельзя просто менять цвет или ракурс той же сцены.
+
+Новый вариант должен менять хотя бы 2 из 4:
+- композицию;
+- визуальную метафору;
+- главный объект;
+- момент истории.
+
+Цель — дать владельцу действительно другой креатив, а не дубль.
