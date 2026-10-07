@@ -93,6 +93,7 @@ app.get('/health', (_req, res) => {
     ok: true,
     approvalMode: approvalMode(),
     approvalBot: approvalBot.enabled,
+    approvalBotInfo: approvalBot.info,
     telegramEnabled: true,
     maxEnabled: maxEnabled(),
     maxTokenConfigured: Boolean(process.env.MAX_ACCESS_TOKEN),

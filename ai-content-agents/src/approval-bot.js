@@ -154,7 +154,14 @@ export function createApprovalBot({ runBrand, publishItem, maxEnabled }) {
 
   async function onMessage(message) {
     const chatId = message.chat.id;
-    if (!isOwner(message.from?.id)) return;
+    if (!isOwner(message.from?.id)) {
+      console.log(`APPROVAL_BOT_FOREIGN_MESSAGE from=${message.from?.id} chat=${chatId}`);
+      if (message.chat.type === 'private') {
+        await say(chatId, `Это бот редакции. Ваш Telegram ID: ${message.from?.id}. Если вы владелец — добавьте его в OWNER_CHAT_ID на Railway.`);
+      }
+      return;
+    }
+    console.log(`APPROVAL_BOT_OWNER_MESSAGE ${String(message.text || '[media]').slice(0, 40)}`);
     const text = String(message.text || message.caption || '').trim();
 
     const target = await findByReply(message);
@@ -198,6 +205,7 @@ export function createApprovalBot({ runBrand, publishItem, maxEnabled }) {
     while (true) {
       try {
         const updates = await tg('getUpdates', { offset, timeout: 50, allowed_updates: ['message', 'callback_query'] });
+        info.lastPollOk = new Date().toISOString();
         for (const u of updates) {
           offset = u.update_id + 1;
           try {
@@ -209,19 +217,38 @@ export function createApprovalBot({ runBrand, publishItem, maxEnabled }) {
         }
       } catch (error) {
         // 409 — тот же бот запущен где-то ещё (например, локальный channel-agent)
+        info.lastPollError = `${new Date().toISOString()} ${error.message}`;
         console.error('APPROVAL_BOT_POLL_FAILED', error.message);
         await new Promise(r => setTimeout(r, error.code === 409 ? 30000 : 5000));
       }
     }
   }
 
+  const info = { username: null, ownerReachable: null, lastPollOk: null, lastPollError: null };
+
   return {
     enabled,
     notifyOwner,
-    start() {
+    info,
+    async start() {
       if (!enabled) {
         console.log('Approval bot disabled: set OWNER_CHAT_ID (and TELEGRAM_BOT_TOKEN) to receive drafts in Telegram');
         return;
+      }
+      try {
+        info.username = (await tg('getMe', {})).username;
+        console.log(`Approval bot is @${info.username}`);
+      } catch (error) {
+        console.error('APPROVAL_BOT_GETME_FAILED', error.message);
+      }
+      for (const chatId of ownerIds()) {
+        try {
+          await tg('getChat', { chat_id: chatId });
+          info.ownerReachable = true;
+        } catch (error) {
+          info.ownerReachable = false;
+          console.error(`APPROVAL_BOT_OWNER_UNREACHABLE ${chatId}: ${error.message} — владелец должен нажать /start у @${info.username}`);
+        }
       }
       tg('deleteWebhook', {}).catch(() => {});
       tg('setMyCommands', {
