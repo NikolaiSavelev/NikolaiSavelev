@@ -29,13 +29,11 @@ async function publishItem(item, options = {}) {
   if (item.status !== 'APPROVED') throw new Error(`Item status is ${item.status}, not APPROVED`);
   if (item.published?.length) return item;
 
-  // MEDIA DECISION: реальное медиа владельца > AI-визуал (только для AI-форматов) > без картинки
-  let imageBuffer = await readMedia(item.ownerMediaFile);
-  if (!imageBuffer && item.realMediaRequired && !options.textOnly) {
-    throw new Error(`Post requires real media (${item.mediaType}). Upload it via POST /media/${item.id} or approve with {"textOnly":true}.`);
-  }
-  if (!imageBuffer && item.visualPrompt && !options.textOnly) {
-    imageBuffer = await generateImage(item.visualPrompt, item.negativePrompt);
+  // Картинка: реальное фото владельца > картинка из черновика > нарисовать сейчас. textOnly — без картинки.
+  let imageBuffer = null;
+  if (!options.textOnly) {
+    imageBuffer = (await readMedia(item.ownerMediaFile)) || (await readMedia(item.aiImageFile));
+    if (!imageBuffer && item.visualPrompt) imageBuffer = await generateImage(item.visualPrompt, item.negativePrompt, item.brand);
   }
   const published = [];
 
@@ -75,6 +73,7 @@ async function runBrand(brand, options = {}) {
     return item;
   }
 
+  await attachDraftImage(item);
   await addPending(item);
   await addMemory(memoryEntry(item));
 
@@ -86,7 +85,27 @@ async function runBrand(brand, options = {}) {
   return item;
 }
 
-const approvalBot = createApprovalBot({ runBrand, publishItem, maxEnabled });
+// Картинка рисуется сразу, чтобы владелец видел её в черновике
+async function attachDraftImage(item) {
+  if (!item.visualPrompt || item.status === 'SKIP') return item;
+  try {
+    const image = await generateImage(item.visualPrompt, item.negativePrompt, item.brand);
+    item.aiImageFile = await saveMedia(`${item.id}-ai`, image);
+  } catch (error) {
+    console.error('DRAFT_IMAGE_FAILED', error.message);
+    item.aiImageError = error.message;
+  }
+  return item;
+}
+
+async function regenerateImage(id) {
+  const item = await getPending(id);
+  if (!item) throw new Error('Not found');
+  const updated = await attachDraftImage({ ...item });
+  return updatePending(id, { aiImageFile: updated.aiImageFile, aiImageError: updated.aiImageError || null });
+}
+
+const approvalBot = createApprovalBot({ runBrand, publishItem, maxEnabled, regenerateImage });
 
 app.get('/health', (_req, res) => {
   res.json({

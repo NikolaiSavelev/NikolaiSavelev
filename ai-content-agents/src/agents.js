@@ -14,6 +14,8 @@ export const BRANDS = {
     platforms: ['telegram'],
     planFile: 'content-plan-system-marketing.md',
     knowledge: ['knowledge-system-marketing.md', 'knowledge-uds.md', 'knowledge-uds-niches.md'],
+    logo: null,
+    visualStyle: 'Documentary editorial photography of a real small-business moment (salon, shop, cafe, service desk): natural light, real textures, slight imperfection, one clear focal point, cinematic everyday moment. No robots, no holograms, no fake dashboards, no rising charts, no stock smiles, no text.',
     context: 'Бренд: «Системный маркетинг». Платформа: Telegram @biznesss_life. Читатель — владельцы и управляющие B2C-бизнеса. Автор говорит про клиентов, базу, повторные продажи, удержание, сегментацию, AI и автоматизацию. Канал — живой авторский разговор, а не рекламный канал UDS.'
   },
   santehsila: {
@@ -22,6 +24,8 @@ export const BRANDS = {
     platforms: ['max'],
     planFile: 'content-plan-santehsila.md',
     knowledge: ['knowledge-santehsila.md', 'knowledge-engineering.md'],
+    logo: 'assets/santehsila-logo.png',
+    visualStyle: 'Clean, technological, professional engineering visuals for home plumbing and heating: tidy manifolds, pipes, radiators, underfloor heating, cutaway and exploded views, water-flow schematics, macro of fittings. Brand accent colors deep blue and red. No construction mess, no fake stock workers, no text. Keep the bottom-right corner calm — a logo is placed there.',
     context: 'Бренд: САНТЕХСИЛА. Платформа: MAX. Монтаж инженерной сантехники в Москве и МО. Читатель — владельцы квартир и домов. Автор — мастер, который объясняет инженерку простым языком. Не каталог услуг.'
   }
 };
@@ -407,6 +411,9 @@ ${cfg.context}
 БРИФ (mediaType = ${brief.mediaType}):
 ${JSON.stringify(brief, null, 2)}
 
+BRAND VISUAL STYLE:
+${cfg.visualStyle}
+
 ПОСТ:
 ${best.draft.post}
 
@@ -447,7 +454,7 @@ ${ctx.media}`, editorModel);
     ctaType: best.draft.ctaType || 'NONE',
     mediaType,
     visualConcept: visual.visualConcept || '',
-    visualPrompt: AI_MEDIA.has(mediaType) ? (visual.visualPrompt || '') : '',
+    visualPrompt: visual.visualPrompt || '',
     negativePrompt: visual.negativePrompt || '',
     altText: visual.altText || '',
     motionBrief: visual.motionBrief || '',
@@ -489,14 +496,38 @@ export function memoryEntry(item) {
   };
 }
 
-export async function generateImage(visualPrompt, negativePrompt = '') {
-  const model = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2';
+export async function generateImage(visualPrompt, negativePrompt = '', brand = '') {
+  const model = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-2.5-flare';
+  const quality = process.env.OPENAI_IMAGE_QUALITY || 'high';
   // 4:5 для Telegram/MAX; произвольные размеры поддерживают gpt-image-2 и новее
   const size = process.env.OPENAI_IMAGE_SIZE || (/^gpt-image-[2-9]/.test(model) ? '1024x1280' : '1024x1536');
   const prompt = negativePrompt ? `${visualPrompt}\n\nAvoid: ${negativePrompt}` : visualPrompt;
-  const result = await client.images.generate({ model, prompt, size });
+  const result = await client.images.generate({ model, prompt, size, quality, output_format: 'jpeg' });
 
   const b64 = result.data?.[0]?.b64_json;
   if (!b64) throw new Error('Image API did not return base64 image data');
-  return Buffer.from(b64, 'base64');
+  const image = Buffer.from(b64, 'base64');
+  const logo = BRANDS[brand]?.logo;
+  if (!logo) return image;
+  try {
+    return await addLogo(image, path.join(ROOT, logo));
+  } catch (error) {
+    console.error('LOGO_OVERLAY_FAILED', error.message);
+    return image;
+  }
+}
+
+// Логотип без фона в правый нижний угол, ширина — 20% картинки
+export async function addLogo(image, logoPath) {
+  const sharp = (await import('sharp')).default;
+  const base = sharp(image);
+  const { width, height } = await base.metadata();
+  const logoWidth = Math.round(width * 0.2);
+  const logo = await sharp(logoPath).resize({ width: logoWidth }).png().toBuffer();
+  const { height: logoHeight } = await sharp(logo).metadata();
+  const margin = Math.round(width * 0.02);
+  return base
+    .composite([{ input: logo, left: width - logoWidth - margin, top: height - logoHeight - margin }])
+    .jpeg({ quality: 92 })
+    .toBuffer();
 }

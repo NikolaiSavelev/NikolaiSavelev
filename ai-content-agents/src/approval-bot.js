@@ -3,7 +3,7 @@
 // Работает через long polling того же бота, что публикует в канал (TELEGRAM_BOT_TOKEN).
 // Только для чатов из OWNER_CHAT_ID (через запятую). Без OWNER_CHAT_ID бот не запускается.
 
-import { getPending, listPending, updatePending, saveMedia } from './store.js';
+import { getPending, listPending, updatePending, saveMedia, readMedia } from './store.js';
 
 const BRAND_LABEL = { system_marketing: 'Системный маркетинг (Telegram)', santehsila: 'САНТЕХСИЛА (MAX)' };
 const STATUS_LABEL = {
@@ -31,6 +31,17 @@ async function tg(method, body) {
   return json.result;
 }
 
+async function tgPhoto(chatId, buffer, caption = '') {
+  const form = new FormData();
+  form.append('chat_id', String(chatId));
+  form.append('photo', new Blob([buffer], { type: 'image/jpeg' }), 'draft.jpg');
+  if (caption) form.append('caption', caption);
+  const res = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendPhoto`, { method: 'POST', body: form });
+  const json = await res.json();
+  if (!json.ok) throw new Error(`Telegram sendPhoto: ${json.description}`);
+  return json.result;
+}
+
 function esc(text = '') {
   return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -47,9 +58,9 @@ function draftCard(item) {
   }
   const tail = [];
   if (item.ownerDataRequired) tail.push(`📎 <b>Что нужно от вас:</b> ${esc(item.ownerDataRequest)}\nОтветьте на это сообщение текстом с фактами — пост перепишется с ними.`);
-  if (item.realMediaRequired) tail.push(`📷 <b>Нужно реальное фото:</b> ${esc(item.realMediaBrief || item.mediaType)}\nОтветьте на это сообщение фотографией.`);
-  if (item.ownerMediaFile) tail.push('📷 Ваше фото прикреплено.');
-  else if (item.visualPrompt) tail.push('🖼 Картинка будет нарисована при публикации.');
+  if (item.ownerMediaFile) tail.push('📷 В пост пойдёт ваше фото.');
+  else if (item.realMediaRequired) tail.push(`📷 <b>Лучше реальное фото:</b> ${esc(item.realMediaBrief || item.mediaType)}\nОтветьте на это сообщение фотографией — оно заменит картинку. Иначе пойдёт картинка выше.`);
+  if (item.aiImageError) tail.push(`🖼 Картинку нарисовать не удалось: ${esc(item.aiImageError).slice(0, 200)}`);
   if (item.status !== 'APPROVED' && item.editorNotes) tail.push(`Редактор: ${esc(item.editorNotes).slice(0, 600)}`);
 
   const body = esc(item.post || item.text || '');
@@ -60,20 +71,22 @@ function draftCard(item) {
 function draftKeyboard(item) {
   const rows = [];
   if (item.status === 'APPROVED') {
-    const publish = [{ text: '✅ Опубликовать', callback_data: `pub:${item.id}` }];
-    if (item.visualPrompt || item.realMediaRequired) publish.push({ text: '📝 Без картинки', callback_data: `txt:${item.id}` });
-    rows.push(publish);
+    rows.push([
+      { text: '✅ Опубликовать', callback_data: `pub:${item.id}` },
+      { text: '📝 Без картинки', callback_data: `txt:${item.id}` }
+    ]);
   } else if (item.status === 'REWRITE') {
     rows.push([{ text: '✅ Всё равно одобрить', callback_data: `force:${item.id}` }]);
   }
+  if (item.visualPrompt) rows.push([{ text: '🖼 Другая картинка', callback_data: `img:${item.id}` }]);
   rows.push([
-    { text: '🔄 Другой вариант', callback_data: `regen:${item.id}` },
+    { text: '🔄 Другой текст', callback_data: `regen:${item.id}` },
     { text: '❌ Отклонить', callback_data: `rej:${item.id}` }
   ]);
   return { inline_keyboard: rows };
 }
 
-export function createApprovalBot({ runBrand, publishItem, maxEnabled }) {
+export function createApprovalBot({ runBrand, publishItem, maxEnabled, regenerateImage }) {
   const enabled = Boolean(process.env.TELEGRAM_BOT_TOKEN && ownerIds().length);
   const isOwner = id => ownerIds().includes(String(id));
   const topics = new Map();
@@ -83,6 +96,8 @@ export function createApprovalBot({ runBrand, publishItem, maxEnabled }) {
     if (!enabled || !item || item.status === 'SKIP') return;
     for (const chatId of ownerIds()) {
       try {
+        const image = (await readMedia(item.ownerMediaFile)) || (await readMedia(item.aiImageFile));
+        if (image) await tgPhoto(chatId, image).catch(error => console.error('OWNER_PHOTO_FAILED', error.message));
         const msg = await tg('sendMessage', {
           chat_id: chatId,
           text: draftCard(item),
@@ -148,6 +163,12 @@ export function createApprovalBot({ runBrand, publishItem, maxEnabled }) {
         current = await publishItem(current, { textOnly: action === 'txt' });
         const where = (current.published || []).map(p => p.platform).join(', ');
         await say(chatId, `✅ Опубликовано: ${where}`);
+      });
+    } else if (action === 'img') {
+      await removeButtons();
+      background(chatId, '🖼 Рисую другую картинку…', async () => {
+        const updated = await regenerateImage(item.id);
+        await notifyOwner(updated);
       });
     } else if (action === 'rej') {
       await removeButtons();

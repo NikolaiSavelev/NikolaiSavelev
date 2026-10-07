@@ -76,8 +76,10 @@ humanNaturalness, hookStrength, usefulness, specificity (нишевая конк
 - AI_IMAGE / VISUAL_METAPHOR / SCHEME / INFOGRAPHIC → заполни visualConcept, visualPrompt (английский: subject, exact moment, environment, camera/lens feeling, composition, lighting, textures, emotional tone, realistic imperfections, aspect ratio 4:5), negativePrompt, altText;
 - CAROUSEL → carouselBrief (4–6 карточек 4:5, сильная первая карточка, 2–6 слов на карточке) + visualPrompt для обложки;
 - MINI_REEL / MOTION_GRAPHICS / BACKSTAGE_VIDEO → motionBrief (6–15 сек.: 0–2 действие, 2–7 развитие, 7–12 payoff), центральная safe zone;
-- REAL_PHOTO / REAL_OBJECT_MACRO / BEFORE_AFTER / TALKING_HEAD / SCREENCAST / PHOTO_PLUS_TEXT → realMediaRequired=true и realMediaBrief: что именно снять владельцу (план, ракурс, свет, без персональных данных); visualPrompt пустой;
-- TEXT_ONLY → всё пустое.
+- REAL_PHOTO / REAL_OBJECT_MACRO / BEFORE_AFTER / TALKING_HEAD / SCREENCAST / PHOTO_PLUS_TEXT → realMediaRequired=true и realMediaBrief: что именно снять владельцу (план, ракурс, свет, без персональных данных);
+- TEXT_ONLY → visualPrompt всё равно нужен.
+
+ВАЖНО: visualPrompt заполняй ВСЕГДА — у каждого поста в канале должна быть картинка. Для реальных форматов это запасной кадр на случай, если владелец не пришлёт фото: схема, cutaway, иллюстрация или editorial-сцена, которая явно не выдаёт себя за фото конкретного объекта компании. Соблюдай стиль бренда из BRAND VISUAL STYLE.
 
 Никогда не генерируй AI-картинку, которая выдаёт себя за фото реального объекта компании.
 
