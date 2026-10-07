@@ -76,6 +76,8 @@ function draftKeyboard(item) {
 export function createApprovalBot({ runBrand, publishItem, maxEnabled }) {
   const enabled = Boolean(process.env.TELEGRAM_BOT_TOKEN && ownerIds().length);
   const isOwner = id => ownerIds().includes(String(id));
+  const topics = new Map();
+  let topicSeq = 0;
 
   async function notifyOwner(item) {
     if (!enabled || !item || item.status === 'SKIP') return;
@@ -126,8 +128,14 @@ export function createApprovalBot({ runBrand, publishItem, maxEnabled }) {
   async function onCallback(cb) {
     const chatId = cb.message?.chat?.id;
     if (!isOwner(cb.from?.id)) return tg('answerCallbackQuery', { callback_query_id: cb.id, text: 'Нет доступа' });
-    const [action, id] = String(cb.data || '').split(':');
+    const [action, id, brandArg] = String(cb.data || '').split(':');
     await tg('answerCallbackQuery', { callback_query_id: cb.id }).catch(() => {});
+    if (action === 'topic') {
+      const topic = topics.get(id);
+      if (!topic) return say(chatId, 'Тема устарела — напишите её ещё раз.');
+      await tg('editMessageReplyMarkup', { chat_id: chatId, message_id: cb.message.message_id, reply_markup: { inline_keyboard: [] } }).catch(() => {});
+      return generate(chatId, brandArg, { topic });
+    }
     const item = await getPending(id);
     if (!item) return say(chatId, 'Черновик не найден (возможно, очередь была очищена).');
     if (item.published?.length) return say(chatId, 'Этот пост уже опубликован.');
@@ -187,12 +195,29 @@ export function createApprovalBot({ runBrand, publishItem, maxEnabled }) {
         '/santeh — новый черновик для САНТЕХСИЛЫ',
         '/queue — черновики, ждущие решения',
         '',
+        'Или просто напишите тему поста — бот спросит канал.',
         'Черновики по расписанию приходят сами (Вт/Чт/Сб утром).',
         'Чтобы дать реальные факты или фото — ответьте на сообщение с черновиком.'
       ].join('\n'));
     }
     if (/^\/marketing/.test(text)) return generate(chatId, 'system_marketing');
     if (/^\/santeh/.test(text)) return generate(chatId, 'santehsila');
+    if (text && !text.startsWith('/')) {
+      // Свободный текст = тема поста от владельца
+      const key = String(++topicSeq);
+      topics.set(key, text);
+      if (topics.size > 50) topics.delete(topics.keys().next().value);
+      return tg('sendMessage', {
+        chat_id: chatId,
+        text: `Тема: «${text.slice(0, 200)}»\nДля какого канала написать пост?`,
+        reply_markup: {
+          inline_keyboard: [[
+            { text: 'Системный маркетинг', callback_data: `topic:${key}:system_marketing` },
+            { text: 'САНТЕХСИЛА', callback_data: `topic:${key}:santehsila` }
+          ]]
+        }
+      });
+    }
     if (/^\/queue/.test(text)) {
       const waiting = (await listPending()).filter(x => !x.published?.length && ['APPROVED', 'REWRITE', 'OWNER_DATA_REQUIRED'].includes(x.status) && !x.rejectedAt).slice(0, 5);
       if (!waiting.length) return say(chatId, 'Очередь пуста.');

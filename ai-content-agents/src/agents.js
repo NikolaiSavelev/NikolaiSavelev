@@ -278,7 +278,9 @@ export async function generatePost(brand, options = {}) {
   const editorModel = process.env.OPENAI_EDITOR_MODEL || process.env.OPENAI_TEXT_MODEL || 'gpt-6-astra';
   const strategistModel = process.env.OPENAI_STRATEGIST_MODEL || editorModel;
 
-  const slot = pickSlot(ctx.plan, ctx.memory, options.slotId);
+  const slot = options.topic
+    ? { id: '', topic: options.topic, source: 'owner', note: 'Тему задал владелец канала: сохрани её, выбери живой угол, форму и медиа сам. Не возвращай SKIP.' }
+    : pickSlot(ctx.plan, ctx.memory, options.slotId);
   const memory = compactMemory(ctx.memory);
   const ownerData = options.ownerData ? String(options.ownerData) : '';
   const kb = knowledgeBlock(ctx);
