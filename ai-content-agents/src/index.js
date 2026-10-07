@@ -237,7 +237,7 @@ app.get('/plan/:brand', requireAdmin, async (req, res) => {
     const plan = parsePlan(await fs.readFile(cfg.planFile, 'utf8'));
     const memory = await listMemory(req.params.brand, 500);
     const used = new Map(memory.filter(m => m.planSlotId).map(m => [m.planSlotId, m.status]));
-    res.json(plan.map(slot => ({ ...slot, usedStatus: used.get(slot.id) || null }));
+    res.json(plan.map(slot => ({ ...slot, usedStatus: used.get(slot.id) || null })));
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
