@@ -16,6 +16,7 @@ app.use(express.json({ limit: '1mb' }));
 const TZ = process.env.TZ || 'Europe/Moscow';
 const approvalMode = () => String(process.env.APPROVAL_MODE || 'true').toLowerCase() !== 'false';
 const maxEnabled = () => String(process.env.ENABLE_MAX || 'false').toLowerCase() === 'true';
+const santehBotConfigured = () => Boolean(process.env.TELEGRAM_SANTEH_BOT_TOKEN);
 
 function requireAdmin(req, res, next) {
   const key = process.env.ADMIN_KEY;
@@ -29,14 +30,13 @@ async function publishItem(item, options = {}) {
   if (item.status !== 'APPROVED') throw new Error(`Item status is ${item.status}, not APPROVED`);
   if (item.published?.length) return item;
 
-  // Картинка: реальное фото владельца > картинка из черновика > нарисовать сейчас. textOnly — без картинки.
   let imageBuffer = null;
   if (!options.textOnly) {
     imageBuffer = (await readMedia(item.ownerMediaFile)) || (await readMedia(item.aiImageFile));
     if (!imageBuffer && item.visualPrompt) imageBuffer = await generateImage(item.visualPrompt, item.negativePrompt, item.brand);
   }
-  const published = [];
 
+  const published = [];
   for (const platform of item.platforms || []) {
     if (platform === 'telegram') {
       const result = await publishTelegram({ text: item.text, imageBuffer });
@@ -62,10 +62,6 @@ async function publishItem(item, options = {}) {
 }
 
 async function runBrand(brand, options = {}) {
-  if (brand === 'santehsila' && !maxEnabled()) {
-    throw new Error('Santehsila/MAX agent is disabled while Telegram-only mode is active');
-  }
-
   const item = await generatePost(brand, options);
 
   if (item.status === 'SKIP') {
@@ -78,6 +74,7 @@ async function runBrand(brand, options = {}) {
   await addMemory(memoryEntry(item));
 
   if (!approvalMode() && item.status === 'APPROVED') {
+    if (brand === 'santehsila' && !maxEnabled()) return item;
     return publishItem({ ...item, approvedAt: new Date().toISOString() });
   }
 
@@ -85,12 +82,15 @@ async function runBrand(brand, options = {}) {
   return item;
 }
 
-// Картинка рисуется сразу, чтобы владелец видел её в черновике
-async function attachDraftImage(item) {
+async function attachDraftImage(item, variation = false) {
   if (!item.visualPrompt || item.status === 'SKIP') return item;
   try {
-    const image = await generateImage(item.visualPrompt, item.negativePrompt, item.brand);
-    item.aiImageFile = await saveMedia(`${item.id}-ai`, image);
+    const variationInstruction = variation
+      ? `\n\nCREATIVE VARIATION REQUEST: Create a substantially different concept from the previous attempt. Change at least TWO of these: composition, visual metaphor, hero subject, moment in the story. Do not merely change color, crop, camera angle, or background. Preserve the post's core idea and premium brand quality.`
+      : '';
+    const image = await generateImage(`${item.visualPrompt}${variationInstruction}`, item.negativePrompt, item.brand);
+    item.aiImageFile = await saveMedia(`${item.id}-ai-${Date.now()}`, image);
+    item.aiImageError = null;
   } catch (error) {
     console.error('DRAFT_IMAGE_FAILED', error.message);
     item.aiImageError = error.message;
@@ -101,8 +101,12 @@ async function attachDraftImage(item) {
 async function regenerateImage(id) {
   const item = await getPending(id);
   if (!item) throw new Error('Not found');
-  const updated = await attachDraftImage({ ...item });
-  return updatePending(id, { aiImageFile: updated.aiImageFile, aiImageError: updated.aiImageError || null });
+  const updated = await attachDraftImage({ ...item }, true);
+  return updatePending(id, {
+    aiImageFile: updated.aiImageFile,
+    aiImageError: updated.aiImageError || null,
+    imageRegeneratedAt: new Date().toISOString()
+  });
 }
 
 const approvalBot = createApprovalBot({ runBrand, publishItem, maxEnabled, regenerateImage });
@@ -113,12 +117,13 @@ app.get('/health', (_req, res) => {
     approvalMode: approvalMode(),
     approvalBot: approvalBot.enabled,
     approvalBotInfo: approvalBot.info,
-    telegramEnabled: true,
+    telegramMarketingBotConfigured: Boolean(process.env.TELEGRAM_MARKETING_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN),
+    telegramSantehBotConfigured: santehBotConfigured(),
     maxEnabled: maxEnabled(),
     maxTokenConfigured: Boolean(process.env.MAX_ACCESS_TOKEN),
     maxChannelConfigured: Boolean(process.env.MAX_CHANNEL_ID),
     timezone: TZ,
-    editorialSystem: 'v2',
+    editorialSystem: 'v3-separate-bots',
     schedule: 'Tue/Thu/Sat',
     now: new Date().toISOString()
   });
@@ -146,9 +151,6 @@ app.get('/max/discover', requireAdmin, async (_req, res) => {
 
 app.post('/research/:brand', requireAdmin, async (req, res) => {
   try {
-    if (req.params.brand === 'santehsila' && !maxEnabled()) {
-      return res.status(409).json({ error: 'MAX/Santehsila research is disabled in Telegram-only mode' });
-    }
     res.json(await refreshResearch(req.params.brand));
   } catch (error) {
     console.error(error);
@@ -171,6 +173,9 @@ app.post('/approve/:id', requireAdmin, async (req, res) => {
     const item = await getPending(req.params.id);
     if (!item) return res.status(404).json({ error: 'Not found' });
     if (item.status !== 'APPROVED') return res.status(409).json({ error: `Cannot publish item with status ${item.status}` });
+    if (item.brand === 'santehsila' && !maxEnabled()) {
+      return res.status(409).json({ error: 'MAX publishing is disabled. Draft remains available for review.' });
+    }
     const marked = await updatePending(item.id, { approvedAt: new Date().toISOString() });
     res.json(await publishItem(marked, { textOnly: Boolean(req.body?.textOnly) }));
   } catch (error) {
@@ -189,7 +194,6 @@ app.post('/reject/:id', requireAdmin, async (req, res) => {
   res.json(item);
 });
 
-// OWNER_DATA_REQUIRED: владелец присылает реальные данные — пост пишется заново с ними
 app.post('/owner-data/:id', requireAdmin, async (req, res) => {
   try {
     const item = await getPending(req.params.id);
@@ -207,7 +211,6 @@ app.post('/owner-data/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// Реальное фото владельца к посту: {"imageUrl":"https://..."} или {"imageBase64":"..."}
 app.post('/media/:id', requireAdmin, express.json({ limit: '15mb' }), async (req, res) => {
   try {
     const item = await getPending(req.params.id);
@@ -244,7 +247,6 @@ app.get('/memory/:brand', requireAdmin, async (req, res) => {
   res.json(await listMemory(req.params.brand, 30));
 });
 
-// Performance analyst: метрики поста после публикации
 app.post('/performance/:id', requireAdmin, async (req, res) => {
   const item = await getPending(req.params.id);
   if (!item) return res.status(404).json({ error: 'Not found' });
@@ -290,12 +292,13 @@ app.get('/performance-summary', requireAdmin, async (_req, res) => {
   });
 });
 
-// 3 публикации в неделю на бренд: Вт / Чт / Сб. В approval-mode это кандидаты в очередь, не публикации.
+// 3 публикации/черновика в неделю. В approval-mode это только очередь на согласование.
 cron.schedule('30 7 * * 0', () => refreshResearch('system_marketing').catch(console.error), { timezone: TZ });
 cron.schedule('20 9 * * 2,4,6', () => runBrand('system_marketing').catch(console.error), { timezone: TZ });
 
-if (maxEnabled()) {
-  cron.schedule('50 7 * * 0', () => refreshResearch('santehsila').catch(console.error), { timezone: TZ });
+// САНТЕХСИЛА может готовить контент через отдельный Telegram-бот даже пока MAX не включён.
+cron.schedule('50 7 * * 0', () => refreshResearch('santehsila').catch(console.error), { timezone: TZ });
+if (santehBotConfigured() || maxEnabled()) {
   cron.schedule('10 10 * * 2,4,6', () => runBrand('santehsila').catch(console.error), { timezone: TZ });
 }
 
@@ -324,7 +327,7 @@ app.listen(port, async () => {
 
   if (String(process.env.TELEGRAM_TEST_ON_START || 'false').toLowerCase() === 'true') {
     try {
-      const text = 'Тест AI-контент агента ✅\n\nСвязка с Telegram работает. Михалыч на связи — следующий шаг: живые полезные посты, визуалы и контент по расписанию.';
+      const text = 'Тест AI-контент агента ✅\n\nСвязка с Telegram работает.';
       const result = await publishTelegram({ text, imageBuffer: null });
       console.log(`TELEGRAM_TEST_SENT ${JSON.stringify(result)}`);
     } catch (error) {
