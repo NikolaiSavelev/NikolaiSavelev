@@ -123,8 +123,8 @@ app.get('/health', (_req, res) => {
     maxTokenConfigured: Boolean(process.env.MAX_ACCESS_TOKEN),
     maxChannelConfigured: Boolean(process.env.MAX_CHANNEL_ID),
     timezone: TZ,
-    editorialSystem: 'v3-separate-bots',
-    schedule: 'Tue/Thu/Sat: 2 system_marketing drafts + SantehSila',
+    editorialSystem: 'v4-universal-cross-business',
+    schedule: 'Tue/Thu/Sat: 1 universal system_marketing draft + SantehSila',
     now: new Date().toISOString()
   });
 });
@@ -237,7 +237,7 @@ app.get('/plan/:brand', requireAdmin, async (req, res) => {
     const plan = parsePlan(await fs.readFile(cfg.planFile, 'utf8'));
     const memory = await listMemory(req.params.brand, 500);
     const used = new Map(memory.filter(m => m.planSlotId).map(m => [m.planSlotId, m.status]));
-    res.json(plan.map(slot => ({ ...slot, usedStatus: used.get(slot.id) || null })));
+    res.json(plan.map(slot => ({ ...slot, usedStatus: used.get(slot.id) || null }));
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -292,14 +292,12 @@ app.get('/performance-summary', requireAdmin, async (_req, res) => {
   });
 });
 
-// Beauty + Cosmetics Retail: по 3 редакционных запуска в неделю на КАЖДЫЙ трек.
-// Порядок в плане идёт парами beauty/retail, поэтому два последовательных запуска берут два разных слота одного контентного дня.
-// В approval-mode это только черновики на согласование — автоматической публикации нет.
+// Универсальный «Системный маркетинг»: 3 черновика в неделю для владельцев разных бизнесов.
+// В approval-mode это только очередь на согласование — автоматической публикации нет.
 cron.schedule('30 7 * * 0', () => refreshResearch('system_marketing').catch(console.error), { timezone: TZ });
 cron.schedule('20 9 * * 2,4,6', () => runBrand('system_marketing').catch(console.error), { timezone: TZ });
-cron.schedule('40 9 * * 2,4,6', () => runBrand('system_marketing').catch(console.error), { timezone: TZ });
 
-// САНТЕХСИЛА продолжает жить отдельным направлением в MAX.
+// САНТЕХСИЛА остаётся отдельным инженерным направлением в MAX.
 cron.schedule('50 7 * * 0', () => refreshResearch('santehsila').catch(console.error), { timezone: TZ });
 if (santehBotConfigured() || maxEnabled()) {
   cron.schedule('10 10 * * 2,4,6', () => runBrand('santehsila').catch(console.error), { timezone: TZ });
