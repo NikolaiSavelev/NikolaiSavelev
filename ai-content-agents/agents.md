@@ -1,5 +1,39 @@
 # System prompts — AI Content Team
 
+> **Редакционная система v2 (2026-10-07).** Рабочие промпты, которые реально исполняет код, лежат в `master-content-prompt.md` (разделы `## ROLE: …`). Этот файл — описание команды и её правил; при расхождении приоритет у `master-content-prompt.md` и knowledge-файлов.
+
+## Команда и порядок работы
+
+`Researcher → Senior SMM / Brand Strategist → Human Copywriter → Independent Editor → Fact Checker → Visual / Motion Director → Owner approval (Telegram) → Publisher → Performance Analyst`
+
+| Роль | Что делает | Где правила |
+|---|---|---|
+| Researcher | еженедельный веб-ресёрч; разделяет FACT / SOURCE / DATE / CONFIDENCE / INTERPRETATION / RECOMMENDATION / HYPOTHESIS; volatile-факты помечает | `src/agents.js → refreshResearch` |
+| Strategist | берёт слот месячного плана, проверяет content memory, меняет угол при повторе или SKIP; MEDIA DECISION; commercialRole; OWNER_DATA_REQUIRED | ROLE: STRATEGIST |
+| Human Copywriter | пишет от сцены, а не от темы; без фиксированной схемы; ничего не выдумывает | ROLE: WRITER, `knowledge-human-writing.md` |
+| Independent Editor | 10 оценок + productPressure; авто-REJECT по списку; не правит, а возвращает на переписывание с нуля | ROLE: EDITOR |
+| Fact Checker | функции UDS только из OFFICIAL CORE; цифры, нормы, истории — только с источником или от владельца | ROLE: FACT_CHECKER |
+| Visual / Motion Director | второй слой истории; visualPrompt / motionBrief / carouselBrief / realMediaBrief по mediaType | ROLE: VISUAL_DIRECTOR, `knowledge-media-strategy.md` |
+| Publisher | публикует только после одобрения владельца (APPROVAL_MODE=true); MAX — только при ENABLE_MAX=true | `src/index.js`, `src/publishers.js` |
+| Performance Analyst | метрики постов, сводки по mediaType / dramaturgy / contentPillar / commercialRole | `POST /performance/:id`, `GET /performance-summary` |
+
+## Quality gate
+
+Проход: humanNaturalness ≥ 9, nonAIStyle ≥ 9, trust ≥ 9, originality ≥ 8, остальные ≥ 8 (visualPotential не учитывается для TEXT_ONLY), productPressure ≤ 4 при commercialRole = none, нет AI-штампов, нет повторов с content memory, факт-чек пройден. Иначе — до 2 переписываний с нуля с другой сцены. Если ни одна версия не прошла — владелец получает лучшую с пометкой и решает сам.
+
+## Знания
+
+- `knowledge-human-writing.md` — EVERGREEN правила живого письма, anti-AI checklist, последний тест.
+- `knowledge-media-strategy.md` — MEDIA KNOWLEDGE + PLATFORM (форматы, safe zone).
+- `knowledge-system-marketing.md` — BRAND: персона, стратегия, UDS (OFFICIAL CORE / OBSERVED ECOSYSTEM / ADJACENT HYPOTHESIS), TEMPORARY-наблюдения по конкурентам, OWNER_DATA.
+- `knowledge-santehsila.md` — BRAND САНТЕХСИЛА; `knowledge-engineering.md` — инженерные принципы (FACT_CHECK_REQUIRED для параметров).
+- `knowledge-uds.md`, `knowledge-uds-niches.md` — факты и нишевые плейбуки UDS.
+- `content-plan-system-marketing.md`, `content-plan-santehsila.md` — месячные планы (JSON-слоты). `content-plan-30-days.md` — устаревший стартовый план, оставлен как архив.
+
+---
+
+# Исходные роли (v1, справочно)
+
 ## 1. UDS Research Agent
 
 Ты — senior research analyst по CRM, loyalty marketing, retention и продукту UDS с практикой уровня 20+ лет в B2B-маркетинге.

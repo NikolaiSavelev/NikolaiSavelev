@@ -60,6 +60,66 @@ export async function addHistory(item) {
   return item;
 }
 
+// ---------- Content memory: защита от повторов ----------
+// Хранит минимум: topic, opening, dramaturgy, mediaType, niche, ctaType, commercialRole, mainThought, phrases.
+
+export async function listMemory(brand, limit = 30) {
+  const items = await readJson('content-memory.json', []);
+  return items.filter(x => !brand || x.brand === brand).slice(0, limit);
+}
+
+export async function addMemory(entry) {
+  const items = await readJson('content-memory.json', []);
+  items.unshift(entry);
+  await writeJson('content-memory.json', items.slice(0, 500));
+  return entry;
+}
+
+export async function updateMemory(itemId, patch) {
+  const items = await readJson('content-memory.json', []);
+  const idx = items.findIndex(x => x.itemId === itemId);
+  if (idx === -1) return null;
+  items[idx] = { ...items[idx], ...patch };
+  await writeJson('content-memory.json', items);
+  return items[idx];
+}
+
+// ---------- Performance analyst ----------
+
+export async function addPerformance(record) {
+  const items = await readJson('performance.json', []);
+  const idx = items.findIndex(x => x.itemId === record.itemId);
+  if (idx === -1) items.unshift(record);
+  else items[idx] = { ...items[idx], ...record, updatedAt: new Date().toISOString() };
+  await writeJson('performance.json', items.slice(0, 2000));
+  return record;
+}
+
+export async function listPerformance() {
+  return readJson('performance.json', []);
+}
+
+// ---------- Реальные медиа от владельца ----------
+
+export async function saveMedia(itemId, buffer, ext = 'jpg') {
+  await ensure();
+  const dir = path.join(DATA_DIR, 'media');
+  await fs.mkdir(dir, { recursive: true });
+  const safeId = String(itemId).replace(/[^a-zA-Z0-9-]/g, '');
+  const file = path.join(dir, `${safeId}.${ext}`);
+  await fs.writeFile(file, buffer);
+  return file;
+}
+
+export async function readMedia(file) {
+  if (!file) return null;
+  try {
+    return await fs.readFile(file);
+  } catch {
+    return null;
+  }
+}
+
 export async function getResearch(brand) {
   const all = await readJson('research.json', {});
   return all[brand] || null;

@@ -2,7 +2,7 @@
 
 ## Поток
 
-`Scheduler -> Strategist -> Research context -> Copywriter -> Visual Director -> Fact/Brand Editor -> Pending Queue -> Approval -> Image generation -> Publisher -> Analytics log`
+`Cron (Вт/Чт/Сб) → Strategist (план + content memory + media decision) → Writer → Independent Editor → Fact Checker → (до 2 переписываний с нуля) → Visual Director → Pending Queue → Telegram approval → Image generation / owner photo → Publisher → Content memory → Performance`
 
 ## Режимы
 
@@ -42,11 +42,21 @@
 
 ## API сервиса
 
+Все, кроме `/health`, требуют `ADMIN_KEY` (заголовок `x-admin-key` или `Authorization: Bearer`).
+
 - `GET /health` — состояние.
 - `GET /pending` — очередь на согласование.
-- `POST /generate/:brand` — вручную создать новый пост-пакет.
-- `POST /approve/:id` — подтвердить и опубликовать.
+- `POST /generate/:brand` — вручную создать пост-пакет.
+- `POST /approve/:id` — подтвердить и опубликовать (`{"textOnly":true}` — без картинки).
 - `POST /reject/:id` — отклонить.
+- `POST /owner-data/:id` — `{"data":"..."}` реальные факты владельца → пост переписывается.
+- `POST /media/:id` — `{"imageUrl":"..."}` или `{"imageBase64":"..."}` реальное фото к посту.
+- `GET /plan/:brand` — месячный план и какие слоты уже использованы.
+- `GET /memory/:brand` — content memory.
+- `POST /performance/:id` — метрики поста (views, reach, reactions, comments, forwards, clicks, leads, subscriberDelta).
+- `GET /performance-summary` — сводка по mediaType / dramaturgy / contentPillar / commercialRole.
+
+Основной интерфейс владельца — Telegram-бот (`OWNER_CHAT_ID`), см. README.
 
 ## Переменные среды
 
@@ -68,12 +78,13 @@ MAX_CHANNEL_ID=
 TZ=Europe/Moscow
 ```
 
-## Расписание MVP
+## Расписание
 
-- Системный маркетинг: Пн–Пт 09:20 — генерация одного кандидата.
-- СантехСила: Пн–Пт 10:10 — генерация одного кандидата.
+- Системный маркетинг: Вт / Чт / Сб 09:20 — один кандидат.
+- СантехСила: Вт / Чт / Сб 10:10 — один кандидат (только при ENABLE_MAX=true).
+- Research: воскресенье 07:30 / 07:50.
 
-Это не означает 10 автоматических публикаций в неделю: в approval-mode это очередь. Стратег может поставить `SKIP`, если тема повторяется или нет достаточно сильного материала.
+В approval-mode это очередь черновиков, которые приходят владельцу в Telegram, а не публикации.
 
 ## Telegram
 
