@@ -1,0 +1,835 @@
+<title>Дела Савельевых</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Unbounded:wght@500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one column on the phone; capture card on top, tabs, then per-person columns that wrap. */
+:root {
+  --bg: #EEF2F6;
+  --surface: #FFFFFF;
+  --sunk: #F6F8FB;
+  --ink: #14202C;
+  --muted: #5A6878;
+  --line: #D9E0E8;
+  --accent: #2554CF;
+  --accent-ink: #FFFFFF;
+  --warn: #B4500A;
+  --ok: #1B7F4B;
+  --c1: #0E8574;
+  --c2: #B3337A;
+  --c3: #6B4FD8;
+  --c4: #A86A00;
+  --both: #2554CF;
+  --shadow: 0 1px 2px rgba(20, 32, 44, .06), 0 4px 16px rgba(20, 32, 44, .05);
+  --f-display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  --f-body: "Golos Text", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D131A; --surface: #151E28; --sunk: #111922; --ink: #E5EBF1; --muted: #94A2B2;
+    --line: #253140; --accent: #7FA1FF; --accent-ink: #0D131A; --warn: #F0A24B; --ok: #4CC98A;
+    --c1: #3CC6AF; --c2: #F07BB9; --c3: #A996FF; --c4: #E8B04A; --both: #7FA1FF;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D131A; --surface: #151E28; --sunk: #111922; --ink: #E5EBF1; --muted: #94A2B2;
+  --line: #253140; --accent: #7FA1FF; --accent-ink: #0D131A; --warn: #F0A24B; --ok: #4CC98A;
+  --c1: #3CC6AF; --c2: #F07BB9; --c3: #A996FF; --c4: #E8B04A; --both: #7FA1FF;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.45; }
+.wrap {
+  max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 96px;
+  display: flex; flex-direction: column; gap: 18px;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Header */
+.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.brand h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(22px, 4.6vw, 30px); letter-spacing: -.01em; margin: 0; text-wrap: balance; }
+.brand p { margin: 2px 0 0; color: var(--muted); }
+.whobox { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.whobox .q { color: var(--muted); }
+
+/* Capture */
+.capture { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.cap-label { font-weight: 600; font-size: 16px; }
+.capture textarea {
+  width: 100%; min-height: 84px; resize: vertical; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--sunk); font-size: 16px; line-height: 1.5;
+}
+.capture textarea:focus { border-color: var(--accent); outline: none; }
+.hint { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.hint svg { flex: none; color: var(--accent); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.row .sp { flex: 1 1 auto; }
+.status { font-size: 14px; color: var(--muted); min-height: 1em; }
+.status.err { color: var(--warn); }
+.status:empty { display: none; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px solid var(--line); background: var(--surface); border-radius: 10px;
+  padding: 9px 14px; font-weight: 500; cursor: pointer; min-height: 40px;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--muted); }
+.btn.danger { color: var(--warn); }
+.btn.small { min-height: 32px; padding: 5px 10px; font-size: 13px; }
+.btn:disabled { opacity: .55; cursor: default; }
+.sel, .inp {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 10px; min-height: 40px; max-width: 100%;
+}
+.inp { min-width: 0; }
+
+/* Preview of parsed items */
+.preview { display: flex; flex-direction: column; gap: 8px; border-top: 1px dashed var(--line); padding-top: 12px; }
+.preview h3 { margin: 0; font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.pv-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: start; padding: 10px; border-radius: 12px; background: var(--sunk); border: 1px solid var(--line); }
+.pv-item .inp.title { width: 100%; font-weight: 500; }
+.pv-fields { grid-column: 2 / 3; display: flex; flex-wrap: wrap; gap: 6px; }
+.pv-fields .sel, .pv-fields .inp { min-height: 34px; padding: 5px 8px; font-size: 14px; }
+.kind-pill { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 4px 7px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); cursor: pointer; margin-top: 8px; }
+.kind-pill.goal { color: var(--accent); border-color: var(--accent); }
+
+/* Tabs + filters */
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px; overflow-x: auto; max-width: 100%; }
+.tab { border: 0; background: transparent; padding: 8px 12px; border-radius: 9px; cursor: pointer; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.tab .n { font-family: var(--f-mono); font-size: 12px; margin-left: 4px; opacity: .75; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px 5px 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; }
+.chip[aria-pressed="true"] { border-color: var(--pc, var(--ink)); box-shadow: inset 0 0 0 1px var(--pc, var(--ink)); font-weight: 600; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pc, var(--muted)); flex: none; }
+
+/* Columns */
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; align-items: start; }
+.col { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; min-width: 0; }
+.col-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 14px 16px 10px; border-top: 4px solid var(--pc); }
+.col-head h2 { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 17px; }
+.col-head .meta { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.progress { height: 4px; background: var(--sunk); margin: 0 16px 6px; border-radius: 2px; overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--pc); border-radius: 2px; transition: width .3s; }
+.list { list-style: none; margin: 0; padding: 0 8px 8px; display: flex; flex-direction: column; }
+.empty { color: var(--muted); padding: 10px 8px 14px; font-size: 14px; }
+.quick { display: flex; gap: 6px; padding: 0 12px 12px; }
+.quick .inp { flex: 1; min-height: 38px; background: var(--sunk); }
+
+/* Task row */
+.task { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 8px; border-radius: 10px; }
+.task:hover { background: var(--sunk); }
+.check {
+  width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--pc, var(--muted)); background: transparent;
+  cursor: pointer; display: grid; place-items: center; padding: 0; margin-top: 1px; color: var(--surface);
+}
+.check[aria-pressed="true"] { background: var(--pc, var(--muted)); }
+.check svg { opacity: 0; }
+.check[aria-pressed="true"] svg { opacity: 1; }
+.t-title { overflow-wrap: anywhere; }
+.task.done .t-title { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+.t-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 3px; font-size: 12px; color: var(--muted); }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border-radius: 6px; background: var(--sunk); border: 1px solid var(--line); }
+.tag.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.tag.late { color: var(--warn); border-color: currentColor; background: transparent; }
+.tag.who { border-color: var(--pc); color: var(--ink); }
+.tag.who .dot { width: 7px; height: 7px; }
+.t-act { display: flex; gap: 2px; opacity: .55; }
+.task:hover .t-act, .task:focus-within .t-act { opacity: 1; }
+@media (hover: none) { .t-act { opacity: .8; } }
+.icon-btn { width: 30px; height: 30px; border-radius: 8px; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; color: var(--muted); padding: 0; }
+.icon-btn:hover { background: var(--line); color: var(--ink); }
+
+/* Inline editor */
+.editor { padding: 10px; border-radius: 12px; background: var(--sunk); border: 1px solid var(--accent); display: flex; flex-direction: column; gap: 8px; margin: 4px 0; }
+.editor .inp.title { width: 100%; }
+.editor .row .sel, .editor .row .inp { min-height: 36px; padding: 6px 8px; font-size: 14px; }
+
+/* All-tasks groups */
+.groups { display: flex; flex-direction: column; gap: 14px; }
+.group { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 6px 0 4px; }
+.group > h3 { margin: 8px 16px 4px; font-size: 13px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 600; display: flex; gap: 8px; align-items: baseline; }
+.group > h3 .n { font-family: var(--f-mono); letter-spacing: 0; }
+.group.late > h3 { color: var(--warn); }
+details.group > summary { cursor: pointer; list-style: none; padding: 8px 16px; font-size: 13px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 600; }
+details.group > summary::-webkit-details-marker { display: none; }
+
+/* Goals */
+.goals { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; align-items: start; }
+.goal { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.goal.achieved { background: var(--sunk); }
+.goal h3 { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 17px; line-height: 1.3; overflow-wrap: anywhere; text-wrap: balance; }
+.goal .g-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: var(--muted); }
+.goal .bar2 { height: 8px; background: var(--sunk); border-radius: 4px; overflow: hidden; border: 1px solid var(--line); }
+.goal .bar2 i { display: block; height: 100%; background: var(--pc); }
+.goal .pct { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.goal .list { padding: 0; }
+.goal .quick { padding: 0; }
+.newgoal { background: var(--surface); border: 1px dashed var(--muted); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.newgoal h3 { margin: 0; font-size: 15px; }
+
+/* Family settings */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 14px; max-width: 640px; }
+.panel h2 { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 19px; }
+.panel p { margin: 0; color: var(--muted); max-width: 62ch; }
+.person-row { display: flex; align-items: center; gap: 10px; }
+.person-row .inp { flex: 1; }
+.person-row label.me { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); white-space: nowrap; }
+.note { font-size: 13px; color: var(--muted); border-left: 3px solid var(--line); padding-left: 10px; }
+
+.state { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 28px 20px; text-align: center; color: var(--muted); }
+.state strong { display: block; color: var(--ink); font-size: 16px; margin-bottom: 4px; }
+
+.ro-banner { background: var(--sunk); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; font-size: 14px; color: var(--muted); }
+
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%) translateY(20px);
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 14px;
+  opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; max-width: calc(100% - 32px); z-index: 20;
+}
+.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 520px) {
+  .bar { flex-direction: column; align-items: stretch; }
+  .capture { padding: 14px; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Дела Савельевых</h1>
+      <p id="todayLabel"></p>
+    </div>
+    <div class="whobox" id="whoBox"></div>
+  </header>
+
+  <section class="capture" id="capture" aria-labelledby="capLabel">
+    <label class="cap-label" id="capLabel" for="dictation">Надиктуйте или напишите</label>
+    <textarea id="dictation" rows="3" placeholder="Например: завтра в 10 записать сына к врачу, жене купить подарок маме до пятницы. Цель — пробежать полумарафон к маю."></textarea>
+    <div class="hint">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/></svg>
+      <span>На телефоне нажмите микрофон на клавиатуре и говорите. Можно сразу несколько дел подряд.</span>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="parseBtn" type="button">Разобрать на дела</button>
+      <button class="btn" id="plainBtn" type="button">Добавить как есть</button>
+      <span class="sp"></span>
+      <label class="sr" for="plainWho">Кому</label>
+      <select class="sel" id="plainWho"></select>
+      <label class="sr" for="plainDate">Когда</label>
+      <select class="sel" id="plainDate">
+        <option value="today">Сегодня</option>
+        <option value="tomorrow">Завтра</option>
+        <option value="none">Без даты</option>
+      </select>
+    </div>
+    <div class="status" id="capStatus" role="status"></div>
+    <div class="preview" id="preview" hidden></div>
+  </section>
+
+  <div class="bar">
+    <div class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-tab="today" id="tab-today">Сегодня<span class="n" id="n-today"></span></button>
+      <button class="tab" role="tab" data-tab="all" id="tab-all">Все дела<span class="n" id="n-all"></span></button>
+      <button class="tab" role="tab" data-tab="goals" id="tab-goals">Цели<span class="n" id="n-goals"></span></button>
+      <button class="tab" role="tab" data-tab="family" id="tab-family">Семья</button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <main id="view">
+    <div class="state"><strong>Загружаю общий список…</strong>Дела появятся здесь через пару секунд.</div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const ls = {
+    get(k) { try { return localStorage.getItem("dela:" + k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem("dela:" + k, v); } catch (e) {} },
+  };
+
+  // ---- dates ----
+  const pad = (n) => String(n).padStart(2, "0");
+  const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const today = () => iso(new Date());
+  const addDays = (s, n) => { const [y, m, d] = s.split("-").map(Number); return iso(new Date(y, m - 1, d + n)); };
+  const diff = (a, b) => Math.round((new Date(a + "T00:00") - new Date(b + "T00:00")) / 864e5);
+  const plural = (n, f) => { const a = Math.abs(n) % 100, b = a % 10; return a > 10 && a < 20 ? f[2] : b > 1 && b < 5 ? f[1] : b === 1 ? f[0] : f[2]; };
+  const fmt = (s, opts) => new Date(s + "T00:00").toLocaleDateString("ru-RU", opts || { weekday: "short", day: "numeric", month: "short" });
+  const rel = (s) => { const d = diff(s, today()); return d === 0 ? "Сегодня" : d === 1 ? "Завтра" : d === -1 ? "Вчера" : fmt(s); };
+  const isISO = (s) => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s);
+  const isTime = (s) => typeof s === "string" && /^\d{2}:\d{2}$/.test(s);
+  const dayOf = (ms) => (ms ? iso(new Date(ms)) : null);
+
+  const COLORS = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c4)"];
+  const ICON = {
+    check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    edit: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>',
+    later: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h12"/><path d="M13 6l6 6-6 6"/></svg>',
+    x: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  };
+
+  const S = {
+    db: null, user: null, uid: null, sample: null, canWrite: true,
+    family: null, people: [], tasks: [], goals: [], loaded: { family: false, tasks: false, goals: false },
+    me: null, tab: ls.get("tab") || "today", filter: ls.get("filter") || "all",
+    editing: null, confirm: null, preview: null, noDb: false,
+  };
+
+  // ---- people ----
+  const person = (id) => {
+    if (id === "both") return { id: "both", name: "Вместе", color: "var(--both)" };
+    const i = S.people.findIndex((p) => p.id === id);
+    if (i < 0) return { id, name: "—", color: "var(--muted)" };
+    return { ...S.people[i], name: S.people[i].name || "Без имени", color: COLORS[i % COLORS.length] };
+  };
+  const whoOptions = (sel) => [...S.people.map((p) => p.id), "both"]
+    .map((id) => `<option value="${esc(id)}"${id === sel ? " selected" : ""}>${esc(person(id).name)}</option>`).join("");
+  const goalOptions = (sel) => '<option value="">Без цели</option>' + S.goals.filter((g) => !g.done || g.id === sel)
+    .map((g) => `<option value="${esc(g.id)}"${g.id === sel ? " selected" : ""}>${esc(g.title)}</option>`).join("");
+  const matchesFilter = (who) => S.filter === "all" || who === S.filter || who === "both";
+  const defaultWho = () => S.me || (S.people[0] && S.people[0].id) || "both";
+
+  // ---- toast / status ----
+  let toastT;
+  function toast(msg) {
+    const t = $("#toast"); t.textContent = msg; t.classList.add("on");
+    clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600);
+  }
+  function status(msg, err) { const s = $("#capStatus"); s.textContent = msg || ""; s.classList.toggle("err", !!err); }
+
+  function writeErr(e) {
+    const code = e && e.code;
+    if (code === "invalid_argument") { S.canWrite = false; renderAll(); toast("Нет прав на изменение списка"); }
+    else if (code === "quota_exceeded") toast("Место в списке закончилось — удалите старые выполненные дела");
+    else if (code === "revoked") { S.canWrite = false; renderAll(); }
+    else toast("Не сохранилось. Проверьте связь и попробуйте ещё раз");
+  }
+  async function write(fn) {
+    if (!S.db) return;
+    try { await fn(S.db); } catch (e) { writeErr(e); throw e; }
+  }
+
+  // ---- data ops ----
+  const addTask = (t) => write((db) => db.collection("tasks").add({
+    title: t.title, who: t.who, date: t.date || null, time: t.time || null, goal: t.goal || null,
+    done: false, doneAt: null, by: S.me || null, createdAt: Date.now(),
+  }));
+  const patchTask = (id, p) => write((db) => db.doc("tasks/" + id).update(p));
+  const delTask = (id) => write((db) => db.doc("tasks/" + id).delete());
+  const addGoal = async (g) => {
+    let ref; await write(async (db) => { ref = await db.collection("goals").add({
+      title: g.title, who: g.who, deadline: g.deadline || null, done: false, doneAt: null, by: S.me || null, createdAt: Date.now(),
+    }); });
+    return ref && ref.id;
+  };
+  const patchGoal = (id, p) => write((db) => db.doc("goals/" + id).update(p));
+  const delGoal = (id) => write(async (db) => {
+    for (const t of S.tasks.filter((t) => t.goal === id)) await db.doc("tasks/" + t.id).update({ goal: null });
+    await db.doc("goals/" + id).delete();
+  });
+  const saveFamily = (people) => write((db) => db.doc("family/members").set({ people }));
+
+  // ---- who am I ----
+  function resolveMe() {
+    let me = null;
+    if (S.uid) { const p = S.people.find((p) => p.uid === S.uid); if (p) me = p.id; }
+    if (!me) { const v = ls.get("me"); if (v && S.people.some((p) => p.id === v)) me = v; }
+    S.me = me;
+  }
+  async function chooseMe(id) {
+    S.me = id; ls.set("me", id);
+    renderAll();
+    if (S.uid && S.canWrite) {
+      const people = S.people.map((p) => {
+        const q = { ...p };
+        if (q.id === id) q.uid = S.uid; else if (q.uid === S.uid) delete q.uid;
+        return q;
+      });
+      if (JSON.stringify(people) !== JSON.stringify(S.people)) { try { await saveFamily(people); } catch (e) {} }
+    }
+  }
+
+  // ---- header / chips / tabs ----
+  function renderHeader() {
+    $("#todayLabel").textContent = fmt(today(), { weekday: "long", day: "numeric", month: "long" });
+    const box = $("#whoBox");
+    if (!S.people.length) { box.innerHTML = ""; return; }
+    if (!S.me) {
+      box.innerHTML = '<span class="q">Кто вы?</span>' + S.people.map((p) =>
+        `<button class="chip" type="button" data-me="${esc(p.id)}" style="--pc:${person(p.id).color}"><span class="dot"></span>${esc(person(p.id).name)}</button>`).join("");
+    } else {
+      const p = person(S.me);
+      box.innerHTML = `<span class="q">Вы:</span><button class="chip" type="button" data-tabgo="family" aria-pressed="true" style="--pc:${p.color}"><span class="dot"></span>${esc(p.name)}</button>`;
+    }
+  }
+  function renderChips() {
+    const ids = ["all", ...S.people.map((p) => p.id)];
+    $("#chips").innerHTML = S.tab === "family" ? "" : ids.map((id) => {
+      const p = id === "all" ? { name: "Все", color: "var(--ink)" } : person(id);
+      return `<button class="chip" type="button" data-filter="${esc(id)}" aria-pressed="${S.filter === id}" style="--pc:${p.color}">${id === "all" ? "" : '<span class="dot"></span>'}${esc(p.name)}</button>`;
+    }).join("");
+  }
+  function openToday() {
+    const t = today();
+    return S.tasks.filter((x) => !x.done && x.date && x.date <= t && matchesFilter(x.who));
+  }
+  function renderTabs() {
+    for (const b of document.querySelectorAll(".tab")) b.setAttribute("aria-selected", String(b.dataset.tab === S.tab));
+    const t = openToday().length;
+    $("#n-today").textContent = t ? t : "";
+    const a = S.tasks.filter((x) => !x.done && matchesFilter(x.who)).length;
+    $("#n-all").textContent = a ? a : "";
+    const g = S.goals.filter((x) => !x.done && matchesFilter(x.who)).length;
+    $("#n-goals").textContent = g ? g : "";
+  }
+
+  // ---- task row ----
+  function taskRow(t, ctx) {
+    if (S.editing === t.id) return editorRow(t);
+    const p = person(t.who);
+    const tt = today();
+    const meta = [];
+    if (ctx.showWho) meta.push(`<span class="tag who" style="--pc:${p.color}"><span class="dot"></span>${esc(p.name)}</span>`);
+    if (t.date && !t.done && t.date < tt) {
+      const n = -diff(t.date, tt);
+      meta.push(`<span class="tag late">просрочено ${n} ${plural(n, ["день", "дня", "дней"])}</span>`);
+    } else if (t.date && ctx.showDate) meta.push(`<span class="tag mono">${esc(rel(t.date))}</span>`);
+    if (t.time) meta.push(`<span class="tag mono">${esc(t.time)}</span>`);
+    if (t.goal && !ctx.inGoal) { const g = S.goals.find((g) => g.id === t.goal); if (g) meta.push(`<span class="tag">Цель: ${esc(g.title)}</span>`); }
+    const ro = !S.canWrite;
+    const confirming = S.confirm === t.id;
+    const acts = ro ? "" : confirming
+      ? `<button class="btn small danger" type="button" data-act="del-yes" data-id="${t.id}">Удалить</button><button class="btn small ghost" type="button" data-act="del-no">Нет</button>`
+      : `${!t.done ? `<button class="icon-btn" type="button" title="Перенести на завтра" aria-label="Перенести на завтра" data-act="later" data-id="${t.id}">${ICON.later}</button>` : ""}
+         <button class="icon-btn" type="button" title="Изменить" aria-label="Изменить" data-act="edit" data-id="${t.id}">${ICON.edit}</button>
+         <button class="icon-btn" type="button" title="Удалить" aria-label="Удалить" data-act="del" data-id="${t.id}">${ICON.x}</button>`;
+    return `<li class="task${t.done ? " done" : ""}" style="--pc:${p.color}">
+      <button class="check" type="button" aria-pressed="${!!t.done}" aria-label="${t.done ? "Вернуть в работу" : "Отметить сделанным"}: ${esc(t.title)}" data-act="toggle" data-id="${t.id}"${ro ? " disabled" : ""}>${ICON.check}</button>
+      <div><div class="t-title">${esc(t.title)}</div>${meta.length ? `<div class="t-meta">${meta.join("")}</div>` : ""}</div>
+      <div class="t-act">${acts}</div>
+    </li>`;
+  }
+  function editorRow(t) {
+    return `<li class="editor" data-editor="${t.id}">
+      <label class="sr" for="e-title-${t.id}">Дело</label>
+      <input class="inp title" id="e-title-${t.id}" value="${esc(t.title)}">
+      <div class="row">
+        <label class="sr" for="e-who-${t.id}">Кто</label><select class="sel" id="e-who-${t.id}">${whoOptions(t.who)}</select>
+        <label class="sr" for="e-date-${t.id}">Дата</label><input class="inp" type="date" id="e-date-${t.id}" value="${esc(t.date || "")}">
+        <label class="sr" for="e-time-${t.id}">Время</label><input class="inp" type="time" id="e-time-${t.id}" value="${esc(t.time || "")}">
+        <label class="sr" for="e-goal-${t.id}">Цель</label><select class="sel" id="e-goal-${t.id}">${goalOptions(t.goal)}</select>
+      </div>
+      <div class="row"><button class="btn primary small" type="button" data-act="save" data-id="${t.id}">Сохранить</button><button class="btn small ghost" type="button" data-act="cancel">Отмена</button></div>
+    </li>`;
+  }
+  const byWhen = (a, b) => (a.date || "9999").localeCompare(b.date || "9999") || (a.time || "99").localeCompare(b.time || "99") || (a.createdAt || 0) - (b.createdAt || 0);
+
+  // ---- views ----
+  function viewToday() {
+    const t = today();
+    const ids = S.filter === "all" ? S.people.map((p) => p.id) : [S.filter];
+    const cols = [...ids];
+    const bothHas = S.tasks.some((x) => x.who === "both" && ((!x.done && x.date && x.date <= t) || dayOf(x.doneAt) === t));
+    if (bothHas) cols.push("both");
+    if (!cols.length) return emptyFamily();
+    const ro = !S.canWrite;
+    return `<div class="cols">${cols.map((id) => {
+      const p = person(id);
+      const open = S.tasks.filter((x) => x.who === id && !x.done && x.date && x.date <= t).sort(byWhen);
+      const done = S.tasks.filter((x) => x.who === id && x.done && dayOf(x.doneAt) === t).sort((a, b) => a.doneAt - b.doneAt);
+      const total = open.length + done.length;
+      const pct = total ? Math.round((done.length / total) * 100) : 0;
+      const items = [...open, ...done].map((x) => taskRow(x, { showDate: false })).join("");
+      return `<section class="col" style="--pc:${p.color}" aria-label="${esc(p.name)}">
+        <div class="col-head"><h2>${esc(p.name)}${id === S.me ? ' <span class="sr">(вы)</span>' : ""}</h2><span class="meta">${done.length} из ${total}</span></div>
+        <div class="progress" aria-hidden="true"><i style="width:${pct}%"></i></div>
+        ${items ? `<ul class="list">${items}</ul>` : `<div class="empty">${id === S.me ? "На сегодня у вас пусто. Надиктуйте дела сверху или добавьте ниже." : "На сегодня дел нет."}</div>`}
+        ${ro ? "" : `<form class="quick" data-form="quick" data-who="${esc(id)}"><label class="sr" for="q-${esc(id)}">Новое дело на сегодня</label><input class="inp" id="q-${esc(id)}" placeholder="Дело на сегодня" autocomplete="off"><button class="btn small" type="submit">Добавить</button></form>`}
+      </section>`;
+    }).join("")}</div>`;
+  }
+
+  function viewAll() {
+    const t = today();
+    const open = S.tasks.filter((x) => !x.done && matchesFilter(x.who)).sort(byWhen);
+    const late = open.filter((x) => x.date && x.date < t);
+    const dated = open.filter((x) => x.date && x.date >= t);
+    const none = open.filter((x) => !x.date);
+    const recentDone = S.tasks.filter((x) => x.done && matchesFilter(x.who) && x.doneAt && Date.now() - x.doneAt < 30 * 864e5).sort((a, b) => b.doneAt - a.doneAt);
+    const ctx = { showWho: true, showDate: false };
+    const group = (title, list, cls = "") => `<section class="group ${cls}"><h3>${esc(title)} <span class="n">${list.length}</span></h3><ul class="list">${list.map((x) => taskRow(x, ctx)).join("")}</ul></section>`;
+    const parts = [];
+    if (late.length) parts.push(group("Просрочено", late, "late"));
+    const byDay = new Map();
+    for (const x of dated) { if (!byDay.has(x.date)) byDay.set(x.date, []); byDay.get(x.date).push(x); }
+    for (const [d, list] of byDay) {
+      const r = rel(d);
+      parts.push(group(r === fmt(d) ? fmt(d, { weekday: "long", day: "numeric", month: "long" }) : `${r} · ${fmt(d, { day: "numeric", month: "long" })}`, list));
+    }
+    if (none.length) parts.push(group("Когда-нибудь", none));
+    if (recentDone.length) parts.push(`<details class="group"><summary>Сделано за 30 дней · ${recentDone.length}</summary><ul class="list">${recentDone.map((x) => taskRow(x, { showWho: true, showDate: true })).join("")}</ul></details>`);
+    if (!parts.length) return `<div class="state"><strong>Список пуст</strong>Надиктуйте первые дела в поле сверху: «завтра купить продукты, в субботу съездить к родителям».</div>`;
+    return `<div class="groups">${parts.join("")}</div>`;
+  }
+
+  function viewGoals() {
+    const goals = S.goals.filter((g) => matchesFilter(g.who)).sort((a, b) => (a.done - b.done) || (a.deadline || "9999").localeCompare(b.deadline || "9999"));
+    const ro = !S.canWrite;
+    const t = today();
+    const cards = goals.map((g) => {
+      const p = person(g.who);
+      const steps = S.tasks.filter((x) => x.goal === g.id).sort((a, b) => (a.done - b.done) || byWhen(a, b));
+      const done = steps.filter((x) => x.done).length;
+      const pct = g.done ? 100 : steps.length ? Math.round((done / steps.length) * 100) : 0;
+      const meta = [`<span class="tag who" style="--pc:${p.color}"><span class="dot"></span>${esc(p.name)}</span>`];
+      if (g.done) meta.push(`<span class="tag">Достигнута ${g.doneAt ? esc(fmt(dayOf(g.doneAt), { day: "numeric", month: "long" })) : ""}</span>`);
+      else if (g.deadline) {
+        const n = diff(g.deadline, t);
+        meta.push(n < 0 ? `<span class="tag late">срок прошёл ${-n} ${plural(n, ["день", "дня", "дней"])} назад</span>`
+          : `<span class="tag mono">до ${esc(fmt(g.deadline, { day: "numeric", month: "long", year: "numeric" }))} · ${n} ${plural(n, ["день", "дня", "дней"])}</span>`);
+      }
+      const confirming = S.confirm === "g:" + g.id;
+      return `<article class="goal${g.done ? " achieved" : ""}" style="--pc:${p.color}">
+        <h3>${esc(g.title)}</h3>
+        <div class="g-meta">${meta.join("")}</div>
+        <div><div class="bar2" aria-hidden="true"><i style="width:${pct}%"></i></div><div class="pct">${steps.length ? `${done} из ${steps.length} шагов · ${pct}%` : g.done ? "100%" : "Шагов пока нет"}</div></div>
+        ${steps.length ? `<ul class="list">${steps.map((x) => taskRow(x, { showWho: x.who !== g.who, showDate: true, inGoal: true })).join("")}</ul>` : ""}
+        ${ro || g.done ? "" : `<form class="quick" data-form="step" data-goal="${g.id}" data-who="${esc(g.who)}"><label class="sr" for="s-${g.id}">Новый шаг</label><input class="inp" id="s-${g.id}" placeholder="Следующий шаг" autocomplete="off"><button class="btn small" type="submit">Добавить</button></form>`}
+        ${ro ? "" : `<div class="row">${confirming
+          ? `<span class="status">Удалить цель? Шаги останутся в списке дел.</span><button class="btn small danger" type="button" data-act="gdel-yes" data-id="${g.id}">Удалить</button><button class="btn small ghost" type="button" data-act="del-no">Нет</button>`
+          : `<button class="btn small" type="button" data-act="gdone" data-id="${g.id}">${g.done ? "Вернуть в работу" : "Цель достигнута"}</button><button class="btn small ghost" type="button" data-act="gdel" data-id="${g.id}">Удалить</button>`}</div>`}
+      </article>`;
+    }).join("");
+    const form = ro ? "" : `<form class="newgoal" data-form="goal">
+      <h3>Новая цель</h3>
+      <label class="sr" for="ng-title">Цель</label><input class="inp" id="ng-title" placeholder="Например: накопить на отпуск 300 000 ₽" autocomplete="off">
+      <div class="row">
+        <label class="sr" for="ng-who">Чья цель</label><select class="sel" id="ng-who">${whoOptions(defaultWho())}</select>
+        <label class="sr" for="ng-date">Срок</label><input class="inp" type="date" id="ng-date">
+        <button class="btn primary" type="submit">Поставить цель</button>
+      </div>
+    </form>`;
+    return `<div class="goals">${cards}${form}</div>${!goals.length && ro ? `<div class="state"><strong>Целей пока нет</strong></div>` : ""}`;
+  }
+
+  function viewFamily() {
+    const ro = !S.canWrite;
+    const rows = S.people.map((p, i) => `<div class="person-row" style="--pc:${COLORS[i % COLORS.length]}">
+      <span class="dot"></span>
+      <label class="sr" for="fam-${p.id}">Имя</label>
+      <input class="inp" id="fam-${p.id}" data-pid="${p.id}" value="${esc(p.name)}" placeholder="Имя"${ro ? " disabled" : ""}>
+      <label class="me"><input type="radio" name="me" value="${p.id}"${S.me === p.id ? " checked" : ""}> это я</label>
+    </div>`).join("");
+    return `<form class="panel" data-form="family">
+      <h2>Семья</h2>
+      <p>Имена видят все, у кого есть доступ к списку. «Это я» запоминается на этом устройстве, чтобы новые дела по умолчанию записывались на вас.</p>
+      ${rows}
+      ${ro ? "" : `<div class="row">${S.people.length < 4 ? '<button class="btn" type="button" data-act="addperson">Добавить члена семьи</button>' : ""}<span class="sp"></span><button class="btn primary" type="submit">Сохранить имена</button></div>`}
+      <div class="note">Чтобы супруга видела и меняла список, откройте меню «Поделиться» у этой страницы и пригласите её по почте с правом редактирования. Без этого права она сможет только смотреть.</div>
+    </form>`;
+  }
+
+  function emptyFamily() {
+    return `<form class="panel" data-form="setup">
+      <h2>Кто будет вести список?</h2>
+      <p>Впишите имена. Их можно поменять потом во вкладке «Семья».</p>
+      <div class="person-row" style="--pc:var(--c1)"><span class="dot"></span><label class="sr" for="setup-1">Первое имя</label><input class="inp" id="setup-1" value="Николай"></div>
+      <div class="person-row" style="--pc:var(--c2)"><span class="dot"></span><label class="sr" for="setup-2">Второе имя</label><input class="inp" id="setup-2" placeholder="Имя супруги"></div>
+      <div class="row"><button class="btn primary" type="submit">Начать</button></div>
+    </form>`;
+  }
+
+  function renderView() {
+    const v = $("#view");
+    // keep what people are typing across live re-renders
+    const keep = {};
+    v.querySelectorAll("input[id]:not([type=radio]),select[id],textarea[id]").forEach((el) => { keep[el.id] = el.value; });
+    const a = document.activeElement;
+    const focusId = a && v.contains(a) && a.id ? a.id : null;
+    const sel = focusId && typeof a.selectionStart === "number" ? [a.selectionStart, a.selectionEnd] : null;
+
+    let html;
+    if (S.noDb) html = `<div class="state"><strong>Общий список недоступен</strong>Войдите в claude.ai под своим аккаунтом и откройте ссылку ещё раз.</div>`;
+    else if (!S.loaded.family || !S.loaded.tasks) html = `<div class="state"><strong>Загружаю общий список…</strong>Дела появятся здесь через пару секунд.</div>`;
+    else if (!S.people.length) html = S.canWrite ? emptyFamily() : `<div class="state"><strong>Список ещё не настроен</strong>Попросите владельца открыть страницу.</div>`;
+    else html = (S.canWrite ? "" : `<div class="ro-banner">Вы смотрите список без права изменений. Попросите владельца пригласить вас с правом редактирования.</div>`) +
+      ({ today: viewToday, all: viewAll, goals: viewGoals, family: viewFamily }[S.tab] || viewToday)();
+    v.innerHTML = html;
+
+    for (const id in keep) { const el = document.getElementById(id); if (el && el.tagName !== "SELECT" && !el.dataset.fresh) el.value = keep[id]; else if (el && el.tagName === "SELECT" && keep[id]) el.value = keep[id]; }
+    if (focusId) { const el = document.getElementById(focusId); if (el) { el.focus(); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
+  }
+
+  function renderCaptureSelects() {
+    const w = $("#plainWho"); const cur = w.value;
+    w.innerHTML = whoOptions(cur || defaultWho());
+    if (!cur) w.value = defaultWho();
+    $("#parseBtn").hidden = !S.sample;
+    $("#capture").hidden = !S.canWrite || S.noDb;
+  }
+
+  function renderAll() { renderHeader(); renderChips(); renderTabs(); renderView(); renderCaptureSelects(); }
+
+  // ---- dictation parsing ----
+  function splitPlain(text) {
+    return text.split(/\n|;|\.\s+(?=[А-ЯЁA-Z])/).map((s) => s.trim().replace(/[.;,]+$/, "")).filter(Boolean)
+      .map((s) => s.charAt(0).toUpperCase() + s.slice(1));
+  }
+  async function addPlain() {
+    const text = $("#dictation").value.trim();
+    if (!text) { status("Сначала надиктуйте или напишите дело.", true); $("#dictation").focus(); return; }
+    const who = $("#plainWho").value || defaultWho();
+    const when = $("#plainDate").value;
+    const date = when === "today" ? today() : when === "tomorrow" ? addDays(today(), 1) : null;
+    const items = splitPlain(text);
+    try {
+      for (const title of items) await addTask({ title, who, date });
+      $("#dictation").value = ""; ls.set("draft", "");
+      status(""); toast(`Добавлено: ${items.length}`);
+    } catch (e) {}
+  }
+
+  let parseCtl = null;
+  async function parse() {
+    const text = $("#dictation").value.trim();
+    if (!text) { status("Сначала надиктуйте или напишите дело.", true); $("#dictation").focus(); return; }
+    if (!S.sample) return addPlain();
+    const btn = $("#parseBtn");
+    btn.disabled = true; status("Разбираю на отдельные дела…");
+    const t = today();
+    const speaker = S.me ? `${S.me} (${person(S.me).name})` : "не указан";
+    const goals = S.goals.filter((g) => !g.done).map((g) => `${g.id} — ${g.title}`).join("\n") || "нет";
+    const prompt = `Ты помогаешь вести семейный список дел. Разбери надиктованный текст на отдельные дела и цели.
+Сегодня ${t}, ${fmt(t, { weekday: "long" })}.
+Члены семьи (id — имя):
+${S.people.map((p) => `${p.id} — ${p.name || "без имени"}`).join("\n")}
+both — дело для всех вместе
+Говорит: ${speaker}. Если говорящий мужчина и упоминает «жену», это другой член семьи; если женщина упоминает «мужа» — тоже.
+Текущие цели (id — название):
+${goals}
+
+Правила:
+- Каждое отдельное действие — отдельный элемент. Формулируй коротко, начиная с глагола, с заглавной буквы. Дату и время в название не включай.
+- who: id того, кто должен сделать. Не назван — говорящий (если говорящий не указан — both). «Мы», «нам», «вместе» — both.
+- date: YYYY-MM-DD, если назван день или срок («завтра», «в пятницу» — ближайшая будущая пятница, «до 25-го» — 25-е число). Иначе null.
+- time: "HH:MM", если названо время, иначе null.
+- kind: "goal" для долгосрочной цели («цель», «хочу к лету», «накопить», «научиться», «похудеть»), иначе "task". Для цели date — срок цели.
+- goal: id существующей цели, если дело явно служит ей, иначе null.
+
+Ответь только JSON-массивом объектов {"kind","title","who","date","time","goal"}.
+
+Текст:
+"""${text.slice(0, 4000)}"""`;
+    parseCtl = new AbortController();
+    try {
+      const arr = await S.sample.json(prompt, { modelTier: "quick", signal: parseCtl.signal });
+      const valid = new Set([...S.people.map((p) => p.id), "both"]);
+      const goalIds = new Set(S.goals.map((g) => g.id));
+      const items = (Array.isArray(arr) ? arr : []).filter((x) => x && typeof x.title === "string" && x.title.trim()).map((x) => ({
+        kind: x.kind === "goal" ? "goal" : "task",
+        title: x.title.trim().slice(0, 300),
+        who: valid.has(x.who) ? x.who : defaultWho(),
+        date: isISO(x.date) ? x.date : null,
+        time: isTime(x.time) ? x.time : null,
+        goal: goalIds.has(x.goal) ? x.goal : null,
+      }));
+      if (!items.length) { status("Не нашёл в тексте дел. Попробуйте сказать иначе или нажмите «Добавить как есть».", true); return; }
+      S.preview = items; status(""); renderPreview();
+    } catch (e) {
+      const c = e && e.code;
+      if (c === "cancelled") status("");
+      else if (["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(c)) {
+        S.sample = null; renderCaptureSelects();
+        status("Разбор через Claude выключен. Нажмите «Добавить как есть» — каждая фраза станет делом.", true);
+      } else if (c === "rate_limited") status("Слишком много запросов подряд. Подождите минуту или добавьте как есть.", true);
+      else if (c === "session_expired") status("Сессия claude.ai истекла. Войдите заново и повторите.", true);
+      else if (["invalid_json", "empty_completion", "refused"].includes(c)) status("Не получилось разобрать. Скажите проще или нажмите «Добавить как есть».", true);
+      else status("Связь прервалась. Нажмите «Разобрать на дела» ещё раз.", true);
+    } finally { btn.disabled = false; parseCtl = null; }
+  }
+
+  function renderPreview() {
+    const box = $("#preview");
+    if (!S.preview || !S.preview.length) { box.hidden = true; box.innerHTML = ""; return; }
+    box.hidden = false;
+    const tasks = S.preview.filter((x) => x.kind === "task").length, goals = S.preview.length - tasks;
+    box.innerHTML = `<h3>Проверьте перед сохранением</h3>` + S.preview.map((x, i) => `<div class="pv-item">
+        <button class="kind-pill${x.kind === "goal" ? " goal" : ""}" type="button" data-pv="kind" data-i="${i}" title="Сменить тип">${x.kind === "goal" ? "Цель" : "Дело"}</button>
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <label class="sr" for="pv-title-${i}">Название</label>
+          <input class="inp title" id="pv-title-${i}" data-pv="title" data-i="${i}" value="${esc(x.title)}">
+          <div class="pv-fields">
+            <label class="sr" for="pv-who-${i}">Кто</label><select class="sel" id="pv-who-${i}" data-pv="who" data-i="${i}">${whoOptions(x.who)}</select>
+            <label class="sr" for="pv-date-${i}">${x.kind === "goal" ? "Срок" : "Дата"}</label><input class="inp" type="date" id="pv-date-${i}" data-pv="date" data-i="${i}" value="${esc(x.date || "")}">
+            ${x.kind === "task" ? `<label class="sr" for="pv-time-${i}">Время</label><input class="inp" type="time" id="pv-time-${i}" data-pv="time" data-i="${i}" value="${esc(x.time || "")}">
+            <label class="sr" for="pv-goal-${i}">Цель</label><select class="sel" id="pv-goal-${i}" data-pv="goal" data-i="${i}">${goalOptions(x.goal)}</select>` : ""}
+          </div>
+        </div>
+        <button class="icon-btn" type="button" aria-label="Убрать" data-pv="remove" data-i="${i}">${ICON.x}</button>
+      </div>`).join("") +
+      `<div class="row"><button class="btn primary" type="button" data-pv="save">Сохранить ${[tasks ? `${tasks} ${plural(tasks, ["дело", "дела", "дел"])}` : "", goals ? `${goals} ${plural(goals, ["цель", "цели", "целей"])}` : ""].filter(Boolean).join(" и ")}</button><button class="btn ghost" type="button" data-pv="cancel">Отмена</button></div>`;
+  }
+
+  async function savePreview() {
+    const items = S.preview || [];
+    const btn = $('#preview [data-pv="save"]'); if (btn) btn.disabled = true;
+    try {
+      for (const g of items.filter((x) => x.kind === "goal")) await addGoal({ title: g.title, who: g.who, deadline: g.date });
+      for (const t of items.filter((x) => x.kind === "task")) await addTask(t);
+      S.preview = null; renderPreview();
+      $("#dictation").value = ""; ls.set("draft", "");
+      toast(`Сохранено: ${items.length}`);
+    } catch (e) { if (btn) btn.disabled = false; }
+  }
+
+  // ---- events ----
+  $("#parseBtn").addEventListener("click", parse);
+  $("#plainBtn").addEventListener("click", addPlain);
+  $("#dictation").addEventListener("input", (e) => ls.set("draft", e.target.value));
+  $("#dictation").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); S.sample ? parse() : addPlain(); } });
+  { const d = ls.get("draft"); if (d) $("#dictation").value = d; }
+
+  $("#preview").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pv]"); if (!b || b.tagName === "INPUT" || b.tagName === "SELECT") return;
+    const i = +b.dataset.i, act = b.dataset.pv;
+    if (act === "kind") { S.preview[i].kind = S.preview[i].kind === "goal" ? "task" : "goal"; renderPreview(); }
+    else if (act === "remove") { S.preview.splice(i, 1); renderPreview(); }
+    else if (act === "cancel") { S.preview = null; renderPreview(); }
+    else if (act === "save") savePreview();
+  });
+  $("#preview").addEventListener("input", (e) => {
+    const el = e.target; if (!el.dataset.pv) return;
+    const x = S.preview[+el.dataset.i]; if (!x) return;
+    const k = el.dataset.pv; x[k] = el.value || (k === "title" ? "" : null);
+  });
+  $("#preview").addEventListener("change", (e) => {
+    const el = e.target; if (!el.dataset.pv) return;
+    const x = S.preview[+el.dataset.i]; if (!x) return;
+    const k = el.dataset.pv; x[k] = el.value || (k === "title" ? "" : null);
+  });
+
+  $("#tabs").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-tab]"); if (!b) return;
+    S.tab = b.dataset.tab; ls.set("tab", S.tab); S.editing = null; S.confirm = null; renderAll();
+  });
+  $("#chips").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-filter]"); if (!b) return;
+    S.filter = b.dataset.filter; ls.set("filter", S.filter); renderAll();
+  });
+  $("#whoBox").addEventListener("click", (e) => {
+    const m = e.target.closest("[data-me]"); if (m) return chooseMe(m.dataset.me);
+    const g = e.target.closest("[data-tabgo]"); if (g) { S.tab = g.dataset.tabgo; ls.set("tab", S.tab); renderAll(); }
+  });
+
+  $("#view").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-act]"); if (!b) return;
+    const id = b.dataset.id, act = b.dataset.act;
+    const t = id && S.tasks.find((x) => x.id === id);
+    try {
+      if (act === "toggle" && t) await patchTask(id, { done: !t.done, doneAt: t.done ? null : Date.now() });
+      else if (act === "later" && t) { await patchTask(id, { date: addDays(t.date && t.date > today() ? t.date : today(), 1) }); toast("Перенесено на завтра"); }
+      else if (act === "edit") { S.editing = id; S.confirm = null; renderView(); const el = document.getElementById("e-title-" + id); if (el) el.focus(); }
+      else if (act === "cancel") { S.editing = null; renderView(); }
+      else if (act === "save" && t) {
+        const title = document.getElementById("e-title-" + id).value.trim();
+        if (!title) { toast("Название не может быть пустым"); return; }
+        const p = { title, who: document.getElementById("e-who-" + id).value, date: document.getElementById("e-date-" + id).value || null,
+          time: document.getElementById("e-time-" + id).value || null, goal: document.getElementById("e-goal-" + id).value || null };
+        S.editing = null; renderView(); await patchTask(id, p);
+      }
+      else if (act === "del") { S.confirm = id; renderView(); }
+      else if (act === "gdel") { S.confirm = "g:" + id; renderView(); }
+      else if (act === "del-no") { S.confirm = null; renderView(); }
+      else if (act === "del-yes") { S.confirm = null; await delTask(id); toast("Удалено"); }
+      else if (act === "gdel-yes") { S.confirm = null; await delGoal(id); toast("Цель удалена"); }
+      else if (act === "gdone") { const g = S.goals.find((x) => x.id === id); if (g) { await patchGoal(id, { done: !g.done, doneAt: g.done ? null : Date.now() }); if (!g.done) toast("Поздравляем! Цель достигнута"); } }
+      else if (act === "addperson") {
+        const used = new Set(S.people.map((p) => p.id)); let n = 1; while (used.has("p" + n)) n++;
+        await saveFamily([...S.people, { id: "p" + n, name: "" }]);
+      }
+    } catch (err) {}
+  });
+
+  $("#view").addEventListener("change", (e) => {
+    if (e.target.name === "me") chooseMe(e.target.value);
+  });
+
+  $("#view").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = e.target, kind = f.dataset.form;
+    try {
+      if (kind === "quick" || kind === "step") {
+        const inp = f.querySelector("input"); const title = inp.value.trim(); if (!title) return;
+        inp.value = "";
+        await addTask({ title, who: f.dataset.who, date: kind === "quick" ? today() : null, goal: f.dataset.goal || null });
+      } else if (kind === "goal") {
+        const ti = $("#ng-title"), title = ti.value.trim(); if (!title) { ti.focus(); return; }
+        const who = $("#ng-who").value, deadline = $("#ng-date").value || null;
+        ti.value = ""; $("#ng-date").value = "";
+        await addGoal({ title, who, deadline }); toast("Цель поставлена");
+      } else if (kind === "family") {
+        const people = S.people.map((p) => ({ ...p, name: (document.getElementById("fam-" + p.id)?.value || "").trim() }));
+        await saveFamily(people); toast("Имена сохранены");
+      } else if (kind === "setup") {
+        const a = $("#setup-1").value.trim(), b = $("#setup-2").value.trim();
+        if (!a) { $("#setup-1").focus(); return; }
+        await saveFamily([{ id: "p1", name: a }, { id: "p2", name: b || "Супруга" }]);
+      }
+    } catch (err) {}
+  });
+
+  // ---- boot ----
+  renderAll();
+  (async () => {
+    if (!window.claude || typeof window.claude.use !== "function") { S.noDb = true; renderAll(); return; }
+    const [db, user, sample] = await Promise.all([
+      window.claude.use("db"), window.claude.use("user"), window.claude.use("sample"),
+    ]);
+    S.user = user; S.sample = sample;
+    if (!db) { S.noDb = true; renderAll(); return; }
+    S.db = db;
+    if (user) {
+      S.uid = await user.id();
+      const cw = await user.can("data.write");
+      if (cw === false) S.canWrite = false;
+    }
+    const fail = (e) => { if (e && e.code === "revoked") { S.canWrite = false; } renderAll(); };
+    db.doc("family/members").onSnapshot((snap) => {
+      S.family = snap.exists ? snap.data() : null;
+      S.people = (S.family && Array.isArray(S.family.people) ? S.family.people : []).filter((p) => p && typeof p.id === "string");
+      S.loaded.family = true; resolveMe(); renderAll();
+    }, fail);
+    db.collection("tasks").onSnapshot((snap) => {
+      S.tasks = snap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((t) => typeof t.title === "string");
+      S.loaded.tasks = true; renderAll();
+    }, fail);
+    db.collection("goals").onSnapshot((snap) => {
+      S.goals = snap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((g) => typeof g.title === "string");
+      S.loaded.goals = true; renderAll();
+    }, fail);
+  })();
+
+  // roll the date over at midnight without a reload
+  let lastDay = today();
+  setInterval(() => { if (today() !== lastDay) { lastDay = today(); renderAll(); } }, 60000);
+})();
+</script>
