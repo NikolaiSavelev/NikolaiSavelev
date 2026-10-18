@@ -340,6 +340,26 @@ details.group > summary::-webkit-details-marker { display: none; }
 .task.mrow { grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; }
 .sec-title { margin: 8px 0 0; font-family: var(--f-display); font-weight: 700; font-size: 22px; display: flex; align-items: center; gap: 10px; }
 
+/* Help + simpler capture */
+.help-btn { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); font-family: var(--f-display); font-weight: 700; font-size: 17px; color: var(--accent); cursor: pointer; flex: none; }
+.help { background: var(--sun-soft); border-radius: var(--r-lg); padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+.help-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.help h2 { margin: 0; font-family: var(--f-display); font-size: 19px; }
+.help ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.help li { display: flex; gap: 10px; align-items: flex-start; background: var(--surface); border-radius: var(--r-md); padding: 12px; font-size: 15px; }
+.help li b { display: block; }
+.hs-n { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 800; flex: none; }
+.help .btn { align-self: flex-start; }
+.steps { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 13.5px; font-weight: 700; color: var(--muted); }
+.steps span { display: inline-flex; align-items: center; gap: 6px; background: var(--sunk); border-radius: 999px; padding: 4px 12px 4px 4px; }
+.steps b { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: inline-grid; place-items: center; font-size: 12px; }
+.steps i { font-style: normal; opacity: .6; }
+.btn.big { min-height: 52px; padding: 12px 28px; font-size: 17px; }
+.alt { border-top: 1px dashed var(--line); padding-top: 10px; }
+.alt summary { cursor: pointer; color: var(--muted); font-weight: 700; font-size: 15px; }
+.alt[open] summary { margin-bottom: 10px; }
+.alt label { font-weight: 700; font-size: 14px; color: var(--muted); }
+
 .state { background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 30px 22px; text-align: center; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .state strong { display: block; color: var(--ink); font-family: var(--f-display); font-size: 18px; }
 .state svg { margin-bottom: 4px; }
@@ -364,6 +384,7 @@ details.group > summary::-webkit-details-marker { display: none; }
     <div class="brand">
       <svg class="logo" viewBox="0 0 34 34" aria-hidden="true"><circle cx="13" cy="17" r="10" fill="var(--c1)" opacity=".9"/><circle cx="21" cy="17" r="10" fill="var(--c2)" opacity=".85"/><path d="M17 9.5a10 10 0 0 1 0 15 10 10 0 0 1 0-15z" fill="var(--sun)"/></svg>
       <span>Дела Савельевых</span>
+      <button class="help-btn" id="helpBtn" type="button" aria-label="Как пользоваться" title="Как пользоваться">?</button>
     </div>
     <div class="whobox" id="whoBox"></div>
   </header>
@@ -381,25 +402,41 @@ details.group > summary::-webkit-details-marker { display: none; }
     </div>
   </section>
 
+  <section class="help" id="help" aria-labelledby="helpTitle" hidden>
+    <div class="help-head"><h2 id="helpTitle">Как пользоваться</h2><button class="icon-btn" id="helpClose" type="button" aria-label="Закрыть подсказку"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <ol>
+      <li><span class="hs-n">1</span><div><b>Скажите или напишите</b>Нажмите зелёный микрофон и говорите: что сделать, сколько потратили, что хотите накопить. Можно всё сразу.</div></li>
+      <li><span class="hs-n">2</span><div><b>Нажмите «Разобрать»</b>Сайт сам разложит: дела — в список, траты и доходы — в бюджет, цели — в цели.</div></li>
+      <li><span class="hs-n">3</span><div><b>Проверьте и сохраните</b>Если что-то не так — поправьте прямо в строке и нажмите «Сохранить».</div></li>
+      <li><span class="hs-n">4</span><div><b>Отмечайте сделанное</b>Нажмите на кружок слева от дела. Внизу разделы: Сегодня, Все дела, Цели, Бюджет, Семья.</div></li>
+    </ol>
+    <button class="btn primary" id="helpOk" type="button">Понятно</button>
+  </section>
+
   <section class="capture" id="capture" aria-labelledby="capLabel">
     <div class="cap-head">
       <span class="mic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/></svg></span>
       <div><label class="cap-label" id="capLabel" for="dictation">Что нового?</label><span class="cap-sub">Дела, траты, доходы, цели — скажите как есть. На телефоне нажмите микрофон на клавиатуре.</span></div>
     </div>
+    <div class="steps" aria-hidden="true"><span><b>1</b>Скажите</span><i>→</i><span><b>2</b>Разобрать</span><i>→</i><span><b>3</b>Сохранить</span></div>
     <textarea id="dictation" rows="3" placeholder="Завтра в 10 записать сына к врачу. Потратил 3 500 на продукты. Светлане пришла зарплата. Отложили 10 тысяч на отпуск."></textarea>
     <div class="row">
-      <button class="btn primary" id="parseBtn" type="button">Разобрать на дела</button>
-      <button class="btn" id="plainBtn" type="button">Добавить как есть</button>
-      <span class="sp"></span>
-      <label class="sr" for="plainWho">Кому</label>
-      <select class="sel" id="plainWho"></select>
-      <label class="sr" for="plainDate">Когда</label>
-      <select class="sel" id="plainDate">
-        <option value="today">Сегодня</option>
-        <option value="tomorrow">Завтра</option>
-        <option value="none">Без даты</option>
-      </select>
+      <button class="btn primary big" id="parseBtn" type="button">Разобрать</button>
     </div>
+    <details class="alt" id="altAdd">
+      <summary>Или добавить одним делом, без разбора</summary>
+      <div class="row">
+        <label for="plainWho">Кому</label>
+        <select class="sel" id="plainWho"></select>
+        <label for="plainDate">Когда</label>
+        <select class="sel" id="plainDate">
+          <option value="today">Сегодня</option>
+          <option value="tomorrow">Завтра</option>
+          <option value="none">Без даты</option>
+        </select>
+        <button class="btn" id="plainBtn" type="button">Добавить</button>
+      </div>
+    </details>
     <div class="status" id="capStatus" role="status"></div>
     <div class="preview" id="preview" hidden></div>
   </section>
@@ -889,7 +926,7 @@ details.group > summary::-webkit-details-marker { display: none; }
       <div class="kpi in"><span class="l">Доходы</span><span class="v">${rub(inc)}</span></div>
       <div class="kpi out"><span class="l">Расходы</span><span class="v">${rub(out)}</span>${inc ? `<span class="s">${Math.round((out / inc) * 100)}% от доходов</span>` : ""}</div>
       <div class="kpi sav"><span class="l">Отложено</span><span class="v">${sav < 0 ? "−" : ""}${rub(Math.abs(sav))}</span></div>
-      <div class="kpi rest${rest < 0 ? " neg" : ""}"><span class="l">Остаток</span><span class="v">${rest < 0 ? "−" : ""}${rub(Math.abs(rest))}</span><span class="s">доходы − расходы − отложено</span></div>
+      <div class="kpi rest${rest < 0 ? " neg" : ""}"><span class="l">Остаток</span><span class="v">${rest < 0 ? "−" : ""}${rub(Math.abs(rest))}</span><span class="s">столько осталось на руках</span></div>
     </div>`;
 
     const type = S.mType;
@@ -932,7 +969,7 @@ details.group > summary::-webkit-details-marker { display: none; }
     }).join("") : `<div class="empty">Расходов в этом месяце пока нет.</div>`;
     const catCard = S.editLimits && !ro
       ? `<form class="card" data-form="limits"><h3>Лимиты на месяц <span class="row"><button class="btn small primary" type="submit">Сохранить</button><button class="btn small ghost" type="button" data-act="limits-off">Отмена</button></span></h3>${catHtml}</form>`
-      : `<div class="card"><h3>Расходы по категориям${ro ? "" : ' <button class="btn small ghost" type="button" data-act="limits-on">Лимиты</button>'}</h3>${catHtml}</div>`;
+      : `<div class="card"><h3>Расходы по категориям${ro ? "" : ' <button class="btn small ghost" type="button" data-act="limits-on">Лимиты трат</button>'}</h3>${catHtml}</div>`;
 
     const months = [];
     for (let i = 5; i >= 0; i--) months.push(shiftMonth(ym, -i));
@@ -1080,7 +1117,7 @@ details.group > summary::-webkit-details-marker { display: none; }
     } catch (e) {}
   }
 
-  const KIND_LABEL = { task: "Дело", goal: "Цель", expense: "Расход", income: "Доход", save: "Копилка" };
+  const KIND_LABEL = { task: "Дело", goal: "Цель", expense: "Трата", income: "Доход", save: "В копилку" };
   const isMoney = (k) => k === "expense" || k === "income" || k === "save";
   let parseCtl = null;
   async function parse() {
@@ -1147,7 +1184,8 @@ ${funds}
         };
       }).filter((x) => x.title || x.amount != null);
       if (!items.length) { status("Не нашёл в тексте дел. Попробуйте сказать иначе или нажмите «Добавить как есть».", true); return; }
-      S.preview = items; status(""); renderPreview();
+      S.preview = items; status("Проверьте и нажмите «Сохранить»"); renderPreview();
+      $("#preview").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (e) {
       const c = e && e.code;
       if (c === "cancelled") status("");
@@ -1157,7 +1195,7 @@ ${funds}
       } else if (c === "rate_limited") status("Слишком много запросов подряд. Подождите минуту или добавьте как есть.", true);
       else if (c === "session_expired") status("Сессия claude.ai истекла. Войдите заново и повторите.", true);
       else if (["invalid_json", "empty_completion", "refused"].includes(c)) status("Не получилось разобрать. Скажите проще или нажмите «Добавить как есть».", true);
-      else status("Связь прервалась. Нажмите «Разобрать на дела» ещё раз.", true);
+      else status("Связь прервалась. Нажмите «Разобрать» ещё раз.", true);
     } finally { btn.disabled = false; parseCtl = null; }
   }
 
@@ -1166,7 +1204,7 @@ ${funds}
     if (!S.preview || !S.preview.length) { box.hidden = true; box.innerHTML = ""; return; }
     box.hidden = false;
     const n = S.preview.length;
-    box.innerHTML = `<h3>Проверьте перед сохранением</h3>` + S.preview.map((x, i) => {
+    box.innerHTML = `<h3>Вот что получилось</h3><p class="cap-sub" style="margin:0">Если что-то не так — поправьте прямо здесь. Лишнее уберите крестиком.</p>` + S.preview.map((x, i) => {
       const f = [];
       if (isMoney(x.kind)) f.push(`<label class="sr" for="pv-amt-${i}">Сумма</label><input class="inp amt" id="pv-amt-${i}" data-pv="amount" data-i="${i}" inputmode="decimal" value="${esc(x.amount ?? "")}" placeholder="Сумма, ₽" style="width:8.5em">`);
       if (x.kind === "expense" || x.kind === "income") f.push(`<label class="sr" for="pv-cat-${i}">Категория</label><select class="sel" id="pv-cat-${i}" data-pv="category" data-i="${i}">${catOptions(x.kind === "income" ? "in" : "out", x.category)}</select>`);
@@ -1370,6 +1408,15 @@ ${funds}
     } catch (err) {}
   });
 
+  // ---- help card: shown until someone taps «Понятно», reopened with «?» ----
+  const help = $("#help");
+  const helpSeen = () => ls.get("helpSeen") === "1";
+  help.hidden = helpSeen();
+  const closeHelp = () => { help.hidden = true; ls.set("helpSeen", "1"); };
+  $("#helpClose").addEventListener("click", closeHelp);
+  $("#helpOk").addEventListener("click", closeHelp);
+  $("#helpBtn").addEventListener("click", () => { help.hidden = !help.hidden; if (!help.hidden) help.scrollIntoView({ behavior: "smooth", block: "nearest" }); });
+
   // ---- boot ----
   renderAll();
   (async () => {
@@ -1378,6 +1425,7 @@ ${funds}
       window.claude.use("db"), window.claude.use("user"), window.claude.use("sample"),
     ]);
     S.user = user; S.sample = sample;
+    if (!sample) $("#altAdd").open = true;
     if (!db) { S.noDb = true; renderAll(); return; }
     S.db = db;
     if (user) {

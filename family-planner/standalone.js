@@ -103,7 +103,200 @@
     search: async () => [],
   };
 
+  // ---- local parser: turns dictated Russian into tasks, goals and money without any AI key ----
+  const LP = (() => {
+    const pad = (n) => String(n).padStart(2, "0");
+    const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const plusDays = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
+    const MONTHS = ["январ", "феврал", "март", "апрел", "ма[йя]", "июн", "июл", "август", "сентябр", "октябр", "ноябр", "декабр"];
+    const WEEKDAYS = [["воскресень"], ["понедельник"], ["вторник"], ["сред"], ["четверг"], ["пятниц"], ["суббот"]];
+    const WORDNUM = { "одну": 1, "один": 1, "две": 2, "два": 2, "три": 3, "четыре": 4, "пять": 5, "шесть": 6, "семь": 7, "восемь": 8, "девять": 9, "десять": 10, "полторы": 1.5, "полтора": 1.5 };
+    const OUT_CATS = [
+      ["Продукты", /продукт|магазин|пят[её]рочк|магнит|перекр[её]ст|ашан|лент[аеуы]|еда|еду|хлеб|молок|овощ|фрукт|мяс/],
+      ["Кафе и доставка", /кафе|ресторан|доставк|кофе|пицц|суши|роллы|бургер|обед в|столов/],
+      ["Дом и ЖКХ", /квартир|жкх|коммунал|квартплат|свет(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))|электричеств|газ(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))|вод[аеуы](?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))|аренд|ремонт|мебел/],
+      ["Транспорт", /бензин|топлив|заправк|такси|метро|автобус|машин|парковк|шиномонтаж|проезд/],
+      ["Дети", /дет(ям|ей|и)|ребён|ребен|сын|доч|школ|садик|детск|кружок|секци|игрушк/],
+      ["Здоровье", /аптек|врач|лекарств|клиник|стоматолог|анализ|больниц/],
+      ["Одежда", /одежд|обув|куртк|джинс|кроссовк|плать|футболк|ботин/],
+      ["Связь и подписки", /телефон|интернет|связь|мобильн|подписк|тариф/],
+      ["Развлечения", /кино|театр|концерт|игр[аыу]|развлеч|боулинг|парк/],
+      ["Подарки", /подар/],
+      ["Кредиты", /кредит|ипотек|долг|рассрочк/],
+    ];
+    const IN_CATS = [["Зарплата", /зарплат|аванс|оклад|преми/], ["Подработка", /подработ|халтур|заказ/], ["Возвраты и кэшбэк", /вернул|возврат|кэшб[эе]к|кешб[эе]к/], ["Подарки", /подар/]];
+
+    function amountOf(s) {
+      const t = s.toLowerCase().replace(/(\d)\s+(?=\d{3}(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9])))/g, "$1");
+      let m = t.match(/(\d+(?:[.,]\d+)?)\s*(тысяч[аиу]?|тыс\.?|к(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))|т\.р|млн|миллион[аов]*)?/);
+      if (m) {
+        let n = parseFloat(m[1].replace(",", "."));
+        if (m[2]) n *= /млн|миллион/.test(m[2]) ? 1e6 : 1000;
+        if (n > 0) return { value: Math.round(n), raw: m[0] };
+      }
+      m = t.match(new RegExp("(" + Object.keys(WORDNUM).join("|") + ")\\s+(тысяч[аиу]?|тыщ[иу]?)"));
+      if (m) return { value: Math.round(WORDNUM[m[1]] * 1000), raw: m[0] };
+      m = t.match(/(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))тысяч[уа](?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))/);
+      if (m) return { value: 1000, raw: m[0] };
+      return null;
+    }
+
+    function dateOf(s) {
+      const t = s.toLowerCase();
+      const DAT = ["январю", "февралю", "марту", "апрелю", "маю", "июню", "июлю", "августу", "сентябрю", "октябрю", "ноябрю", "декабрю"];
+      let k = t.match(new RegExp("к\\s+(" + DAT.join("|") + ")"));
+      if (k) { const mi = DAT.indexOf(k[1]); const d = new Date(); let y = d.getFullYear(); if (mi <= d.getMonth()) y++; return { date: iso(new Date(y, mi, 1)), raw: new RegExp(k[0]) }; }
+      const SEASON = { "лету": 5, "осени": 8, "зиме": 11, "весне": 2 };
+      k = t.match(/к\s+(лету|осени|зиме|весне)/);
+      if (k) { const mi = SEASON[k[1]]; const d = new Date(); let y = d.getFullYear(); if (mi <= d.getMonth()) y++; return { date: iso(new Date(y, mi, 1)), raw: new RegExp(k[0]) }; }
+      if (/к нов(ому|ый) год/.test(t)) { const d = new Date(); return { date: d.getFullYear() + "-12-31", raw: /к нов(ому|ый) году?/ }; }
+      if (/послезавтра/.test(t)) return { date: plusDays(2), raw: /послезавтра/ };
+      if (/завтра/.test(t)) return { date: plusDays(1), raw: /завтра/ };
+      if (/сегодня/.test(t)) return { date: plusDays(0), raw: /сегодня/ };
+      if (/вчера/.test(t)) return { date: plusDays(-1), raw: /вчера/ };
+      let m = t.match(/через\s+(\d+|одну|один|два|две|три|неделю|месяц)\s*(дн[яей]*|день|недел[юиь]*|месяц[аев]*)?/);
+      if (m) {
+        const n = WORDNUM[m[1]] || parseInt(m[1], 10) || 1;
+        const unit = (m[2] || m[1]);
+        const days = /недел/.test(unit) ? n * 7 : /месяц/.test(unit) ? n * 30 : n;
+        return { date: plusDays(days), raw: new RegExp(m[0]) };
+      }
+      m = t.match(new RegExp("(\\d{1,2})(?:-?го)?\\s+(" + MONTHS.join("|") + ")[а-я]*"));
+      if (m) {
+        const mi = MONTHS.findIndex((x) => new RegExp("^" + x).test(m[2]));
+        const d = new Date(); let y = d.getFullYear();
+        const cand = new Date(y, mi, +m[1]);
+        if (cand < new Date(d.getFullYear(), d.getMonth(), d.getDate())) y++;
+        return { date: iso(new Date(y, mi, +m[1])), raw: new RegExp(m[0]) };
+      }
+      for (let wd = 0; wd < 7; wd++) {
+        const re = new RegExp("(?:в|во|до|к|на|в эт[оу]т?)?\\s*" + WEEKDAYS[wd][0] + "[а-я]*");
+        if (re.test(t)) {
+          const d = new Date(); let add = (wd - d.getDay() + 7) % 7; if (add === 0) add = 7;
+          return { date: plusDays(add), raw: re };
+        }
+      }
+      m = t.match(/до\s+(\d{1,2})(?:-?го)?(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))/);
+      if (m && +m[1] <= 31) {
+        const d = new Date(); let mo = d.getMonth(), y = d.getFullYear();
+        if (+m[1] < d.getDate()) { mo++; if (mo > 11) { mo = 0; y++; } }
+        return { date: iso(new Date(y, mo, +m[1])), raw: new RegExp(m[0]) };
+      }
+      return null;
+    }
+
+    function timeOf(s) {
+      const t = s.toLowerCase();
+      const m = t.match(/(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))в\s+(\d{1,2})(?:[:.](\d{2}))?\s*(час[аов]*|утра|вечера|дня|ночи)?(?=\s|$|[,.!?])/);
+      if (!m) return null;
+      let h = +m[1]; const mm = m[2] ? +m[2] : 0;
+      if (h > 23 || mm > 59) return null;
+      if (!m[2] && !m[3] && (h > 23)) return null;
+      if (/вечера|дня/.test(m[3] || "") && h < 12) h += 12;
+      return { time: `${pad(h)}:${pad(mm)}`, raw: new RegExp(m[0].replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) };
+    }
+
+    // assignee: "Светлане/Свете купить" (dative) or the name opening the sentence; "забрать Светлану" is not an assignee
+    const NB = "(?<![а-яёa-z])", NE = "(?![а-яёa-z])";
+    function whoOf(s, people, me) {
+      const t = s.toLowerCase();
+      if (new RegExp(NB + "(мы|нам|вместе|хотим|всей семь[её]й|с семь[её]й|всем вместе)" + NE).test(t)) return { who: "both", raw: new RegExp(NB + "(вместе|всей семь[её]й|с семь[её]й|всем вместе)" + NE) };
+      for (const p of people) {
+        const name = (p.name || "").toLowerCase();
+        if (name.length < 3) continue;
+        const stems = [name.slice(0, Math.max(3, name.length - 1))];
+        if (name.startsWith("светл")) stems.push("свет");
+        if (name.startsWith("никол")) stems.push("кол", "никол");
+        for (const st of stems) {
+          const dat = new RegExp(NB + st + "[а-яё]*(е|ю|и)" + NE + "\\s*(надо|нужно|необходимо)?\\s*");
+          const head = new RegExp("^\\s*" + st + "[а-яё]*" + NE + ",?\\s*(надо|нужно|должн[аы]?)?\\s*");
+          if (dat.test(t)) return { who: p.id, raw: dat };
+          if (head.test(t)) return { who: p.id, raw: head };
+        }
+      }
+      const other = people.find((p) => p.id !== me);
+      const rel = new RegExp(NB + "(жене|супруге|мужу|супругу)" + NE + "\\s*(надо|нужно)?\\s*");
+      if (other && rel.test(t)) return { who: other.id, raw: rel };
+      return null;
+    }
+
+    const clean = (s) => s.replace(/\s{2,}/g, " ").replace(/^[\s,.;:—-]+|[\s,.;:—-]+$/g, "").trim();
+    const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+    function parse(text, ctx) {
+      const people = ctx.people || [], me = ctx.me || null, funds = ctx.funds || [];
+      const parts = String(text || "").replace(/\n+/g, ". ").split(/(?<=[.!?;])\s+|\s+(?:а ещё|а еще|ещё нужно|еще нужно|потом|и ещё|и еще)\s+/i).map((x) => x.trim()).filter(Boolean);
+      const items = [];
+      for (let s of parts) {
+        s = s.replace(/[.!?;]+$/, "");
+        const low = s.toLowerCase();
+        if (!low.replace(/[^а-яёa-z0-9]/g, "")) continue;
+        const dt = dateOf(s);
+        const tm = timeOf(s);
+        const wh = whoOf(s, people, me);
+        // strip date/time first so "25 июня" or "в 10" never count as money
+        let work = s.replace(/(\d)\s+(?=\d{3}(?!\d))/g, "$1");
+        if (dt) work = work.replace(new RegExp(dt.raw.source, "i"), " ");
+        if (tm) work = work.replace(new RegExp(tm.raw.source, "i"), " ");
+        const amt = amountOf(work);
+        const spentPast = /потратил|купил[аи]?(?![а-яё])|заплатил|оплатил[аи]?(?![а-яё])|отдал[аи]?(?![а-яё])|стоил|ушло|обошл/.test(low);
+        const planned = /(купить|оплатить|заплатить|отдать|перевести|потратить)(?![а-яё])/.test(low) && !spentPast;
+        const catHit = OUT_CATS.find(([, re]) => re.test(low));
+        let kind = "task";
+        if (/отлож|в копилк|накопил|положил[аи]? на сч[её]т/.test(low) && amt) kind = "save";
+        else if (/взял[аи]? из копилк|снял[аи]? с копилк|из копилки/.test(low) && amt) kind = "save";
+        else if (amt && /зарплат|аванс|преми|получил|пришл[аио]|пришел|пришёл|заработал|вернул|кэшб|кешб|доход|подработ|перевел[аи]? нам|подарил[аи]? нам/.test(low)) kind = "income";
+        else if (/(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))цель(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))|хочу|хотим|мечта|накопить|научиться|к лету|к новому году|за год/.test(low)) kind = "goal";
+        else if (amt && !planned && amt.value >= 10 && (spentPast || catHit || /расход|покупк|рубл|₽/.test(low))) kind = "expense";
+
+        let title = work;
+        if (wh) title = title.replace(new RegExp(wh.raw.source, "i"), " ");
+        title = title.replace(/^(мне|нам|надо|нужно|не забыть|обязательно|пожалуйста)\s+/i, "").replace(/\s+(надо|нужно)\s+/i, " ");
+        const item = { kind, who: wh ? wh.who : (me || "both"), date: dt ? dt.date : null, time: tm ? tm.time : null, goal: null, amount: null, category: null, fund: null };
+
+        if (kind === "expense" || kind === "income" || kind === "save") {
+          item.amount = kind === "save" && /взял|снял|из копилк/.test(low) ? -amt.value : amt.value;
+          item.date = item.date || plusDays(0);
+          let note = title.replace(new RegExp(amt.raw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), " ")
+            .replace(/(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))(я|мы|сегодня|вчера|потратил[аи]?|купил[аи]?|заплатил[аи]?|оплатил[аи]?|отдал[аи]?|отложил[аи]?|получил[аи]?|пришл[аио]|пришел|пришёл|заработал[аи]?|вернули|получила|взяли|сняли|ушло|ушли|рубл[ейя]*|руб\.?|₽|тысяч[аиу]?|тыс\.?)(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))/gi, " ")
+            .replace(/^\s*(на|за|в)\s+/i, "");
+          note = clean(note.replace(/\s+(на|за)\s*$/i, ""));
+          if (kind === "save") {
+            const f = funds.find((x) => { const st = (x.title || "").toLowerCase().slice(0, 5); return st.length >= 3 && low.includes(st); });
+            item.fund = f ? f.id : (funds.length === 1 ? funds[0].id : null);
+            note = clean(note.replace(/(в|из)\s+копилк[уиа]/i, ""));
+          } else {
+            const table = kind === "income" ? IN_CATS : OUT_CATS;
+            const hit = table.find(([, re]) => re.test(low));
+            item.category = hit ? hit[0] : "Другое";
+          }
+          item.title = note ? cap(note) : (item.category || "");
+        } else {
+          if (kind === "goal") title = title.replace(/^\s*(наша\s+|моя\s+)?цель\s*[—:-]?\s*/i, "").replace(/^\s*(я\s+|мы\s+)?(хочу|хотим)\s+/i, "");
+          item.title = cap(clean(title));
+          if (!item.title) continue;
+        }
+        items.push(item);
+      }
+      return items;
+    }
+    return { parse };
+  })();
+  window.__localParse = LP.parse;
+
+  // without a Claude key the page's "Разобрать" runs the local parser on the dictated text
+  function localSample(input) {
+    const prompt = typeof input === "string" ? input : input.map((m) => m.content).join("\n\n");
+    const m = prompt.match(/"""([\s\S]*)"""\s*$/);
+    const fam = store.get("family") && store.get("family").get("members");
+    const people = (fam && Array.isArray(fam.people) ? fam.people : []);
+    const funds = [...(store.get("funds") || new Map())].map(([id, d]) => ({ id, ...d }));
+    let me = null; try { me = localStorage.getItem("dela:me"); } catch (e) {}
+    return LP.parse(m ? m[1] : prompt, { people, me, funds });
+  }
+
   async function parse(input, opts) {
+    if (!ai) return localSample(input);
     const prompt = typeof input === "string" ? input : input.map((m) => m.content).join("\n\n");
     let r;
     try {
@@ -124,7 +317,7 @@
       await ready;
       if (name === "db") return db;
       if (name === "user") return user;
-      if (name === "sample") return ai ? sample : null;
+      if (name === "sample") return sample;
       return null;
     },
   };
@@ -297,6 +490,13 @@
       return true;
     };
 
+    // after a recording, go straight to "what I understood" so there is one less button to find
+    const autoParse = () => {
+      const b = document.getElementById("parseBtn");
+      if (b && !b.hidden && !b.disabled) b.click();
+      else status("Готово — проверьте текст и добавьте его");
+    };
+
     mic.classList.add("voice");
     mic.setAttribute("role", "button");
     mic.setAttribute("tabindex", "0");
@@ -414,7 +614,7 @@
           const res = await fetch("/api/transcribe", { method: "POST", headers: { "content-type": blob.type || "audio/webm" }, body: blob });
           const j = await res.json().catch(() => ({}));
           if (!res.ok) throw new Error(j.error || "HTTP " + res.status);
-          if (insert(j.text)) { status("Готово — проверьте текст и нажмите «Разобрать на дела»"); setTimeout(() => status(""), 4000); }
+          if (insert(j.text)) autoParse();
           else status("Не расслышал слов. Попробуйте ещё раз поближе к микрофону.", true);
         } catch (e) {
           if (r.srText && insert(r.srText)) status("Сервер распознавания не ответил, вставил черновой текст — проверьте его.", true);
@@ -422,8 +622,7 @@
         }
       } else if (r.srText.trim()) {
         insert(r.srText);
-        status("Готово. Для более точного распознавания подключите ключ Whisper в настройках сервера.");
-        setTimeout(() => status(""), 5000);
+        autoParse();
       } else {
         status("Распознавание речи на сервере не подключено, а браузер ничего не распознал. Используйте микрофон на клавиатуре телефона.", true);
       }
