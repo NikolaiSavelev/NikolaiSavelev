@@ -2,51 +2,38 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Nunito:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Nunito:wght@400;500;600;700;800&display=swap">
 <style>
 /* Layout: a warm greeting with today's family progress, then the voice box, then sections.
    Phone: one column with an app-style bottom bar; desktop: tabs under the greeting, per-person columns. */
 :root {
-  --bg: #F1F5EF;
-  --bg2: #E3EEE1;
-  --surface: #FFFFFF;
-  --sunk: #F5F8F3;
-  --ink: #1E2B26;
-  --muted: #64736C;
-  --line: #DCE5DA;
-  --accent: #1F7A63;
-  --accent-ink: #FFFFFF;
-  --accent-soft: #DDEFE7;
-  --sun: #F2B640;
-  --sun-soft: #FCEFCF;
-  --peach: #FBE3D6;
-  --warn: #C2571B;
-  --ok: #2E8A57;
-  --c1: #2F86B3;
-  --c2: #E0607E;
-  --c3: #8A6BD6;
-  --c4: #C98419;
-  --both: #D99A12;
-  --shadow: 0 1px 2px rgba(30, 60, 45, .05), 0 8px 24px rgba(30, 60, 45, .07);
-  --shadow-lift: 0 2px 4px rgba(30, 60, 45, .06), 0 14px 32px rgba(30, 60, 45, .12);
-  --f-display: "Comfortaa", "Nunito", system-ui, sans-serif;
+  /* family palette: forest green = steadiness, rose = love, gold = celebration */
+  --bg: #EEF2EC; --bg2: #E1EADF; --surface: #FFFFFF; --sunk: #F5F7F3; --ink: #18251F; --muted: #5D6B64;
+  --line: #DAE2D8; --accent: #1E5E4E; --accent-ink: #FFFFFF; --accent-soft: #DCEAE3; --sun: #E0A53A; --sun-soft: #FBEFD3;
+  --peach: #FBE4E8; --rose: #CF4F72; --rose-soft: #FBE7ED; --warn: #B85418; --ok: #2C7D52;
+  --c1: #3B6E96; --c2: #CF5778; --c3: #7A62C4; --c4: #B97B17; --both: #C88A16;
+  --shadow: 0 1px 2px rgba(24, 45, 35, .05), 0 8px 24px rgba(24, 45, 35, .07);
+  --shadow-lift: 0 2px 4px rgba(24, 45, 35, .06), 0 14px 32px rgba(24, 45, 35, .12);
+  --f-display: "Lora", Georgia, "Times New Roman", serif;
   --f-body: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --r-lg: 22px;
+  --r-lg: 20px;
   --r-md: 14px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #101814; --bg2: #17251E; --surface: #17221D; --sunk: #131D18; --ink: #E7EFE9; --muted: #9AAEA4;
-    --line: #26352E; --accent: #5CC9A7; --accent-ink: #0F1A15; --accent-soft: #1B3A30; --sun: #F5C35C; --sun-soft: #3A3020;
-    --peach: #3A2620; --warn: #F09A5E; --ok: #5FCB8C; --c1: #6BB8E0; --c2: #F28CA4; --c3: #B39DFF; --c4: #E9B455; --both: #F0BE4E;
+    --bg: #0F1613; --bg2: #16221C; --surface: #16201B; --sunk: #121B16; --ink: #E8EFEA; --muted: #9DAEA5;
+    --line: #26342D; --accent: #6CC9AC; --accent-ink: #0E1813; --accent-soft: #1A3A2F; --sun: #F2C163; --sun-soft: #3A311F;
+    --peach: #3A2128; --rose: #F28AA7; --rose-soft: #3B1F28; --warn: #F09A5E; --ok: #62C98D;
+    --c1: #84B5DD; --c2: #F08DA8; --c3: #B6A2FF; --c4: #E8B456; --both: #F0BE4E;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25); --shadow-lift: 0 14px 32px rgba(0, 0, 0, .4);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #101814; --bg2: #17251E; --surface: #17221D; --sunk: #131D18; --ink: #E7EFE9; --muted: #9AAEA4;
-  --line: #26352E; --accent: #5CC9A7; --accent-ink: #0F1A15; --accent-soft: #1B3A30; --sun: #F5C35C; --sun-soft: #3A3020;
-  --peach: #3A2620; --warn: #F09A5E; --ok: #5FCB8C; --c1: #6BB8E0; --c2: #F28CA4; --c3: #B39DFF; --c4: #E9B455; --both: #F0BE4E;
+  --bg: #0F1613; --bg2: #16221C; --surface: #16201B; --sunk: #121B16; --ink: #E8EFEA; --muted: #9DAEA5;
+  --line: #26342D; --accent: #6CC9AC; --accent-ink: #0E1813; --accent-soft: #1A3A2F; --sun: #F2C163; --sun-soft: #3A311F;
+  --peach: #3A2128; --rose: #F28AA7; --rose-soft: #3B1F28; --warn: #F09A5E; --ok: #62C98D;
+  --c1: #84B5DD; --c2: #F08DA8; --c3: #B6A2FF; --c4: #E8B456; --both: #F0BE4E;
   --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25); --shadow-lift: 0 14px 32px rgba(0, 0, 0, .4);
   color-scheme: dark;
 }
@@ -67,7 +54,10 @@ h1, h2, h3 { text-wrap: balance; }
 
 /* Top line */
 .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
-.brand { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 700; font-size: 17px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-name { font-family: var(--f-display); font-weight: 700; font-size: 18px; line-height: 1.15; display: block; }
+.couple { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.couple svg, .made svg, .proverb svg { color: var(--rose); flex: none; }
 .logo { width: 34px; height: 34px; flex: none; }
 .whobox { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .whobox .q { color: var(--muted); font-size: 14px; }
@@ -83,7 +73,7 @@ h1, h2, h3 { text-wrap: balance; }
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; align-items: center;
 }
 .hero .eyebrow { margin: 0; color: var(--muted); font-weight: 600; font-size: 14px; }
-.hero h1 { margin: 4px 0 6px; font-family: var(--f-display); font-weight: 700; font-size: clamp(25px, 5.4vw, 38px); line-height: 1.15; letter-spacing: -.01em; }
+.hero h1 { margin: 4px 0 6px; font-family: var(--f-display); font-weight: 600; font-size: clamp(25px, 5.4vw, 38px); line-height: 1.15; letter-spacing: -.01em; }
 .hero .sub { margin: 0; font-size: 17px; max-width: 46ch; color: var(--ink); }
 .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 700; background: var(--surface); box-shadow: 0 1px 0 var(--line); }
@@ -98,7 +88,7 @@ h1, h2, h3 { text-wrap: balance; }
 .ring .val { fill: none; stroke: var(--accent); stroke-width: 11; stroke-linecap: round; transition: stroke-dashoffset .8s cubic-bezier(.2, .8, .2, 1), stroke .3s; }
 .ring.full .val { stroke: var(--sun); }
 .ring .lbl { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1.1; }
-.ring .lbl b { font-family: var(--f-display); font-size: 26px; font-variant-numeric: tabular-nums; }
+.ring .lbl b { font-family: var(--f-body); font-weight: 800; font-size: 26px; font-variant-numeric: tabular-nums; }
 .ring .lbl span { font-size: 12px; color: var(--muted); font-weight: 600; }
 @media (max-width: 520px) {
   .hero { grid-template-columns: minmax(0, 1fr); padding: 22px 18px; }
@@ -259,7 +249,7 @@ details.group > summary::-webkit-details-marker { display: none; }
 /* Goals */
 .goals { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; align-items: start; }
 .goal { background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; position: relative; overflow: hidden; animation: rise .4s ease both; transition: box-shadow .2s, transform .2s; }
-.goal::before { content: ""; position: absolute; right: -40px; top: -40px; width: 130px; height: 130px; border-radius: 50%; background: color-mix(in srgb, var(--pc) 12%, transparent); }
+.goal::before { content: ""; position: absolute; right: -40px; top: -40px; width: 130px; height: 130px; border-radius: 50%; background: color-mix(in srgb, var(--pc) 8%, transparent); }
 .goal:hover { box-shadow: var(--shadow-lift); }
 .goal > * { position: relative; }
 .goal.achieved { background: linear-gradient(160deg, var(--sun-soft), var(--surface) 70%); }
@@ -270,7 +260,7 @@ details.group > summary::-webkit-details-marker { display: none; }
 .goal .bar2 i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, color-mix(in srgb, var(--pc) 70%, var(--sun)), var(--pc)); transition: width .8s cubic-bezier(.2, .8, .2, 1); }
 .goal.achieved .bar2 i { background: var(--sun); }
 .goal .pct { font-size: 14px; color: var(--muted); font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 6px; }
-.goal .pct b { color: var(--ink); font-family: var(--f-display); font-size: 17px; }
+.goal .pct b { color: var(--ink); font-family: var(--f-body); font-weight: 800; font-size: 17px; }
 .goal .list { padding: 0; }
 .goal .quick { padding: 0; }
 .goal .trophy { position: absolute; right: 16px; top: 16px; color: var(--sun); }
@@ -293,9 +283,9 @@ details.group > summary::-webkit-details-marker { display: none; }
 .month-bar h2 { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 22px; min-width: 9em; text-align: center; }
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
 .kpi { background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; min-width: 0; position: relative; overflow: hidden; animation: rise .4s ease both; }
-.kpi::after { content: ""; position: absolute; right: -18px; bottom: -18px; width: 64px; height: 64px; border-radius: 50%; background: var(--kc, var(--line)); opacity: .18; }
+.kpi { border-top: 3px solid var(--kc, var(--line)); }
 .kpi .l { font-size: 14px; color: var(--muted); font-weight: 700; }
-.kpi .v { font-family: var(--f-display); font-weight: 700; font-size: clamp(19px, 3.6vw, 25px); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.kpi .v { font-family: var(--f-body); font-weight: 800; font-size: clamp(19px, 3.6vw, 25px); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .kpi.in { --kc: var(--ok); } .kpi.in .v { color: var(--ok); }
 .kpi.out { --kc: var(--c2); }
 .kpi.sav { --kc: var(--accent); } .kpi.sav .v { color: var(--accent); }
@@ -312,7 +302,7 @@ details.group > summary::-webkit-details-marker { display: none; }
 .seg button { border: 0; background: transparent; padding: 7px 16px; border-radius: 999px; cursor: pointer; font-weight: 700; color: var(--muted); font-size: 15px; }
 .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
 .mform .row > .inp, .mform .row > .sel { flex: 1 1 140px; }
-.amt-in { font-family: var(--f-display); font-weight: 700; font-size: 18px; }
+.amt-in { font-family: var(--f-body); font-weight: 800; font-size: 18px; }
 .cat { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 10px; align-items: baseline; }
 .cat .nm { overflow-wrap: anywhere; font-weight: 600; }
 .cat .am { font-size: 14px; font-variant-numeric: tabular-nums; color: var(--muted); text-align: right; font-weight: 600; }
@@ -341,7 +331,7 @@ details.group > summary::-webkit-details-marker { display: none; }
 .sec-title { margin: 8px 0 0; font-family: var(--f-display); font-weight: 700; font-size: 22px; display: flex; align-items: center; gap: 10px; }
 
 /* Help + simpler capture */
-.help-btn { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); font-family: var(--f-display); font-weight: 700; font-size: 17px; color: var(--accent); cursor: pointer; flex: none; }
+.help-btn { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); font-family: var(--f-body); font-weight: 800; font-size: 17px; color: var(--accent); cursor: pointer; flex: none; }
 .help { background: var(--sun-soft); border-radius: var(--r-lg); padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
 .help-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .help h2 { margin: 0; font-family: var(--f-display); font-size: 19px; }
@@ -359,6 +349,16 @@ details.group > summary::-webkit-details-marker { display: none; }
 .alt summary { cursor: pointer; color: var(--muted); font-weight: 700; font-size: 15px; }
 .alt[open] summary { margin-bottom: 10px; }
 .alt label { font-weight: 700; font-size: 14px; color: var(--muted); }
+
+/* Love elements */
+.proverb { margin: 12px 0 0; font-family: var(--f-display); font-style: italic; font-size: 16px; color: var(--ink); opacity: .85; display: flex; gap: 8px; align-items: baseline; }
+.proverb small { font-family: var(--f-body); font-style: normal; font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.love-btn { border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px; border-radius: 999px; font: inherit; font-size: 13px; font-weight: 700; background: var(--rose-soft); color: var(--rose); }
+.love-btn svg { flex: none; }
+.love-btn.on { background: var(--rose); color: #fff; }
+.tag.love { background: var(--rose-soft); color: var(--ink); }
+.tag.love svg { color: var(--rose); }
+.made { text-align: center; color: var(--muted); font-size: 13px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 6px; padding-top: 8px; }
 
 .state { background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 30px 22px; text-align: center; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .state strong { display: block; color: var(--ink); font-family: var(--f-display); font-size: 18px; }
@@ -382,8 +382,8 @@ details.group > summary::-webkit-details-marker { display: none; }
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <svg class="logo" viewBox="0 0 34 34" aria-hidden="true"><circle cx="13" cy="17" r="10" fill="var(--c1)" opacity=".9"/><circle cx="21" cy="17" r="10" fill="var(--c2)" opacity=".85"/><path d="M17 9.5a10 10 0 0 1 0 15 10 10 0 0 1 0-15z" fill="var(--sun)"/></svg>
-      <span>Дела Савельевых</span>
+      <svg class="logo" viewBox="0 0 40 34" style="width:40px" aria-hidden="true"><circle cx="15" cy="17" r="10" fill="none" stroke="var(--c1)" stroke-width="3.2"/><circle cx="25" cy="17" r="10" fill="none" stroke="var(--c2)" stroke-width="3.2"/><path d="M20 22c-2.8-1.9-4.6-3.5-4.6-5.5 0-1.3 1-2.3 2.3-2.3 1 0 1.8.5 2.3 1.4.5-.9 1.3-1.4 2.3-1.4 1.3 0 2.3 1 2.3 2.3 0 2-1.8 3.6-4.6 5.5z" fill="var(--rose)"/></svg>
+      <div><span class="brand-name">Дела Савельевых</span><span class="couple" id="couple"></span></div>
       <button class="help-btn" id="helpBtn" type="button" aria-label="Как пользоваться" title="Как пользоваться">?</button>
     </div>
     <div class="whobox" id="whoBox"></div>
@@ -394,6 +394,7 @@ details.group > summary::-webkit-details-marker { display: none; }
       <p class="eyebrow" id="todayLabel"></p>
       <h1 id="greet">Добро пожаловать</h1>
       <p class="sub" id="heroSub">Здесь живут дела, цели и бюджет вашей семьи.</p>
+      <p class="proverb" id="proverb"></p>
       <div class="badges" id="heroBadges"></div>
     </div>
     <div class="ring" id="heroRing" aria-hidden="true">
@@ -455,6 +456,7 @@ details.group > summary::-webkit-details-marker { display: none; }
   <main id="view">
     <div class="state"><strong>Загружаю общий список…</strong>Дела появятся здесь через пару секунд.</div>
   </main>
+  <footer class="made">Сделано с любовью для семьи Савельевых <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 4.4 2.5h1.6c.8-1.4 2.3-2.5 4.4-2.5 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg></footer>
 </div>
 <button class="fab" id="fab" type="button" aria-label="Надиктовать"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/></svg></button>
 <canvas id="confetti" aria-hidden="true"></canvas>
@@ -649,7 +651,28 @@ details.group > summary::-webkit-details-marker { display: none; }
     piggy: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 9.5c1 .6 1.5 1.5 1.5 2.5h1v3h-1.6c-.5 1-1.3 1.8-2.4 2.3V20h-3v-2h-4v2h-3v-3.2C5 15.8 4 14 4 12c0-3.3 3.1-6 7-6 1.3 0 2.5.3 3.5.8L17 5v4.5"/><circle cx="16" cy="11" r=".6" fill="currentColor"/></svg>',
     target: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/></svg>',
   };
+  const HEART = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 4.4 2.5h1.6c.8-1.4 2.3-2.5 4.4-2.5 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>';
+  const PROVERBS = [
+    "Вся семья вместе — так и душа на месте", "Где любовь, там и счастье", "Вместе и беда не беда",
+    "В семье согласно — так идёт дело прекрасно", "Дружно — не грузно, а врозь — хоть брось", "Где лад, там и клад",
+    "Копейка рубль бережёт", "Делу время — потехе час", "Без труда не выловишь и рыбку из пруда",
+    "Тише едешь — дальше будешь", "Не имей сто рублей, а имей сто друзей", "Дом вести — не руками трясти",
+  ];
+  const genitive = (n) => {
+    if (!n) return n;
+    const last = n.slice(-1).toLowerCase(), prev = n.slice(-2, -1).toLowerCase();
+    if (last === "й" || last === "ь") return n.slice(0, -1) + "я";
+    if (last === "я") return n.slice(0, -1) + "и";
+    if (last === "а") return n.slice(0, -1) + (/[кгхжшчщ]/.test(prev) ? "и" : "ы");
+    if (/[бвгджзклмнпрстфхцчшщ]/.test(last)) return n + "а";
+    return n;
+  };
+
   function renderHero() {
+    const names = S.people.map((p) => p.name).filter(Boolean);
+    $("#couple").innerHTML = names.length >= 2 ? names.map(esc).join(" " + HEART + " ") : "";
+    const doy = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 864e5);
+    $("#proverb").innerHTML = HEART + "<span>«" + esc(PROVERBS[doy % PROVERBS.length]) + "» <small>народная мудрость</small></span>";
     const h = new Date().getHours();
     const hello = h < 5 ? "Доброй ночи" : h < 12 ? "Доброе утро" : h < 18 ? "Добрый день" : "Добрый вечер";
     const me = S.me ? person(S.me).name : "";
@@ -666,7 +689,7 @@ details.group > summary::-webkit-details-marker { display: none; }
     let sub;
     if (!S.loaded.tasks) sub = "Здесь живут дела, цели и бюджет вашей семьи.";
     else if (!total) sub = "На сегодня планов нет. Хороший момент поставить цель или записать вчерашние траты.";
-    else if (!open) sub = `Все ${total} ${plural(total, ["дело", "дела", "дел"])} на сегодня сделаны. Отличный день!`;
+    else if (!open) sub = total === 1 ? "Дело на сегодня сделано. Отличный день!" : `Все ${total} ${plural(total, ["дело", "дела", "дел"])} на сегодня сделаны. Отличный день!`;
     else if (!done) sub = `Сегодня у семьи ${total} ${plural(total, ["дело", "дела", "дел"])}. Начните с самого простого.`;
     else sub = `Сделано ${done} из ${total}. Осталось ${open} — ещё чуть-чуть.`;
     $("#heroSub").textContent = sub;
@@ -692,15 +715,17 @@ details.group > summary::-webkit-details-marker { display: none; }
   // ---- confetti ----
   const reduceMotion = () => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } };
   const fx = { parts: [], raf: 0 };
-  function confetti(x, y, count, spread) {
+  let heartColor = "#CF4F72";
+  function confetti(x, y, count, spread, hearts) {
     if (reduceMotion()) return;
     const cv = $("#confetti"), dpr = Math.min(2, window.devicePixelRatio || 1);
     if (cv.width !== innerWidth * dpr) { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
     const cs = getComputedStyle(document.documentElement);
     const cols = ["--c1", "--c2", "--sun", "--accent", "--c3"].map((v) => cs.getPropertyValue(v).trim() || "#F2B640");
+    heartColor = cs.getPropertyValue("--rose").trim() || "#CF4F72";
     for (let i = 0; i < count; i++) {
       const a = -Math.PI / 2 + (Math.random() - .5) * spread, v = 4 + Math.random() * (spread > 2 ? 9 : 5);
-      fx.parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: 3 + Math.random() * 4, c: cols[i % cols.length], rot: Math.random() * 6, vr: (Math.random() - .5) * .4, life: 0, round: Math.random() < .4 });
+      fx.parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: 3 + Math.random() * 4, c: cols[i % cols.length], rot: Math.random() * 6, vr: (Math.random() - .5) * .4, life: 0, round: Math.random() < .4, heart: hearts ? Math.random() < .6 : false });
     }
     if (!fx.raf) fx.raf = requestAnimationFrame(tick);
     function tick() {
@@ -713,18 +738,21 @@ details.group > summary::-webkit-details-marker { display: none; }
         ctx.globalAlpha = Math.max(0, 1 - p.life / 110);
         ctx.fillStyle = p.c;
         ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-        if (p.round) { ctx.beginPath(); ctx.arc(0, 0, p.r * .7, 0, 7); ctx.fill(); } else ctx.fillRect(-p.r, -p.r / 2.5, p.r * 2, p.r / 1.25);
+        if (p.heart) {
+          const k = p.r / 5; ctx.scale(k, k); ctx.fillStyle = heartColor;
+          ctx.beginPath(); ctx.moveTo(0, 4); ctx.bezierCurveTo(-7, -1, -4, -8, 0, -4); ctx.bezierCurveTo(4, -8, 7, -1, 0, 4); ctx.fill();
+        } else if (p.round) { ctx.beginPath(); ctx.arc(0, 0, p.r * .7, 0, 7); ctx.fill(); } else ctx.fillRect(-p.r, -p.r / 2.5, p.r * 2, p.r / 1.25);
         ctx.restore();
       }
       if (fx.parts.length) fx.raf = requestAnimationFrame(tick);
       else { fx.raf = 0; ctx.clearRect(0, 0, innerWidth, innerHeight); }
     }
   }
-  const burstFrom = (el, big) => {
+  const burstFrom = (el, big, hearts) => {
     const r = el && el.getBoundingClientRect ? el.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 3, width: 0, height: 0 };
-    confetti(r.left + r.width / 2, r.top + r.height / 2, big ? 120 : 26, big ? 3.2 : 1.6);
+    confetti(r.left + r.width / 2, r.top + r.height / 2, big ? 120 : 26, big ? 3.2 : 1.6, hearts);
   };
-  const celebrate = () => confetti(innerWidth / 2, innerHeight * .35, 160, 3.6);
+  const celebrate = () => confetti(innerWidth / 2, innerHeight * .35, 160, 3.6, true);
   function openToday() {
     const t = today();
     return S.tasks.filter((x) => !x.done && x.date && x.date <= t && matchesFilter(x.who));
@@ -753,6 +781,14 @@ details.group > summary::-webkit-details-marker { display: none; }
     if (t.time) meta.push(`<span class="tag mono">${esc(t.time)}</span>`);
     if (t.goal && !ctx.inGoal) { const g = S.goals.find((g) => g.id === t.goal); if (g) meta.push(`<span class="tag gtag">${BADGE.target}${esc(g.title)}</span>`); }
     const ro = !S.canWrite;
+    // thank-yous: the partner can say «спасибо» for a finished task
+    const hearts = t.hearts && typeof t.hearts === "object" ? t.hearts : {};
+    const from = Object.keys(hearts).filter((k) => hearts[k] && k !== S.me);
+    if (t.done && from.length) meta.push(`<span class="tag love">${HEART}спасибо от ${esc(from.map((k) => genitive(person(k).name)).join(" и "))}</span>`);
+    if (t.done && !ro && S.me && (t.who !== S.me || t.who === "both")) {
+      const mine = !!hearts[S.me];
+      meta.push(`<button class="love-btn${mine ? " on" : ""}" type="button" data-act="heart" data-id="${t.id}" aria-pressed="${mine}">${HEART}${mine ? "Вы сказали спасибо" : "Спасибо"}</button>`);
+    }
     const confirming = S.confirm === t.id;
     const acts = ro ? "" : confirming
       ? `<button class="btn small danger" type="button" data-act="del-yes" data-id="${t.id}">Удалить</button><button class="btn small ghost" type="button" data-act="del-no">Нет</button>`
@@ -1299,7 +1335,7 @@ ${funds}
       if (act === "toggle" && t) {
         const nowDone = !t.done;
         if (nowDone) {
-          burstFrom(b, false);
+          burstFrom(b, false, t.who === "both");
           S.just = id; setTimeout(() => { if (S.just === id) S.just = null; }, 700);
           const td = today();
           const left = S.tasks.filter((x) => x.id !== id && !x.done && x.date && x.date <= td).length;
@@ -1323,6 +1359,13 @@ ${funds}
       else if (act === "del-yes") { S.confirm = null; await delTask(id); toast("Удалено"); }
       else if (act === "gdel-yes") { S.confirm = null; await delGoal(id); toast("Цель удалена"); }
       else if (act === "gdone") { const g = S.goals.find((x) => x.id === id); if (g) { if (!g.done) { celebrate(); toast("Поздравляем! Цель достигнута"); } await patchGoal(id, { done: !g.done, doneAt: g.done ? null : Date.now() }); } }
+      else if (act === "heart" && t && S.me) {
+        const hearts = { ...(t.hearts && typeof t.hearts === "object" ? t.hearts : {}) };
+        const on = !hearts[S.me];
+        hearts[S.me] = on ? Date.now() : 0;
+        if (on) { burstFrom(b, false, true); toast("Спасибо отправлено ♥"); }
+        await patchTask(id, { hearts });
+      }
       else if (act === "mtype") { S.mType = b.dataset.v === "in" ? "in" : "out"; renderView(); }
       else if (act === "month") { const v = +b.dataset.v; S.month = v ? shiftMonth(S.month, v) : today().slice(0, 7); S.editing = null; S.confirm = null; renderView(); }
       else if (act === "limits-on") { S.editLimits = true; renderView(); }
