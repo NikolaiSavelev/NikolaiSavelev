@@ -1,0 +1,12 @@
+{
+  "name": "family-planner",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun server.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.132.1",
+    "web-push": "3.6.7"
+  }
+}
