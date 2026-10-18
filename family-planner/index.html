@@ -100,8 +100,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .pv-item .inp.title { width: 100%; font-weight: 500; }
 .pv-fields { grid-column: 2 / 3; display: flex; flex-wrap: wrap; gap: 6px; }
 .pv-fields .sel, .pv-fields .inp { min-height: 34px; padding: 5px 8px; font-size: 14px; }
-.kind-pill { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 4px 7px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); cursor: pointer; margin-top: 8px; }
-.kind-pill.goal { color: var(--accent); border-color: var(--accent); }
+.kind-sel { min-height: 34px !important; padding: 5px 6px !important; font-size: 13px; font-weight: 600; }
 
 /* Tabs + filters */
 .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
@@ -188,6 +187,55 @@ details.group > summary::-webkit-details-marker { display: none; }
 .person-row label.me { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); white-space: nowrap; }
 .note { font-size: 13px; color: var(--muted); border-left: 3px solid var(--line); padding-left: 10px; }
 
+/* Budget */
+.month-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.month-bar h2 { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: 19px; min-width: 9em; text-align: center; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kpi .l { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 600; }
+.kpi .v { font-family: var(--f-mono); font-size: clamp(17px, 3.4vw, 22px); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.kpi.in .v { color: var(--ok); }
+.kpi.sav .v { color: var(--accent); }
+.kpi.neg .v { color: var(--warn); }
+.kpi .s { font-size: 12px; color: var(--muted); }
+.bgrid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 820px) { .bgrid { grid-template-columns: minmax(0, 1fr); } }
+.stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.card > h3 { margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 600; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.card > h3 .btn { text-transform: none; letter-spacing: 0; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 3px; background: var(--sunk); text-transform: none; letter-spacing: 0; }
+.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 7px; cursor: pointer; font-weight: 500; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.mform .row > .inp, .mform .row > .sel { flex: 1 1 140px; }
+.amt-in { font-family: var(--f-mono); font-size: 17px; }
+.cat { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: baseline; }
+.cat .nm { overflow-wrap: anywhere; }
+.cat .am { font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; color: var(--muted); text-align: right; }
+.cat .am b { color: var(--ink); font-weight: 500; }
+.cat .track { grid-column: 1 / -1; position: relative; height: 8px; background: var(--sunk); border-radius: 4px; }
+.cat .track i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--muted); border-radius: 4px; }
+.cat.over .track i { background: var(--warn); }
+.cat .track u { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.cat .over-note { grid-column: 1 / -1; font-size: 12px; color: var(--warn); }
+.cat .lim { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
+.cat .lim .inp { min-height: 32px; padding: 4px 8px; width: 9em; font-family: var(--f-mono); }
+.trend { display: grid; grid-template-columns: 3.2em minmax(0, 1fr) auto; gap: 6px 10px; align-items: center; font-size: 13px; }
+.trend .mo { color: var(--muted); }
+.trend .mo.cur { color: var(--ink); font-weight: 600; }
+.trend .bars { display: flex; flex-direction: column; gap: 3px; }
+.trend .bars i { display: block; height: 6px; border-radius: 3px; }
+.trend .bars .bi { background: var(--ok); }
+.trend .bars .bo { background: var(--muted); }
+.legend { display: flex; gap: 12px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 5px; }
+.legend i { width: 10px; height: 6px; border-radius: 3px; display: inline-block; }
+.amt { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 500; }
+.amt.in { color: var(--ok); }
+.amt.sav { color: var(--accent); }
+.task.mrow { grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; }
+.sec-title { margin: 6px 0 0; font-family: var(--f-display); font-weight: 500; font-size: 19px; }
+
 .state { background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; padding: 28px 20px; text-align: center; color: var(--muted); }
 .state strong { display: block; color: var(--ink); font-size: 16px; margin-bottom: 4px; }
 
@@ -218,8 +266,8 @@ details.group > summary::-webkit-details-marker { display: none; }
   </header>
 
   <section class="capture" id="capture" aria-labelledby="capLabel">
-    <label class="cap-label" id="capLabel" for="dictation">Надиктуйте или напишите</label>
-    <textarea id="dictation" rows="3" placeholder="Например: завтра в 10 записать сына к врачу, жене купить подарок маме до пятницы. Цель — пробежать полумарафон к маю."></textarea>
+    <label class="cap-label" id="capLabel" for="dictation">Надиктуйте дела, траты или доходы</label>
+    <textarea id="dictation" rows="3" placeholder="Например: завтра в 10 записать сына к врачу. Потратил 3 500 на продукты. Жене пришла зарплата 80 тысяч. Отложили 10 тысяч на отпуск."></textarea>
     <div class="hint">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/></svg>
       <span>На телефоне нажмите микрофон на клавиатуре и говорите. Можно сразу несколько дел подряд.</span>
@@ -246,6 +294,7 @@ details.group > summary::-webkit-details-marker { display: none; }
       <button class="tab" role="tab" data-tab="today" id="tab-today">Сегодня<span class="n" id="n-today"></span></button>
       <button class="tab" role="tab" data-tab="all" id="tab-all">Все дела<span class="n" id="n-all"></span></button>
       <button class="tab" role="tab" data-tab="goals" id="tab-goals">Цели<span class="n" id="n-goals"></span></button>
+      <button class="tab" role="tab" data-tab="budget" id="tab-budget">Бюджет</button>
       <button class="tab" role="tab" data-tab="family" id="tab-family">Семья</button>
     </div>
     <div class="chips" id="chips"></div>
@@ -279,6 +328,25 @@ details.group > summary::-webkit-details-marker { display: none; }
   const isTime = (s) => typeof s === "string" && /^\d{2}:\d{2}$/.test(s);
   const dayOf = (ms) => (ms ? iso(new Date(ms)) : null);
 
+  // ---- money ----
+  const rub = (n) => new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 }).format(Math.round(n || 0)) + " ₽";
+  const parseAmount = (s, allowNeg) => {
+    if (typeof s === "number") return isFinite(s) && (allowNeg ? s !== 0 : s > 0) ? s : null;
+    let t = String(s ?? "").toLowerCase().replace(/[\s ]|₽|руб\.?|р\.$/g, "").replace(",", ".");
+    let k = 1;
+    if (/(к|тыс\.?|т)$/.test(t)) { k = 1000; t = t.replace(/(к|тыс\.?|т)$/, ""); }
+    const n = parseFloat(t) * k;
+    if (!isFinite(n) || n === 0 || (!allowNeg && n < 0)) return null;
+    return Math.round(n * 100) / 100;
+  };
+  const CATS = {
+    out: ["Продукты", "Кафе и доставка", "Дом и ЖКХ", "Транспорт", "Дети", "Здоровье", "Одежда", "Связь и подписки", "Развлечения", "Подарки", "Кредиты", "Другое"],
+    in: ["Зарплата", "Подработка", "Возвраты и кэшбэк", "Подарки", "Другое"],
+  };
+  const monthName = (ym) => { const [y, m] = ym.split("-").map(Number); const s = new Date(y, m - 1, 1).toLocaleDateString("ru-RU", { month: "long", year: "numeric" }).replace(/\s*г\.?$/, ""); return s.charAt(0).toUpperCase() + s.slice(1); };
+  const shortMonth = (ym) => { const [y, m] = ym.split("-").map(Number); return new Date(y, m - 1, 1).toLocaleDateString("ru-RU", { month: "short" }).replace(".", ""); };
+  const shiftMonth = (ym, n) => { const [y, m] = ym.split("-").map(Number); const d = new Date(y, m - 1 + n, 1); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`; };
+
   const COLORS = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c4)"];
   const ICON = {
     check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
@@ -292,6 +360,7 @@ details.group > summary::-webkit-details-marker { display: none; }
     family: null, people: [], tasks: [], goals: [], loaded: { family: false, tasks: false, goals: false },
     me: null, tab: ls.get("tab") || "today", filter: ls.get("filter") || "all",
     editing: null, confirm: null, preview: null, noDb: false,
+    money: [], funds: [], limits: {}, month: today().slice(0, 7), mType: "out", editLimits: false,
   };
 
   // ---- people ----
@@ -347,6 +416,23 @@ details.group > summary::-webkit-details-marker { display: none; }
     await db.doc("goals/" + id).delete();
   });
   const saveFamily = (people) => write((db) => db.doc("family/members").set({ people }));
+  const addMoney = (m) => write((db) => db.collection("money").add({
+    type: m.type, amount: m.amount, cat: m.cat || null, note: m.note || "", who: m.who, date: m.date || today(),
+    fund: m.fund || null, by: S.me || null, createdAt: Date.now(),
+  }));
+  const patchMoney = (id, p) => write((db) => db.doc("money/" + id).update(p));
+  const delMoney = (id) => write((db) => db.doc("money/" + id).delete());
+  const addFund = (f) => write((db) => db.collection("funds").add({
+    title: f.title, target: f.target, deadline: f.deadline || null, who: f.who, by: S.me || null, createdAt: Date.now(),
+  }));
+  const delFund = (id) => write(async (db) => {
+    for (const m of S.money.filter((m) => m.fund === id)) await db.doc("money/" + m.id).update({ fund: null });
+    await db.doc("funds/" + id).delete();
+  });
+  const saveLimits = (limits) => write((db) => db.doc("budget/limits").set({ limits }));
+  const catOptions = (type, sel) => CATS[type].map((c) => `<option${c === sel ? " selected" : ""}>${esc(c)}</option>`).join("");
+  const fundOptions = (sel) => '<option value="">Без копилки</option>' + S.funds
+    .map((f) => `<option value="${esc(f.id)}"${f.id === sel ? " selected" : ""}>${esc(f.title)}</option>`).join("");
 
   // ---- who am I ----
   function resolveMe() {
@@ -531,6 +617,170 @@ details.group > summary::-webkit-details-marker { display: none; }
     return `<div class="goals">${cards}${form}</div>${!goals.length && ro ? `<div class="state"><strong>Целей пока нет</strong></div>` : ""}`;
   }
 
+  function moneyRow(m) {
+    if (S.editing === "m:" + m.id) return moneyEditor(m);
+    const p = person(m.who);
+    const f = m.fund && S.funds.find((x) => x.id === m.fund);
+    const amt = +m.amount || 0;
+    const sum = m.type === "in" ? `<span class="amt in">+${rub(amt)}</span>`
+      : m.type === "save" ? `<span class="amt sav">${amt < 0 ? "← " + rub(-amt) : "→ " + rub(amt)}</span>`
+      : `<span class="amt">−${rub(amt)}</span>`;
+    const title = m.type === "save" ? (amt < 0 ? "Взяли из копилки" : "В копилку") + (f ? ` «${f.title}»` : "")
+      : (m.note || m.cat || (m.type === "in" ? "Доход" : "Расход"));
+    const meta = [`<span class="tag who" style="--pc:${p.color}"><span class="dot"></span>${esc(p.name)}</span>`];
+    if (m.type !== "save" && m.cat && m.note) meta.push(`<span class="tag">${esc(m.cat)}</span>`);
+    if (m.type === "save" && m.note) meta.push(`<span class="tag">${esc(m.note)}</span>`);
+    const confirming = S.confirm === "m:" + m.id;
+    const acts = !S.canWrite ? "" : confirming
+      ? `<button class="btn small danger" type="button" data-act="mdel-yes" data-id="${m.id}">Удалить</button><button class="btn small ghost" type="button" data-act="del-no">Нет</button>`
+      : `<button class="icon-btn" type="button" title="Изменить" aria-label="Изменить" data-act="medit" data-id="${m.id}">${ICON.edit}</button>
+         <button class="icon-btn" type="button" title="Удалить" aria-label="Удалить" data-act="mdel" data-id="${m.id}">${ICON.x}</button>`;
+    return `<li class="task mrow">
+      <div><div class="t-title">${esc(title)}</div><div class="t-meta">${meta.join("")}</div></div>
+      ${sum}
+      <div class="t-act">${acts}</div>
+    </li>`;
+  }
+  function moneyEditor(m) {
+    const id = m.id;
+    return `<li class="editor">
+      <div class="row">
+        <label class="sr" for="me-amt-${id}">Сумма</label><input class="inp amt-in" id="me-amt-${id}" inputmode="decimal" value="${esc(m.amount)}" style="flex:1 1 120px">
+        ${m.type === "save" ? `<label class="sr" for="me-fund-${id}">Копилка</label><select class="sel" id="me-fund-${id}">${fundOptions(m.fund)}</select>`
+          : `<label class="sr" for="me-cat-${id}">Категория</label><select class="sel" id="me-cat-${id}">${catOptions(m.type, m.cat)}</select>`}
+      </div>
+      <label class="sr" for="me-note-${id}">Комментарий</label><input class="inp" id="me-note-${id}" value="${esc(m.note || "")}" placeholder="Комментарий">
+      <div class="row">
+        <label class="sr" for="me-who-${id}">Чей</label><select class="sel" id="me-who-${id}">${whoOptions(m.who)}</select>
+        <label class="sr" for="me-date-${id}">Дата</label><input class="inp" type="date" id="me-date-${id}" value="${esc(m.date || "")}">
+      </div>
+      <div class="row"><button class="btn primary small" type="button" data-act="msave" data-id="${id}">Сохранить</button><button class="btn small ghost" type="button" data-act="cancel">Отмена</button></div>
+    </li>`;
+  }
+
+  function viewBudget() {
+    const ym = S.month, t = today(), ro = !S.canWrite, isCur = ym === t.slice(0, 7);
+    const sum = (arr) => arr.reduce((s, m) => s + (+m.amount || 0), 0);
+    const mine = S.money.filter((m) => matchesFilter(m.who) && typeof m.date === "string");
+    const inMonth = mine.filter((m) => m.date.startsWith(ym));
+    const inc = sum(inMonth.filter((m) => m.type === "in"));
+    const out = sum(inMonth.filter((m) => m.type === "out"));
+    const sav = sum(inMonth.filter((m) => m.type === "save"));
+    const rest = inc - out - sav;
+    const arrow = (d) => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+
+    const kpis = `<div class="kpis">
+      <div class="kpi in"><span class="l">Доходы</span><span class="v">${rub(inc)}</span></div>
+      <div class="kpi"><span class="l">Расходы</span><span class="v">${rub(out)}</span>${inc ? `<span class="s">${Math.round((out / inc) * 100)}% от доходов</span>` : ""}</div>
+      <div class="kpi sav"><span class="l">Отложено</span><span class="v">${sav < 0 ? "−" : ""}${rub(Math.abs(sav))}</span></div>
+      <div class="kpi${rest < 0 ? " neg" : ""}"><span class="l">Остаток</span><span class="v">${rest < 0 ? "−" : ""}${rub(Math.abs(rest))}</span><span class="s">доходы − расходы − отложено</span></div>
+    </div>`;
+
+    const type = S.mType;
+    const form = ro ? "" : `<form class="card mform" data-form="money">
+      <h3>Записать <span class="seg" role="group" aria-label="Тип записи"><button type="button" data-act="mtype" data-v="out" aria-pressed="${type === "out"}">Расход</button><button type="button" data-act="mtype" data-v="in" aria-pressed="${type === "in"}">Доход</button></span></h3>
+      <div class="row">
+        <label class="sr" for="m-amount">Сумма</label><input class="inp amt-in" id="m-amount" inputmode="decimal" placeholder="Сумма, ₽" autocomplete="off">
+        <label class="sr" for="m-cat">Категория</label><select class="sel" id="m-cat">${catOptions(type)}</select>
+      </div>
+      <div class="row"><label class="sr" for="m-note">Комментарий</label><input class="inp" id="m-note" placeholder="Комментарий, например «Пятёрочка»" autocomplete="off"></div>
+      <div class="row">
+        <label class="sr" for="m-who">Чей</label><select class="sel" id="m-who">${whoOptions(defaultWho())}</select>
+        <label class="sr" for="m-date">Дата</label><input class="inp" type="date" id="m-date" value="${isCur ? t : ym + "-01"}">
+        <button class="btn primary" type="submit">Записать</button>
+      </div>
+    </form>`;
+
+    const entries = inMonth.slice().sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+    const days = new Map();
+    for (const m of entries) { if (!days.has(m.date)) days.set(m.date, []); days.get(m.date).push(m); }
+    const list = entries.length
+      ? [...days].map(([d, arr]) => `<section class="group"><h3>${esc(rel(d) === fmt(d) ? fmt(d, { weekday: "short", day: "numeric", month: "long" }) : rel(d))}</h3><ul class="list">${arr.map(moneyRow).join("")}</ul></section>`).join("")
+      : `<div class="state"><strong>За ${esc(monthName(ym).toLowerCase())} записей нет</strong>Скажите в поле сверху «потратил 3 500 на продукты» или запишите вручную.</div>`;
+
+    const byCat = new Map();
+    for (const m of inMonth) if (m.type === "out") { const c = m.cat || "Другое"; byCat.set(c, (byCat.get(c) || 0) + (+m.amount || 0)); }
+    const lims = S.limits || {};
+    const names = S.editLimits ? CATS.out : [...new Set([...byCat.keys(), ...Object.keys(lims).filter((k) => +lims[k] > 0)])];
+    const rows = names.map((c) => ({ c, v: byCat.get(c) || 0, lim: +lims[c] || 0 }));
+    if (!S.editLimits) rows.sort((a, b) => b.v - a.v || b.lim - a.lim);
+    const max = Math.max(1, ...rows.map((r) => Math.max(r.v, r.lim)));
+    const catHtml = rows.length ? rows.map((r, i) => {
+      const over = r.lim && r.v > r.lim;
+      return `<div class="cat${over ? " over" : ""}">
+        <span class="nm">${esc(r.c)}</span><span class="am"><b>${rub(r.v)}</b>${r.lim ? ` из ${rub(r.lim)}` : ""}</span>
+        <div class="track"><i style="width:${(r.v / max) * 100}%"></i>${r.lim ? `<u style="left:calc(${(r.lim / max) * 100}% - 1px)"></u>` : ""}</div>
+        ${over ? `<span class="over-note">Сверх лимита на ${rub(r.v - r.lim)}</span>` : ""}
+        ${S.editLimits ? `<label class="lim" for="lim-${i}">Лимит в месяц <input class="inp" id="lim-${i}" data-cat="${esc(r.c)}" inputmode="decimal" value="${r.lim || ""}" placeholder="нет"></label>` : ""}
+      </div>`;
+    }).join("") : `<div class="empty">Расходов в этом месяце пока нет.</div>`;
+    const catCard = S.editLimits && !ro
+      ? `<form class="card" data-form="limits"><h3>Лимиты на месяц <span class="row"><button class="btn small primary" type="submit">Сохранить</button><button class="btn small ghost" type="button" data-act="limits-off">Отмена</button></span></h3>${catHtml}</form>`
+      : `<div class="card"><h3>Расходы по категориям${ro ? "" : ' <button class="btn small ghost" type="button" data-act="limits-on">Лимиты</button>'}</h3>${catHtml}</div>`;
+
+    const months = [];
+    for (let i = 5; i >= 0; i--) months.push(shiftMonth(ym, -i));
+    const tr = months.map((mm) => { const a = mine.filter((m) => m.date.startsWith(mm)); return { mm, i: sum(a.filter((m) => m.type === "in")), o: sum(a.filter((m) => m.type === "out")) }; });
+    const tmax = Math.max(1, ...tr.map((x) => Math.max(x.i, x.o)));
+    const trendHtml = tr.some((x) => x.i || x.o)
+      ? `<div class="legend"><span><i style="background:var(--ok)"></i>доходы</span><span><i style="background:var(--muted)"></i>расходы</span><span>справа — разница</span></div>
+         <div class="trend">${tr.map((x) => { const n = x.i - x.o; return `<span class="mo${x.mm === ym ? " cur" : ""}">${esc(shortMonth(x.mm))}</span><div class="bars"><i class="bi" style="width:${(x.i / tmax) * 100}%"></i><i class="bo" style="width:${(x.o / tmax) * 100}%"></i></div><span class="amt${n > 0 ? " in" : ""}">${n > 0 ? "+" : n < 0 ? "−" : ""}${rub(Math.abs(n))}</span>`; }).join("")}</div>`
+      : `<div class="empty">График появится, когда накопятся записи.</div>`;
+
+    const saves = S.money.filter((m) => m.type === "save");
+    const funds = S.funds.filter((f) => matchesFilter(f.who)).sort((a, b) => (a.deadline || "9999").localeCompare(b.deadline || "9999"));
+    const fundHtml = funds.map((f) => {
+      const p = person(f.who);
+      const saved = sum(saves.filter((m) => m.fund === f.id));
+      const target = +f.target || 0;
+      const pct = target ? Math.max(0, Math.min(100, Math.round((saved / target) * 100))) : 0;
+      const left = Math.max(0, target - saved);
+      const meta = [`<span class="tag who" style="--pc:${p.color}"><span class="dot"></span>${esc(p.name)}</span>`];
+      if (target && left <= 0) meta.push(`<span class="tag" style="color:var(--ok);border-color:currentColor">Собрано</span>`);
+      else if (f.deadline) {
+        const d = diff(f.deadline, t);
+        meta.push(`<span class="tag mono">до ${esc(fmt(f.deadline, { day: "numeric", month: "long", year: "numeric" }))}</span>`);
+        if (d < 0) meta.push(`<span class="tag late">срок прошёл</span>`);
+        else meta.push(`<span class="tag mono">≈ ${rub(left / Math.max(1, Math.ceil(d / 30.44)))} в месяц</span>`);
+      }
+      const confirming = S.confirm === "f:" + f.id;
+      return `<article class="goal" style="--pc:${p.color}">
+        <h3>${esc(f.title)}</h3>
+        <div class="g-meta">${meta.join("")}</div>
+        <div><div class="bar2" aria-hidden="true"><i style="width:${pct}%"></i></div><div class="pct">${rub(saved)} из ${rub(target)} · ${pct}%${left > 0 ? ` · осталось ${rub(left)}` : ""}</div></div>
+        ${ro ? "" : `<form class="quick" data-form="fund-move" data-fund="${f.id}" data-who="${esc(f.who)}"><label class="sr" for="fm-${f.id}">Сумма</label><input class="inp" id="fm-${f.id}" inputmode="decimal" placeholder="Сумма, ₽" autocomplete="off"><button class="btn small" type="submit" value="in">Отложить</button><button class="btn small ghost" type="submit" value="out">Взять</button></form>
+        <div class="row">${confirming
+          ? `<span class="status">Удалить копилку? Записи останутся в истории.</span><button class="btn small danger" type="button" data-act="fdel-yes" data-id="${f.id}">Удалить</button><button class="btn small ghost" type="button" data-act="del-no">Нет</button>`
+          : `<button class="btn small ghost" type="button" data-act="fdel" data-id="${f.id}">Удалить</button>`}</div>`}
+      </article>`;
+    }).join("");
+    const fundForm = ro ? "" : `<form class="newgoal" data-form="fund">
+      <h3>Новая финансовая цель</h3>
+      <label class="sr" for="nf-title">Название</label><input class="inp" id="nf-title" placeholder="Например: отпуск летом, подушка безопасности" autocomplete="off">
+      <div class="row">
+        <label class="sr" for="nf-target">Сколько нужно</label><input class="inp amt-in" id="nf-target" inputmode="decimal" placeholder="Сумма, ₽" autocomplete="off" style="flex:1 1 120px">
+        <label class="sr" for="nf-date">К какому сроку</label><input class="inp" type="date" id="nf-date">
+      </div>
+      <div class="row"><label class="sr" for="nf-who">Чья цель</label><select class="sel" id="nf-who">${whoOptions("both")}</select><button class="btn primary" type="submit">Создать копилку</button></div>
+    </form>`;
+
+    return `<div class="stack">
+      <div class="month-bar">
+        <button class="icon-btn" type="button" data-act="month" data-v="-1" aria-label="Предыдущий месяц">${arrow("M15 6l-6 6 6 6")}</button>
+        <h2>${esc(monthName(ym))}</h2>
+        <button class="icon-btn" type="button" data-act="month" data-v="1" aria-label="Следующий месяц">${arrow("M9 6l6 6-6 6")}</button>
+        ${isCur ? "" : '<button class="btn small ghost" type="button" data-act="month" data-v="0">К текущему месяцу</button>'}
+      </div>
+      ${kpis}
+      <div class="bgrid">
+        <div class="stack">${form}<div class="groups">${list}</div></div>
+        <div class="stack">${catCard}<div class="card"><h3>Последние 6 месяцев</h3>${trendHtml}</div></div>
+      </div>
+      <h2 class="sec-title">Финансовые цели</h2>
+      ${!funds.length && ro ? '<div class="state"><strong>Копилок пока нет</strong></div>' : `<div class="goals">${fundHtml}${fundForm}</div>`}
+    </div>`;
+  }
+
   function viewFamily() {
     const ro = !S.canWrite;
     const rows = S.people.map((p, i) => `<div class="person-row" style="--pc:${COLORS[i % COLORS.length]}">
@@ -572,10 +822,14 @@ details.group > summary::-webkit-details-marker { display: none; }
     else if (!S.loaded.family || !S.loaded.tasks) html = `<div class="state"><strong>Загружаю общий список…</strong>Дела появятся здесь через пару секунд.</div>`;
     else if (!S.people.length) html = S.canWrite ? emptyFamily() : `<div class="state"><strong>Список ещё не настроен</strong>Попросите владельца открыть страницу.</div>`;
     else html = (S.canWrite ? "" : `<div class="ro-banner">Вы смотрите список без права изменений. Попросите владельца пригласить вас с правом редактирования.</div>`) +
-      ({ today: viewToday, all: viewAll, goals: viewGoals, family: viewFamily }[S.tab] || viewToday)();
+      ({ today: viewToday, all: viewAll, goals: viewGoals, budget: viewBudget, family: viewFamily }[S.tab] || viewToday)();
     v.innerHTML = html;
 
-    for (const id in keep) { const el = document.getElementById(id); if (el && el.tagName !== "SELECT" && !el.dataset.fresh) el.value = keep[id]; else if (el && el.tagName === "SELECT" && keep[id]) el.value = keep[id]; }
+    for (const id in keep) {
+      const el = document.getElementById(id); if (!el) continue;
+      if (el.tagName !== "SELECT") el.value = keep[id];
+      else if ([...el.options].some((o) => o.value === keep[id])) el.value = keep[id];
+    }
     if (focusId) { const el = document.getElementById(focusId); if (el) { el.focus(); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
   }
 
@@ -608,6 +862,8 @@ details.group > summary::-webkit-details-marker { display: none; }
     } catch (e) {}
   }
 
+  const KIND_LABEL = { task: "Дело", goal: "Цель", expense: "Расход", income: "Доход", save: "Копилка" };
+  const isMoney = (k) => k === "expense" || k === "income" || k === "save";
   let parseCtl = null;
   async function parse() {
     const text = $("#dictation").value.trim();
@@ -618,7 +874,8 @@ details.group > summary::-webkit-details-marker { display: none; }
     const t = today();
     const speaker = S.me ? `${S.me} (${person(S.me).name})` : "не указан";
     const goals = S.goals.filter((g) => !g.done).map((g) => `${g.id} — ${g.title}`).join("\n") || "нет";
-    const prompt = `Ты помогаешь вести семейный список дел. Разбери надиктованный текст на отдельные дела и цели.
+    const funds = S.funds.map((f) => `${f.id} — ${f.title}`).join("\n") || "нет";
+    const prompt = `Ты помогаешь вести семейный список дел и бюджет. Разбери надиктованный текст на отдельные дела, цели и денежные записи.
 Сегодня ${t}, ${fmt(t, { weekday: "long" })}.
 Члены семьи (id — имя):
 ${S.people.map((p) => `${p.id} — ${p.name || "без имени"}`).join("\n")}
@@ -635,7 +892,18 @@ ${goals}
 - kind: "goal" для долгосрочной цели («цель», «хочу к лету», «накопить», «научиться», «похудеть»), иначе "task". Для цели date — срок цели.
 - goal: id существующей цели, если дело явно служит ей, иначе null.
 
-Ответь только JSON-массивом объектов {"kind","title","who","date","time","goal"}.
+Деньги:
+- kind "expense" — трата («потратил», «купили за», «заплатили»); kind "income" — поступление («пришла зарплата», «получила», «вернули»).
+  amount — число в рублях («80 тысяч» = 80000, «3,5к» = 3500, «полторы тысячи» = 1500). title — коротко, на что или откуда. date — день, по умолчанию сегодня. who — кто потратил или получил.
+  category — строго одна из списка.
+  Расходы: ${CATS.out.join(", ")}.
+  Доходы: ${CATS.in.join(", ")}.
+- kind "save" — отложили в копилку («отложил 10 тысяч на отпуск»): amount положительное, fund — id копилки. «Взяли из копилки» — amount отрицательное.
+  Копилки (id — название):
+${funds}
+- Если копилки нет в списке, а человек говорит о долгой денежной цели («хотим накопить 300 тысяч на машину») — это kind "goal".
+
+Ответь только JSON-массивом объектов {"kind","title","who","date","time","goal","amount","category","fund"}. Ненужные поля — null.
 
 Текст:
 """${text.slice(0, 4000)}"""`;
@@ -644,14 +912,22 @@ ${goals}
       const arr = await S.sample.json(prompt, { modelTier: "quick", signal: parseCtl.signal });
       const valid = new Set([...S.people.map((p) => p.id), "both"]);
       const goalIds = new Set(S.goals.map((g) => g.id));
-      const items = (Array.isArray(arr) ? arr : []).filter((x) => x && typeof x.title === "string" && x.title.trim()).map((x) => ({
-        kind: x.kind === "goal" ? "goal" : "task",
-        title: x.title.trim().slice(0, 300),
-        who: valid.has(x.who) ? x.who : defaultWho(),
-        date: isISO(x.date) ? x.date : null,
-        time: isTime(x.time) ? x.time : null,
-        goal: goalIds.has(x.goal) ? x.goal : null,
-      }));
+      const fundIds = new Set(S.funds.map((f) => f.id));
+      const items = (Array.isArray(arr) ? arr : []).filter((x) => x && typeof x === "object").map((x) => {
+        const kind = KIND_LABEL[x.kind] ? x.kind : "task";
+        const money = isMoney(kind);
+        return {
+          kind,
+          title: typeof x.title === "string" ? x.title.trim().slice(0, 300) : "",
+          who: valid.has(x.who) ? x.who : defaultWho(),
+          date: isISO(x.date) ? x.date : money ? today() : null,
+          time: isTime(x.time) ? x.time : null,
+          goal: goalIds.has(x.goal) ? x.goal : null,
+          amount: money ? parseAmount(x.amount, kind === "save") : null,
+          category: kind === "income" ? (CATS.in.includes(x.category) ? x.category : "Другое") : (CATS.out.includes(x.category) ? x.category : "Другое"),
+          fund: fundIds.has(x.fund) ? x.fund : null,
+        };
+      }).filter((x) => x.title || x.amount != null);
       if (!items.length) { status("Не нашёл в тексте дел. Попробуйте сказать иначе или нажмите «Добавить как есть».", true); return; }
       S.preview = items; status(""); renderPreview();
     } catch (e) {
@@ -671,30 +947,43 @@ ${goals}
     const box = $("#preview");
     if (!S.preview || !S.preview.length) { box.hidden = true; box.innerHTML = ""; return; }
     box.hidden = false;
-    const tasks = S.preview.filter((x) => x.kind === "task").length, goals = S.preview.length - tasks;
-    box.innerHTML = `<h3>Проверьте перед сохранением</h3>` + S.preview.map((x, i) => `<div class="pv-item">
-        <button class="kind-pill${x.kind === "goal" ? " goal" : ""}" type="button" data-pv="kind" data-i="${i}" title="Сменить тип">${x.kind === "goal" ? "Цель" : "Дело"}</button>
+    const n = S.preview.length;
+    box.innerHTML = `<h3>Проверьте перед сохранением</h3>` + S.preview.map((x, i) => {
+      const f = [];
+      if (isMoney(x.kind)) f.push(`<label class="sr" for="pv-amt-${i}">Сумма</label><input class="inp amt" id="pv-amt-${i}" data-pv="amount" data-i="${i}" inputmode="decimal" value="${esc(x.amount ?? "")}" placeholder="Сумма, ₽" style="width:8.5em">`);
+      if (x.kind === "expense" || x.kind === "income") f.push(`<label class="sr" for="pv-cat-${i}">Категория</label><select class="sel" id="pv-cat-${i}" data-pv="category" data-i="${i}">${catOptions(x.kind === "income" ? "in" : "out", x.category)}</select>`);
+      if (x.kind === "save") f.push(`<label class="sr" for="pv-fund-${i}">Копилка</label><select class="sel" id="pv-fund-${i}" data-pv="fund" data-i="${i}">${fundOptions(x.fund)}</select>`);
+      f.push(`<label class="sr" for="pv-who-${i}">Кто</label><select class="sel" id="pv-who-${i}" data-pv="who" data-i="${i}">${whoOptions(x.who)}</select>`);
+      f.push(`<label class="sr" for="pv-date-${i}">${x.kind === "goal" ? "Срок" : "Дата"}</label><input class="inp" type="date" id="pv-date-${i}" data-pv="date" data-i="${i}" value="${esc(x.date || "")}">`);
+      if (x.kind === "task") f.push(`<label class="sr" for="pv-time-${i}">Время</label><input class="inp" type="time" id="pv-time-${i}" data-pv="time" data-i="${i}" value="${esc(x.time || "")}">
+        <label class="sr" for="pv-goal-${i}">Цель</label><select class="sel" id="pv-goal-${i}" data-pv="goal" data-i="${i}">${goalOptions(x.goal)}</select>`);
+      return `<div class="pv-item">
+        <select class="sel kind-sel" id="pv-kind-${i}" data-pv="kind" data-i="${i}" aria-label="Тип записи">${Object.entries(KIND_LABEL).map(([k, l]) => `<option value="${k}"${k === x.kind ? " selected" : ""}>${l}</option>`).join("")}</select>
         <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
-          <label class="sr" for="pv-title-${i}">Название</label>
-          <input class="inp title" id="pv-title-${i}" data-pv="title" data-i="${i}" value="${esc(x.title)}">
-          <div class="pv-fields">
-            <label class="sr" for="pv-who-${i}">Кто</label><select class="sel" id="pv-who-${i}" data-pv="who" data-i="${i}">${whoOptions(x.who)}</select>
-            <label class="sr" for="pv-date-${i}">${x.kind === "goal" ? "Срок" : "Дата"}</label><input class="inp" type="date" id="pv-date-${i}" data-pv="date" data-i="${i}" value="${esc(x.date || "")}">
-            ${x.kind === "task" ? `<label class="sr" for="pv-time-${i}">Время</label><input class="inp" type="time" id="pv-time-${i}" data-pv="time" data-i="${i}" value="${esc(x.time || "")}">
-            <label class="sr" for="pv-goal-${i}">Цель</label><select class="sel" id="pv-goal-${i}" data-pv="goal" data-i="${i}">${goalOptions(x.goal)}</select>` : ""}
-          </div>
+          <label class="sr" for="pv-title-${i}">${isMoney(x.kind) ? "Комментарий" : "Название"}</label>
+          <input class="inp title" id="pv-title-${i}" data-pv="title" data-i="${i}" value="${esc(x.title)}" placeholder="${isMoney(x.kind) ? "Комментарий" : "Название"}">
+          <div class="pv-fields">${f.join("")}</div>
         </div>
         <button class="icon-btn" type="button" aria-label="Убрать" data-pv="remove" data-i="${i}">${ICON.x}</button>
-      </div>`).join("") +
-      `<div class="row"><button class="btn primary" type="button" data-pv="save">Сохранить ${[tasks ? `${tasks} ${plural(tasks, ["дело", "дела", "дел"])}` : "", goals ? `${goals} ${plural(goals, ["цель", "цели", "целей"])}` : ""].filter(Boolean).join(" и ")}</button><button class="btn ghost" type="button" data-pv="cancel">Отмена</button></div>`;
+      </div>`;
+    }).join("") +
+      `<div class="row"><button class="btn primary" type="button" data-pv="save">Сохранить ${n} ${plural(n, ["запись", "записи", "записей"])}</button><button class="btn ghost" type="button" data-pv="cancel">Отмена</button></div>`;
   }
 
   async function savePreview() {
     const items = S.preview || [];
+    for (const x of items) {
+      if (isMoney(x.kind) && parseAmount(x.amount, x.kind === "save") == null) { toast(`Укажите сумму: ${x.title || KIND_LABEL[x.kind]}`); return; }
+      if (!isMoney(x.kind) && !String(x.title || "").trim()) { toast("У дела или цели нет названия"); return; }
+    }
     const btn = $('#preview [data-pv="save"]'); if (btn) btn.disabled = true;
     try {
-      for (const g of items.filter((x) => x.kind === "goal")) await addGoal({ title: g.title, who: g.who, deadline: g.date });
-      for (const t of items.filter((x) => x.kind === "task")) await addTask(t);
+      for (const g of items.filter((x) => x.kind === "goal")) await addGoal({ title: g.title.trim(), who: g.who, deadline: g.date });
+      for (const t of items.filter((x) => x.kind === "task")) await addTask({ ...t, title: t.title.trim() });
+      for (const m of items.filter((x) => isMoney(x.kind))) await addMoney({
+        type: m.kind === "income" ? "in" : m.kind === "save" ? "save" : "out", amount: parseAmount(m.amount, m.kind === "save"),
+        cat: m.kind === "save" ? null : m.category, note: (m.title || "").trim(), who: m.who, date: m.date || today(), fund: m.kind === "save" ? m.fund : null,
+      });
       S.preview = null; renderPreview();
       $("#dictation").value = ""; ls.set("draft", "");
       toast(`Сохранено: ${items.length}`);
@@ -711,8 +1000,7 @@ ${goals}
   $("#preview").addEventListener("click", (e) => {
     const b = e.target.closest("[data-pv]"); if (!b || b.tagName === "INPUT" || b.tagName === "SELECT") return;
     const i = +b.dataset.i, act = b.dataset.pv;
-    if (act === "kind") { S.preview[i].kind = S.preview[i].kind === "goal" ? "task" : "goal"; renderPreview(); }
-    else if (act === "remove") { S.preview.splice(i, 1); renderPreview(); }
+    if (act === "remove") { S.preview.splice(i, 1); renderPreview(); }
     else if (act === "cancel") { S.preview = null; renderPreview(); }
     else if (act === "save") savePreview();
   });
@@ -725,6 +1013,12 @@ ${goals}
     const el = e.target; if (!el.dataset.pv) return;
     const x = S.preview[+el.dataset.i]; if (!x) return;
     const k = el.dataset.pv; x[k] = el.value || (k === "title" ? "" : null);
+    if (k === "kind") {
+      if (isMoney(x.kind) && !x.date) x.date = today();
+      const list = x.kind === "income" ? CATS.in : CATS.out;
+      if (!list.includes(x.category)) x.category = "Другое";
+      renderPreview();
+    }
   });
 
   $("#tabs").addEventListener("click", (e) => {
@@ -762,6 +1056,25 @@ ${goals}
       else if (act === "del-yes") { S.confirm = null; await delTask(id); toast("Удалено"); }
       else if (act === "gdel-yes") { S.confirm = null; await delGoal(id); toast("Цель удалена"); }
       else if (act === "gdone") { const g = S.goals.find((x) => x.id === id); if (g) { await patchGoal(id, { done: !g.done, doneAt: g.done ? null : Date.now() }); if (!g.done) toast("Поздравляем! Цель достигнута"); } }
+      else if (act === "mtype") { S.mType = b.dataset.v === "in" ? "in" : "out"; renderView(); }
+      else if (act === "month") { const v = +b.dataset.v; S.month = v ? shiftMonth(S.month, v) : today().slice(0, 7); S.editing = null; S.confirm = null; renderView(); }
+      else if (act === "limits-on") { S.editLimits = true; renderView(); }
+      else if (act === "limits-off") { S.editLimits = false; renderView(); }
+      else if (act === "medit") { S.editing = "m:" + id; S.confirm = null; renderView(); const el = document.getElementById("me-amt-" + id); if (el) el.focus(); }
+      else if (act === "mdel") { S.confirm = "m:" + id; renderView(); }
+      else if (act === "mdel-yes") { S.confirm = null; await delMoney(id); toast("Запись удалена"); }
+      else if (act === "fdel") { S.confirm = "f:" + id; renderView(); }
+      else if (act === "fdel-yes") { S.confirm = null; await delFund(id); toast("Копилка удалена"); }
+      else if (act === "msave") {
+        const m = S.money.find((x) => x.id === id); if (!m) return;
+        const amount = parseAmount(document.getElementById("me-amt-" + id).value, m.type === "save");
+        if (amount == null) { toast("Укажите сумму"); return; }
+        const p = { amount, note: document.getElementById("me-note-" + id).value.trim(), who: document.getElementById("me-who-" + id).value,
+          date: document.getElementById("me-date-" + id).value || m.date };
+        if (m.type === "save") p.fund = document.getElementById("me-fund-" + id).value || null;
+        else p.cat = document.getElementById("me-cat-" + id).value;
+        S.editing = null; renderView(); await patchMoney(id, p);
+      }
       else if (act === "addperson") {
         const used = new Set(S.people.map((p) => p.id)); let n = 1; while (used.has("p" + n)) n++;
         await saveFamily([...S.people, { id: "p" + n, name: "" }]);
@@ -786,6 +1099,31 @@ ${goals}
         const who = $("#ng-who").value, deadline = $("#ng-date").value || null;
         ti.value = ""; $("#ng-date").value = "";
         await addGoal({ title, who, deadline }); toast("Цель поставлена");
+      } else if (kind === "money") {
+        const ai = $("#m-amount"), amount = parseAmount(ai.value);
+        if (amount == null) { toast("Укажите сумму"); ai.focus(); return; }
+        const rec = { type: S.mType, amount, cat: $("#m-cat").value, note: $("#m-note").value.trim(), who: $("#m-who").value, date: $("#m-date").value || today() };
+        ai.value = ""; $("#m-note").value = "";
+        await addMoney(rec); toast(rec.type === "in" ? `Доход ${rub(amount)} записан` : `Расход ${rub(amount)} записан`);
+      } else if (kind === "fund") {
+        const ti = $("#nf-title"), title = ti.value.trim(), target = parseAmount($("#nf-target").value);
+        if (!title) { ti.focus(); return; }
+        if (target == null) { toast("Укажите, сколько нужно накопить"); $("#nf-target").focus(); return; }
+        const rec = { title, target, deadline: $("#nf-date").value || null, who: $("#nf-who").value };
+        ti.value = ""; $("#nf-target").value = ""; $("#nf-date").value = "";
+        await addFund(rec); toast("Копилка создана");
+      } else if (kind === "fund-move") {
+        const inp = f.querySelector("input"), amount = parseAmount(inp.value);
+        if (amount == null) { toast("Укажите сумму"); inp.focus(); return; }
+        const out = e.submitter && e.submitter.value === "out";
+        inp.value = "";
+        await addMoney({ type: "save", amount: out ? -amount : amount, fund: f.dataset.fund, who: S.me || f.dataset.who, date: today() });
+        toast(out ? `Взяли ${rub(amount)} из копилки` : `Отложено ${rub(amount)}`);
+      } else if (kind === "limits") {
+        const limits = {};
+        f.querySelectorAll("input[data-cat]").forEach((el) => { const v = parseAmount(el.value); if (v != null) limits[el.dataset.cat] = v; });
+        S.editLimits = false; renderView();
+        await saveLimits(limits); toast("Лимиты сохранены");
       } else if (kind === "family") {
         const people = S.people.map((p) => ({ ...p, name: (document.getElementById("fam-" + p.id)?.value || "").trim() }));
         await saveFamily(people); toast("Имена сохранены");
@@ -825,6 +1163,19 @@ ${goals}
     db.collection("goals").onSnapshot((snap) => {
       S.goals = snap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((g) => typeof g.title === "string");
       S.loaded.goals = true; renderAll();
+    }, fail);
+    db.collection("money").onSnapshot((snap) => {
+      S.money = snap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((m) => ["in", "out", "save"].includes(m.type));
+      renderAll();
+    }, fail);
+    db.collection("funds").onSnapshot((snap) => {
+      S.funds = snap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((f) => typeof f.title === "string");
+      renderAll();
+    }, fail);
+    db.doc("budget/limits").onSnapshot((snap) => {
+      const d = snap.exists ? snap.data() : null;
+      S.limits = d && d.limits && typeof d.limits === "object" ? d.limits : {};
+      renderAll();
     }, fail);
   })();
 
