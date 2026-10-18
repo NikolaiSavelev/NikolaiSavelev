@@ -6,6 +6,7 @@
   const listeners = new Set();
   let rev = -1;
   let ai = false;
+  let stt = false;
   let timer = null;
 
   const snapDoc = (id, d) => ({ id, exists: d !== undefined, data: () => d, metadata: { fromCache: false, hasPendingWrites: false } });
@@ -28,6 +29,7 @@
       if (j.same) return;
       rev = j.rev;
       ai = !!j.ai;
+      stt = !!j.stt;
       store.clear();
       for (const x of j.docs) {
         if (!store.has(x.c)) store.set(x.c, new Map());
@@ -127,17 +129,6 @@
     },
   };
 
-  // ---- microphone ----
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const css = document.createElement("style");
-  css.textContent = `
-    .mic.voice { cursor: pointer; border: 0; transition: transform .15s, background .2s; }
-    .mic.voice:hover { transform: scale(1.06); }
-    .mic.on, .fab.on { background: var(--c2) !important; animation: micpulse 1.2s ease-out infinite; }
-    @keyframes micpulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c2) 55%, transparent); } 100% { box-shadow: 0 0 0 16px transparent; } }
-    @media (prefers-reduced-motion: reduce) { .mic.on, .fab.on { animation: none; } }`;
-  document.head.appendChild(css);
-
   function say(msg) {
     const t = document.getElementById("toast");
     if (!t) return;
@@ -224,62 +215,264 @@
 
   document.addEventListener("DOMContentLoaded", () => { setupBell(); });
 
+  // ---- voice recording ----
+  // Tap the mic to start, tap «Готово» to finish (or hold the mic like a walkie-talkie).
+  // The whole clip goes to the server for Whisper transcription; without a speech key
+  // the browser's own recognizer runs quietly in the background and its text is used.
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const voiceCss = document.createElement("style");
+  voiceCss.textContent = `
+    .mic.voice { cursor: pointer; border: 0; transition: transform .15s, background .2s; touch-action: none; -webkit-user-select: none; user-select: none; }
+    .mic.voice:hover { transform: scale(1.06); }
+    .mic.on, .fab.on { background: var(--c2) !important; animation: micpulse 1.2s ease-out infinite; }
+    @keyframes micpulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c2) 55%, transparent); } 100% { box-shadow: 0 0 0 16px transparent; } }
+    .rec-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px 14px; border-radius: 18px; background: color-mix(in srgb, var(--c2) 10%, var(--surface)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--c2) 35%, transparent); }
+    .rec-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c2); flex: none; animation: recblink 1s steps(2, start) infinite; }
+    @keyframes recblink { to { opacity: .25; } }
+    .rec-time { font-family: var(--f-display); font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums; min-width: 3.2em; }
+    .rec-level { flex: 1 1 140px; display: flex; align-items: center; gap: 3px; height: 32px; min-width: 0; overflow: hidden; }
+    .rec-level i { flex: 1; max-width: 6px; min-width: 3px; border-radius: 3px; background: var(--c2); height: 4px; transition: height .08s; }
+    .rec-bar .btn { min-height: 44px; }
+    @media (max-width: 480px) { .rec-bar .btn.primary { flex: 1 1 auto; } }
+    .rec-hint { font-size: 13px; color: var(--muted); }
+    @media (prefers-reduced-motion: reduce) { .mic.on, .fab.on, .rec-dot { animation: none; } }`;
+  document.head.appendChild(voiceCss);
+
+  // Removes hesitation sounds, a leading "ну", and words said twice in a row.
+  function cleanSpeech(text) {
+    const FILLER = /^(э+|э+м+|м{2,}|хм+|а{2,}|у{2,}|ну{2,}|ээ+|ммм+|эх+)$/i;
+    let words = String(text || "").replace(/\s+/g, " ").trim().split(" ");
+    words = words.filter((w) => !FILLER.test(w.replace(/[.,!?;:…«»"()-]/g, "")));
+    const out = [];
+    for (const w of words) {
+      const core = w.toLowerCase().replace(/[.,!?;:…«»"()]/g, "");
+      const prev = out.length ? out[out.length - 1].toLowerCase().replace(/[.,!?;:…«»"()]/g, "") : null;
+      if (core && core === prev && core.length > 1) continue;
+      out.push(w);
+    }
+    let s = out.join(" ")
+      .replace(/(^|[.!?]\s+)ну,?\s+/gi, "$1")
+      .replace(/(^|[.!?]\s+)(вот|так|значит|короче|в общем|слушай),?\s+/gi, "$1")
+      .replace(/\s+([.,!?;:…])/g, "$1")
+      .replace(/([,;:])(?=[^\s\d])/g, "$1 ")
+      .replace(/,\s*,+/g, ",")
+      .replace(/^[,.\s]+/, "")
+      .trim();
+    s = s.replace(/(^|[.!?]\s+)([а-яёa-z])/g, (m, p, c) => p + c.toUpperCase());
+    return s;
+  }
+  window.__cleanSpeech = cleanSpeech;
+
+  function pickMime() {
+    if (!window.MediaRecorder) return null;
+    for (const t of ["audio/webm;codecs=opus", "audio/mp4", "audio/ogg;codecs=opus", "audio/webm"]) {
+      try { if (MediaRecorder.isTypeSupported(t)) return t; } catch (e) {}
+    }
+    return "";
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const mic = document.querySelector(".mic");
     const ta = document.getElementById("dictation");
     const fab = document.getElementById("fab");
     const sub = document.querySelector(".cap-sub");
-    if (!SR || !mic || !ta) return;
+    const capture = document.getElementById("capture");
+    const statusEl = document.getElementById("capStatus");
+    const canRecord = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+    if (!mic || !ta || (!canRecord && !SR)) return;
+
+    const status = (msg, err, busy) => {
+      if (!statusEl) return;
+      statusEl.textContent = msg || "";
+      statusEl.classList.toggle("err", !!err);
+      statusEl.classList.toggle("busy", !!busy);
+    };
+    const sync = () => ta.dispatchEvent(new Event("input", { bubbles: true }));
+    const insert = (text) => {
+      const t = cleanSpeech(text);
+      if (!t) return false;
+      const cur = ta.value.trim();
+      ta.value = cur ? cur + (/[.!?]$/.test(cur) ? " " : ". ") + t : t;
+      sync();
+      return true;
+    };
 
     mic.classList.add("voice");
     mic.setAttribute("role", "button");
     mic.setAttribute("tabindex", "0");
     mic.removeAttribute("aria-hidden");
-    mic.setAttribute("aria-label", "Начать диктовку");
-    if (sub) sub.textContent = "Нажмите на микрофон и говорите: дела, траты, доходы, цели. Нажмите ещё раз, чтобы закончить.";
+    mic.setAttribute("aria-label", "Начать запись");
+    if (sub) sub.textContent = "Нажмите на микрофон, скажите всё подряд и нажмите «Готово». Можно держать кнопку, как рацию.";
 
-    let rec = null;
-    const sync = () => ta.dispatchEvent(new Event("input", { bubbles: true }));
-    function toggle() {
-      if (rec) { rec.stop(); return; }
-      rec = new SR();
-      rec.lang = "ru-RU";
-      rec.interimResults = true;
-      rec.continuous = true;
-      const base = ta.value.trim() ? ta.value.trim() + " " : "";
-      let finals = "";
-      rec.onresult = (e) => {
-        let interim = "";
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-          const t = e.results[i][0].transcript;
-          if (e.results[i].isFinal) finals += t.trim() + ". "; else interim += t;
-        }
-        ta.value = base + finals + interim;
-        sync();
-      };
-      rec.onerror = (e) => {
-        if (e.error === "not-allowed" || e.error === "service-not-allowed") say("Разрешите доступ к микрофону в настройках браузера");
-        else if (e.error === "no-speech") say("Ничего не услышал. Нажмите на микрофон и говорите");
-      };
-      rec.onend = () => {
-        rec = null;
-        mic.classList.remove("on"); mic.setAttribute("aria-label", "Начать диктовку");
-        if (fab) fab.classList.remove("on");
-        ta.value = ta.value.trim(); sync();
-      };
-      try { rec.start(); } catch (e) { rec = null; return; }
-      mic.classList.add("on"); mic.setAttribute("aria-label", "Закончить диктовку");
+    const bar = document.createElement("div");
+    bar.className = "rec-bar";
+    bar.hidden = true;
+    bar.innerHTML = '<span class="rec-dot" aria-hidden="true"></span><span class="rec-time" aria-live="off">0:00</span><div class="rec-level" aria-hidden="true">' + "<i></i>".repeat(24) + '</div><button class="btn primary small" type="button" data-rec="done">Готово</button><button class="btn ghost small" type="button" data-rec="cancel">Отмена</button>';
+    ta.insertAdjacentElement("afterend", bar);
+    const timeEl = bar.querySelector(".rec-time");
+    const levels = [...bar.querySelectorAll(".rec-level i")];
+
+    const MAX_MS = 3 * 60 * 1000;
+    let rec = null; // { stream, recorder, chunks, ctx, raf, started, sr, srText, cancelled, timer }
+
+    async function start() {
+      if (rec) return;
+      status("");
+      if (!canRecord) return startSpeechOnly();
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 } });
+      } catch (e) {
+        status("Нет доступа к микрофону. Разрешите его в настройках браузера для этого сайта.", true);
+        return;
+      }
+      const mime = pickMime();
+      let recorder;
+      try { recorder = mime ? new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 64000 }) : new MediaRecorder(stream); }
+      catch (e) { recorder = new MediaRecorder(stream); }
+      rec = { stream, recorder, chunks: [], started: Date.now(), srText: "", cancelled: false };
+      recorder.ondataavailable = (e) => { if (e.data && e.data.size) rec && rec.chunks.push(e.data); };
+      recorder.onstop = () => finish();
+      recorder.start(1000);
+
+      // level meter
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new Ctx();
+        const src = ctx.createMediaStreamSource(stream);
+        const an = ctx.createAnalyser();
+        an.fftSize = 512;
+        src.connect(an);
+        const buf = new Uint8Array(an.fftSize);
+        const hist = new Array(levels.length).fill(0);
+        let last = 0;
+        const draw = (t) => {
+          if (!rec) return;
+          rec.raf = requestAnimationFrame(draw);
+          if (t - last < 70) return;
+          last = t;
+          an.getByteTimeDomainData(buf);
+          let peak = 0;
+          for (const v of buf) peak = Math.max(peak, Math.abs(v - 128));
+          hist.shift(); hist.push(Math.min(1, peak / 70));
+          levels.forEach((el, i) => { el.style.height = Math.max(4, Math.round(hist[i] * 32)) + "px"; });
+          const s = Math.floor((Date.now() - rec.started) / 1000);
+          timeEl.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+        };
+        rec.ctx = ctx;
+        rec.raf = requestAnimationFrame(draw);
+      } catch (e) {}
+
+      // without a speech key, the browser recognizer listens in parallel as a fallback
+      if (!stt && SR) {
+        try {
+          const sr = new SR();
+          sr.lang = "ru-RU"; sr.continuous = true; sr.interimResults = false;
+          sr.onresult = (e) => { for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal && rec) rec.srText += e.results[i][0].transcript + ". "; };
+          sr.onend = () => { if (rec && rec.recorder.state === "recording") { try { sr.start(); } catch (err) {} } };
+          sr.start();
+          rec.sr = sr;
+        } catch (e) {}
+      }
+
+      rec.timer = setTimeout(() => stop(), MAX_MS);
+      bar.hidden = false;
+      mic.classList.add("on"); mic.setAttribute("aria-label", "Закончить запись");
       if (fab) fab.classList.add("on");
+      capture.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      if (navigator.vibrate) navigator.vibrate(30);
     }
-    mic.addEventListener("click", toggle);
-    mic.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+
+    function stop(cancel) {
+      if (!rec) return;
+      rec.cancelled = !!cancel;
+      clearTimeout(rec.timer);
+      if (rec.sr) { const sr = rec.sr; rec.sr = null; try { sr.stop(); } catch (e) {} }
+      try { rec.recorder.state !== "inactive" ? rec.recorder.stop() : finish(); } catch (e) { finish(); }
+    }
+
+    async function finish() {
+      const r = rec;
+      if (!r) return;
+      rec = null;
+      cancelAnimationFrame(r.raf);
+      try { r.ctx && r.ctx.close(); } catch (e) {}
+      r.stream && r.stream.getTracks().forEach((t) => t.stop());
+      bar.hidden = true;
+      levels.forEach((el) => { el.style.height = "4px"; });
+      timeEl.textContent = "0:00";
+      mic.classList.remove("on"); mic.setAttribute("aria-label", "Начать запись");
+      if (fab) fab.classList.remove("on");
+      if (r.cancelled) { status("Запись отменена"); setTimeout(() => status(""), 1500); return; }
+      const secs = (Date.now() - r.started) / 1000;
+      if (secs < 0.8) { status("Слишком коротко. Нажмите на микрофон и говорите, потом «Готово».", true); return; }
+
+      if (stt) {
+        status("Распознаю запись…", false, true);
+        const blob = new Blob(r.chunks, { type: (r.recorder.mimeType || "audio/webm").split(";")[0] });
+        try {
+          const res = await fetch("/api/transcribe", { method: "POST", headers: { "content-type": blob.type || "audio/webm" }, body: blob });
+          const j = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(j.error || "HTTP " + res.status);
+          if (insert(j.text)) { status("Готово — проверьте текст и нажмите «Разобрать на дела»"); setTimeout(() => status(""), 4000); }
+          else status("Не расслышал слов. Попробуйте ещё раз поближе к микрофону.", true);
+        } catch (e) {
+          if (r.srText && insert(r.srText)) status("Сервер распознавания не ответил, вставил черновой текст — проверьте его.", true);
+          else status("Не получилось распознать. Проверьте интернет и попробуйте ещё раз.", true);
+        }
+      } else if (r.srText.trim()) {
+        insert(r.srText);
+        status("Готово. Для более точного распознавания подключите ключ Whisper в настройках сервера.");
+        setTimeout(() => status(""), 5000);
+      } else {
+        status("Распознавание речи на сервере не подключено, а браузер ничего не распознал. Используйте микрофон на клавиатуре телефона.", true);
+      }
+    }
+
+    // fallback for browsers without MediaRecorder: recognizer only, text appears on stop
+    function startSpeechOnly() {
+      const sr = new SR();
+      sr.lang = "ru-RU"; sr.continuous = true; sr.interimResults = false;
+      rec = { started: Date.now(), srText: "", cancelled: false, recorder: { state: "recording", stop() { this.state = "inactive"; try { sr.stop(); } catch (e) {} finish(); } }, chunks: [] };
+      sr.onresult = (e) => { for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal && rec) rec.srText += e.results[i][0].transcript + ". "; };
+      sr.onerror = (e) => { if (e.error === "not-allowed") { status("Нет доступа к микрофону.", true); stop(true); } };
+      try { sr.start(); } catch (e) { rec = null; return; }
+      bar.hidden = false;
+      mic.classList.add("on");
+      if (fab) fab.classList.add("on");
+      const tick = () => { if (!rec) return; const s = Math.floor((Date.now() - rec.started) / 1000); timeEl.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); setTimeout(tick, 500); };
+      tick();
+    }
+
+    // tap = start/stop; hold for 0.4 s = record while held
+    let holdTimer = null, held = false, pressStartedRec = false;
+    const down = (e) => {
+      if (e.button > 0) return;
+      e.preventDefault();
+      held = false;
+      pressStartedRec = !rec;
+      if (pressStartedRec) { start(); holdTimer = setTimeout(() => { held = true; }, 400); }
+    };
+    const up = () => {
+      clearTimeout(holdTimer);
+      if (pressStartedRec) { if (held) stop(); }
+      else stop();
+      pressStartedRec = false; held = false;
+    };
+    mic.addEventListener("pointerdown", down);
+    mic.addEventListener("pointerup", up);
+    mic.addEventListener("pointercancel", up);
+    mic.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); rec ? stop() : start(); } });
+    bar.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-rec]");
+      if (b) stop(b.dataset.rec === "cancel");
+    });
     if (fab) {
-      // the floating button starts listening right away instead of opening the keyboard
+      // the floating button records right away instead of opening the keyboard
       document.addEventListener("click", (e) => {
         if (!e.target.closest || !e.target.closest("#fab")) return;
         e.stopPropagation();
-        document.getElementById("capture").scrollIntoView({ behavior: "smooth", block: "start" });
-        toggle();
+        rec ? stop() : start();
       }, true);
     }
   });

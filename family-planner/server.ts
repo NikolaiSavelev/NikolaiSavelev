@@ -75,6 +75,17 @@ const anthropic = Bun.env.ANTHROPIC_API_KEY ? new Anthropic() : null;
 const MODEL = Bun.env.CLAUDE_MODEL || "claude-opus-5-5";
 const FALLBACK_MODELS = new Set(["claude-opus-5-5", "claude-opus-5", "claude-sonnet-5-5", "claude-fable-5-1"]);
 
+// ---- speech to text (Whisper via Groq or OpenAI) ----
+const STT = Bun.env.GROQ_API_KEY
+  ? { url: Bun.env.STT_URL || "https://api.groq.com/openai/v1/audio/transcriptions", key: Bun.env.GROQ_API_KEY, model: Bun.env.STT_MODEL || "whisper-large-v3-turbo" }
+  : Bun.env.OPENAI_API_KEY
+    ? { url: Bun.env.STT_URL || "https://api.openai.com/v1/audio/transcriptions", key: Bun.env.OPENAI_API_KEY, model: Bun.env.STT_MODEL || "whisper-1" }
+    : null;
+const MAX_AUDIO = 15 * 1024 * 1024;
+const AUDIO_EXT: Record<string, string> = { "audio/webm": "webm", "audio/mp4": "m4a", "audio/x-m4a": "m4a", "audio/aac": "m4a", "audio/ogg": "ogg", "audio/mpeg": "mp3", "audio/wav": "wav" };
+// a short hint keeps names, money and the plain style right
+const STT_HINT = "Николай, Светлана. Купить продукты, оплатить интернет. Потратил 3 500 рублей на продукты. Пришла зарплата 80 000. Отложили 10 000 на отпуск.";
+
 function extractJson(text: string): unknown {
   try { return JSON.parse(text); } catch {}
   const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
@@ -328,7 +339,7 @@ const server = Bun.serve({
       const since = Number(url.searchParams.get("rev") ?? -1);
       if (since === rev) return json({ rev, same: true });
       const docs = allDocs.all().map((r) => ({ c: r.coll, id: r.id, d: JSON.parse(r.data) }));
-      return json({ rev, docs, ai: !!anthropic });
+      return json({ rev, docs, ai: !!anthropic, stt: !!STT });
     }
 
     if (path === "/api/write" && req.method === "POST") {
@@ -339,6 +350,35 @@ const server = Bun.serve({
       if (!okShape) return json({ error: "invalid_argument" }, 400);
       if (!applyWrite(w)) return json({ error: "invalid_argument", message: "document does not exist" }, 400);
       return json({ rev });
+    }
+
+    if (path === "/api/transcribe" && req.method === "POST") {
+      if (!STT) return json({ error: "stt_disabled" }, 501);
+      if (limited("stt:" + clientIp(req, srv), 20, 60_000)) return json({ error: "rate_limited" }, 429);
+      const type = (req.headers.get("content-type") || "audio/webm").split(";")[0].trim().toLowerCase();
+      const ext = AUDIO_EXT[type];
+      if (!ext) return json({ error: "unsupported_audio" }, 415);
+      const audio = await req.arrayBuffer();
+      if (!audio.byteLength || audio.byteLength > MAX_AUDIO) return json({ error: "bad_size" }, 413);
+      const form = new FormData();
+      form.append("file", new Blob([audio], { type }), "voice." + ext);
+      form.append("model", STT.model);
+      form.append("language", "ru");
+      form.append("temperature", "0");
+      form.append("response_format", "json");
+      form.append("prompt", STT_HINT);
+      try {
+        const r = await fetch(STT.url, { method: "POST", headers: { authorization: "Bearer " + STT.key }, body: form, signal: AbortSignal.timeout(60_000) });
+        if (!r.ok) {
+          console.error("transcription failed:", r.status, (await r.text()).slice(0, 300));
+          return json({ error: r.status === 429 ? "rate_limited" : "upstream_error" }, r.status === 429 ? 429 : 502);
+        }
+        const j: any = await r.json();
+        return json({ text: String(j.text || "").trim() });
+      } catch (e) {
+        console.error("transcription failed:", e);
+        return json({ error: "upstream_error" }, 502);
+      }
     }
 
     if (path === "/api/parse" && req.method === "POST") {
@@ -389,4 +429,4 @@ const server = Bun.serve({
   },
 });
 
-console.log(`Family planner on :${server.port}, data in ${DATA_DIR}, rev ${rev}, Claude ${anthropic ? MODEL : "off"}`);
+console.log(`Family planner on :${server.port}, data in ${DATA_DIR}, rev ${rev}, Claude ${anthropic ? MODEL : "off"}, speech ${STT ? STT.model : "off"}`);
