@@ -2,6 +2,7 @@
 // window.claude.use("db" | "user" | "sample") surface it has on claude.ai,
 // backed by this site's own server, and adds a real microphone button.
 (function () {
+  window.__standalone = true;
   const store = new Map(); // collection -> Map(id -> data)
   const listeners = new Set();
   let rev = -1;

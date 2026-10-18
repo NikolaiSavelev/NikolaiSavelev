@@ -351,8 +351,17 @@ details.group > summary::-webkit-details-marker { display: none; }
 .alt label { font-weight: 700; font-size: 14px; color: var(--muted); }
 
 /* Love elements */
-.proverb { margin: 12px 0 0; font-family: var(--f-display); font-style: italic; font-size: 16px; color: var(--ink); opacity: .85; display: flex; gap: 8px; align-items: baseline; }
-.proverb small { font-family: var(--f-body); font-style: normal; font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.motto { margin: 14px 0 0; max-width: 52ch; }
+.motto q { quotes: "«" "»"; font-family: var(--f-display); font-style: italic; font-size: clamp(16px, 2.6vw, 19px); line-height: 1.45; color: var(--ink); }
+.motto cite { display: block; margin-top: 4px; font-style: normal; font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: .02em; }
+.braid { display: block; width: min(240px, 70%); height: 20px; margin-top: 10px; }
+.braid path { fill: none; stroke-width: 3.2; stroke-linecap: round; }
+.verse { background: linear-gradient(160deg, var(--sun-soft), var(--surface) 75%); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow); max-width: 640px; display: flex; flex-direction: column; gap: 10px; }
+.verse h2 { margin: 0; font-family: var(--f-display); font-size: 21px; }
+.verse blockquote { margin: 0; font-family: var(--f-display); font-size: 17px; line-height: 1.6; }
+.verse blockquote sup { font-family: var(--f-body); font-size: 11px; color: var(--muted); font-weight: 700; margin-right: 2px; }
+.verse cite { font-style: normal; font-size: 13px; font-weight: 700; color: var(--muted); }
+.fam-stack { display: flex; flex-direction: column; gap: 16px; }
 .love-btn { border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px; border-radius: 999px; font: inherit; font-size: 13px; font-weight: 700; background: var(--rose-soft); color: var(--rose); }
 .love-btn svg { flex: none; }
 .love-btn.on { background: var(--rose); color: #fff; }
@@ -394,7 +403,8 @@ details.group > summary::-webkit-details-marker { display: none; }
       <p class="eyebrow" id="todayLabel"></p>
       <h1 id="greet">Добро пожаловать</h1>
       <p class="sub" id="heroSub">Здесь живут дела, цели и бюджет вашей семьи.</p>
-      <p class="proverb" id="proverb"></p>
+      <p class="motto"><q>Двоим лучше, нежели одному… и нитка, втрое скрученная, нескоро порвётся</q><cite>Екклесиаст 4:9, 12</cite></p>
+      <svg class="braid" id="braid" viewBox="0 0 240 20" preserveAspectRatio="none" aria-hidden="true"></svg>
       <div class="badges" id="heroBadges"></div>
     </div>
     <div class="ring" id="heroRing" aria-hidden="true">
@@ -652,12 +662,16 @@ details.group > summary::-webkit-details-marker { display: none; }
     target: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/></svg>',
   };
   const HEART = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 4.4 2.5h1.6c.8-1.4 2.3-2.5 4.4-2.5 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>';
-  const PROVERBS = [
-    "Вся семья вместе — так и душа на месте", "Где любовь, там и счастье", "Вместе и беда не беда",
-    "В семье согласно — так идёт дело прекрасно", "Дружно — не грузно, а врозь — хоть брось", "Где лад, там и клад",
-    "Копейка рубль бережёт", "Делу время — потехе час", "Без труда не выловишь и рыбку из пруда",
-    "Тише едешь — дальше будешь", "Не имей сто рублей, а имей сто друзей", "Дом вести — не руками трясти",
-  ];
+  // three strands — him, her and the gold one that holds them together (Eccl. 4:12)
+  (() => {
+    const strand = (phase) => {
+      let d = "";
+      for (let x = 0; x <= 240; x += 3) d += (x ? " L" : "M") + x + " " + (10 + 6 * Math.sin((x / 30) * 2 * Math.PI + phase)).toFixed(2);
+      return d;
+    };
+    $("#braid").innerHTML = [["var(--c1)", 0], ["var(--sun)", 2.094], ["var(--c2)", 4.189]]
+      .map(([c, ph]) => `<path d="${strand(ph)}" stroke="${c}"/>`).join("");
+  })();
   const genitive = (n) => {
     if (!n) return n;
     const last = n.slice(-1).toLowerCase(), prev = n.slice(-2, -1).toLowerCase();
@@ -671,8 +685,6 @@ details.group > summary::-webkit-details-marker { display: none; }
   function renderHero() {
     const names = S.people.map((p) => p.name).filter(Boolean);
     $("#couple").innerHTML = names.length >= 2 ? names.map(esc).join(" " + HEART + " ") : "";
-    const doy = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 864e5);
-    $("#proverb").innerHTML = HEART + "<span>«" + esc(PROVERBS[doy % PROVERBS.length]) + "» <small>народная мудрость</small></span>";
     const h = new Date().getHours();
     const hello = h < 5 ? "Доброй ночи" : h < 12 ? "Доброе утро" : h < 18 ? "Добрый день" : "Добрый вечер";
     const me = S.me ? person(S.me).name : "";
@@ -1079,13 +1091,21 @@ details.group > summary::-webkit-details-marker { display: none; }
       <input class="inp" id="fam-${p.id}" data-pid="${p.id}" value="${esc(p.name)}" placeholder="Имя"${ro ? " disabled" : ""}>
       <label class="me"><input type="radio" name="me" value="${p.id}"${S.me === p.id ? " checked" : ""}> это я</label>
     </div>`).join("");
-    return `<form class="panel" data-form="family">
+    const shareNote = window.__standalone
+      ? "Чтобы второй человек тоже видел и вёл список, отправьте ему ссылку на сайт и семейный код."
+      : "Чтобы супруга видела и меняла список, откройте меню «Поделиться» у этой страницы и пригласите её по почте с правом редактирования. Без этого права она сможет только смотреть.";
+    return `<div class="fam-stack"><section class="verse" aria-labelledby="verseTitle">
+      <h2 id="verseTitle">Наш девиз</h2>
+      <blockquote><sup>9</sup>Двоим лучше, нежели одному; потому что у них есть доброе вознаграждение в труде их: <sup>10</sup>ибо если упадёт один, то другой поднимет товарища своего. Но горе одному, когда упадёт, а другого нет, который поднял бы его. <sup>11</sup>Также, если лежат двое, то тепло им; а одному как согреться? <sup>12</sup>И если начнёт одолевать кто-либо одного, то двое устоят против него: и нитка, втрое скрученная, нескоро порвётся.</blockquote>
+      <cite>Екклесиаст 4:9–12, Синодальный перевод</cite>
+    </section>
+    <form class="panel" data-form="family">
       <h2>Семья</h2>
       <p>Имена видят все, у кого есть доступ к списку. «Это я» запоминается на этом устройстве, чтобы новые дела по умолчанию записывались на вас.</p>
       ${rows}
       ${ro ? "" : `<div class="row">${S.people.length < 4 ? '<button class="btn" type="button" data-act="addperson">Добавить члена семьи</button>' : ""}<span class="sp"></span><button class="btn primary" type="submit">Сохранить имена</button></div>`}
-      <div class="note">Чтобы супруга видела и меняла список, откройте меню «Поделиться» у этой страницы и пригласите её по почте с правом редактирования. Без этого права она сможет только смотреть.</div>
-    </form>`;
+      <div class="note">${shareNote}</div>
+    </form></div>`;
   }
 
   function emptyFamily() {

@@ -242,7 +242,7 @@ setInterval(tick, 60_000);
 // ---- page ----
 const HEAD =`<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#1F7A63">
+<meta name="theme-color" content="#1E5E4E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Дела">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -259,10 +259,10 @@ const STANDALONE_JS = await Bun.file(new URL("./standalone.js", import.meta.url)
 const SW_JS = await Bun.file(new URL("./sw.js", import.meta.url)).text();
 const PNG = { "/icon-192.png": new URL("./icon-192.png", import.meta.url), "/icon-512.png": new URL("./icon-512.png", import.meta.url) } as Record<string, URL>;
 
-const ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#F1F5EF"/><circle cx="25" cy="32" r="15" fill="#2F86B3" opacity=".9"/><circle cx="39" cy="32" r="15" fill="#E0607E" opacity=".85"/><path d="M32 18.6a15 15 0 0 1 0 26.8 15 15 0 0 1 0-26.8z" fill="#F2B640"/></svg>`;
+const ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#EEF2EC"/><circle cx="24" cy="32" r="14" fill="none" stroke="#3B6E96" stroke-width="4.5"/><circle cx="40" cy="32" r="14" fill="none" stroke="#CF5778" stroke-width="4.5"/><path d="M32 39c-3.9-2.7-6.4-4.9-6.4-7.7 0-1.8 1.4-3.2 3.2-3.2 1.4 0 2.5.7 3.2 2 .7-1.3 1.8-2 3.2-2 1.8 0 3.2 1.4 3.2 3.2 0 2.8-2.5 5-6.4 7.7z" fill="#CF4F72"/></svg>`;
 const MANIFEST = JSON.stringify({
   name: "Дела Савельевых", short_name: "Дела", start_url: "/", display: "standalone",
-  background_color: "#F1F5EF", theme_color: "#1F7A63", lang: "ru",
+  background_color: "#F1F5EF", theme_color: "#1E5E4E", lang: "ru",
   icons: [
     { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
     { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
@@ -271,20 +271,21 @@ const MANIFEST = JSON.stringify({
 });
 
 const LOGIN = `${HEAD}<title>Дела Савельевых</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Nunito:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,700;1,500&family=Nunito:wght@400;700&display=swap">
 <style>
-:root{--bg:#F1F5EF;--surface:#fff;--ink:#1E2B26;--muted:#64736C;--accent:#1F7A63;--line:#DCE5DA;--warn:#C2571B}
+:root{--bg:#F1F5EF;--surface:#fff;--ink:#1E2B26;--muted:#64736C;--accent:#1E5E4E;--line:#DCE5DA;--warn:#C2571B}
 @media (prefers-color-scheme:dark){:root{--bg:#101814;--surface:#17221D;--ink:#E7EFE9;--muted:#9AAEA4;--accent:#5CC9A7;--line:#26352E;--warn:#F09A5E;color-scheme:dark}}
 body{background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:16px;box-sizing:border-box}
-form{background:var(--surface);border-radius:28px;padding:32px 24px;max-width:360px;width:100%;box-shadow:0 8px 24px rgba(30,60,45,.08);display:flex;flex-direction:column;gap:14px;text-align:center}
-h1{font-family:Comfortaa,Nunito,sans-serif;margin:8px 0 0;font-size:24px}p{margin:0;color:var(--muted)}
+form{box-sizing:border-box;background:var(--surface);border-radius:28px;padding:32px 24px;max-width:360px;width:100%;box-shadow:0 8px 24px rgba(30,60,45,.08);display:flex;flex-direction:column;gap:14px;text-align:center}
+h1{font-family:Lora,Georgia,serif;margin:8px 0 0;font-size:24px}p{margin:0;color:var(--muted)}
 input{font:inherit;font-size:22px;text-align:center;letter-spacing:.15em;padding:12px;border-radius:14px;border:0;box-shadow:inset 0 0 0 2px var(--line);background:var(--bg);color:var(--ink)}
 input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--accent)}
 button{font:inherit;font-weight:700;border:0;border-radius:999px;padding:13px;background:var(--accent);color:var(--surface);cursor:pointer}
 .err{color:var(--warn);min-height:1.4em}
+.motto{font-family:Lora,Georgia,serif;font-style:italic;color:var(--ink);line-height:1.5}.motto small{font-family:Nunito,sans-serif;font-style:normal;font-weight:700;color:var(--muted)}
 </style></head><body>
-<form id="f"><svg width="64" height="64" viewBox="0 0 64 64" style="margin:0 auto" aria-hidden="true"><circle cx="25" cy="32" r="15" fill="#2F86B3" opacity=".9"/><circle cx="39" cy="32" r="15" fill="#E0607E" opacity=".85"/><path d="M32 18.6a15 15 0 0 1 0 26.8 15 15 0 0 1 0-26.8z" fill="#F2B640"/></svg>
-<h1>Дела Савельевых</h1><p>Введите семейный код</p>
+<form id="f"><svg width="72" height="60" viewBox="0 0 40 34" style="margin:0 auto" aria-hidden="true"><circle cx="15" cy="17" r="10" fill="none" stroke="#3B6E96" stroke-width="3.2"/><circle cx="25" cy="17" r="10" fill="none" stroke="#CF5778" stroke-width="3.2"/><path d="M20 22c-2.8-1.9-4.6-3.5-4.6-5.5 0-1.3 1-2.3 2.3-2.3 1 0 1.8.5 2.3 1.4.5-.9 1.3-1.4 2.3-1.4 1.3 0 2.3 1 2.3 2.3 0 2-1.8 3.6-4.6 5.5z" fill="#CF4F72"/></svg>
+<h1>Дела Савельевых</h1><p class="motto">«Двоим лучше, нежели одному… и нитка, втрое скрученная, нескоро порвётся»<br><small>Екклесиаст 4:9, 12</small></p><p>Введите семейный код</p>
 <label for="pin" style="position:absolute;left:-9999px">Семейный код</label>
 <input id="pin" type="password" autocomplete="current-password" autofocus required>
 <button type="submit">Войти</button><div class="err" id="err" role="status"></div></form>
