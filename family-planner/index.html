@@ -350,6 +350,20 @@ details.group > summary::-webkit-details-marker { display: none; }
 .alt[open] summary { margin-bottom: 10px; }
 .alt label { font-weight: 700; font-size: 14px; color: var(--muted); }
 
+/* Goals with a period */
+.g-big { font-size: 15px; color: var(--muted); font-weight: 600; }
+.g-big b { font-family: var(--f-body); font-weight: 800; font-size: 24px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.g-hint { font-size: 14px; font-weight: 700; color: var(--accent); }
+.g-hint.bad { color: var(--warn); }
+.g-hint.win { color: var(--ok); }
+.goal .bar2.over i { background: var(--warn); }
+.goal-kind { font-size: 11.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.period-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.period-chips button { border: 0; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.period-chips button:hover { box-shadow: inset 0 0 0 2px var(--accent); }
+.newgoal label.f { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 700; color: var(--muted); flex: 1 1 140px; min-width: 0; }
+.newgoal label.f .inp, .newgoal label.f .sel { width: 100%; }
+
 /* Love elements */
 .motto { margin: 14px 0 0; max-width: 52ch; }
 .motto q { quotes: "«" "»"; font-family: var(--f-display); font-style: italic; font-size: clamp(16px, 2.6vw, 19px); line-height: 1.45; color: var(--ink); }
@@ -424,10 +438,21 @@ details.group > summary::-webkit-details-marker { display: none; }
     <button class="btn primary" id="helpOk" type="button">Понятно</button>
   </section>
 
+  <div class="bar">
+    <div class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-tab="today" id="tab-today"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>Сегодня<span class="n" id="n-today"></span></button>
+      <button class="tab" role="tab" data-tab="all" id="tab-all"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Все дела<span class="n" id="n-all"></span></button>
+      <button class="tab" role="tab" data-tab="goals" id="tab-goals"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>Цели<span class="n" id="n-goals"></span></button>
+      <button class="tab" role="tab" data-tab="budget" id="tab-budget"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.3" fill="currentColor"/><path d="M7 6l8-3 1.5 3"/></svg>Бюджет</button>
+      <button class="tab" role="tab" data-tab="family" id="tab-family"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="8" r="3.2"/><circle cx="16.5" cy="9" r="2.6"/><path d="M3 19c.8-3.2 3-5 5.5-5s4.7 1.8 5.5 5M14 14.6c.8-.4 1.6-.6 2.5-.6 2.1 0 3.8 1.5 4.5 4.5"/></svg>Семья</button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
   <section class="capture" id="capture" aria-labelledby="capLabel">
     <div class="cap-head">
       <span class="mic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/></svg></span>
-      <div><label class="cap-label" id="capLabel" for="dictation">Что нового?</label><span class="cap-sub">Дела, траты, доходы, цели — скажите как есть. На телефоне нажмите микрофон на клавиатуре.</span></div>
+      <div><label class="cap-label" id="capLabel" for="dictation">Что нового?</label><span class="cap-sub" id="capSub">Дела, траты, доходы, цели — скажите как есть. На телефоне нажмите микрофон на клавиатуре.</span></div>
     </div>
     <div class="steps" aria-hidden="true"><span><b>1</b>Скажите</span><i>→</i><span><b>2</b>Разобрать</span><i>→</i><span><b>3</b>Сохранить</span></div>
     <textarea id="dictation" rows="3" placeholder="Завтра в 10 записать сына к врачу. Потратил 3 500 на продукты. Светлане пришла зарплата. Отложили 10 тысяч на отпуск."></textarea>
@@ -451,17 +476,6 @@ details.group > summary::-webkit-details-marker { display: none; }
     <div class="status" id="capStatus" role="status"></div>
     <div class="preview" id="preview" hidden></div>
   </section>
-
-  <div class="bar">
-    <div class="tabs" role="tablist" id="tabs">
-      <button class="tab" role="tab" data-tab="today" id="tab-today"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>Сегодня<span class="n" id="n-today"></span></button>
-      <button class="tab" role="tab" data-tab="all" id="tab-all"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Все дела<span class="n" id="n-all"></span></button>
-      <button class="tab" role="tab" data-tab="goals" id="tab-goals"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>Цели<span class="n" id="n-goals"></span></button>
-      <button class="tab" role="tab" data-tab="budget" id="tab-budget"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.3" fill="currentColor"/><path d="M7 6l8-3 1.5 3"/></svg>Бюджет</button>
-      <button class="tab" role="tab" data-tab="family" id="tab-family"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="8" r="3.2"/><circle cx="16.5" cy="9" r="2.6"/><path d="M3 19c.8-3.2 3-5 5.5-5s4.7 1.8 5.5 5M14 14.6c.8-.4 1.6-.6 2.5-.6 2.1 0 3.8 1.5 4.5 4.5"/></svg>Семья</button>
-    </div>
-    <div class="chips" id="chips"></div>
-  </div>
 
   <main id="view">
     <div class="state"><strong>Загружаю общий список…</strong>Дела появятся здесь через пару секунд.</div>
@@ -579,7 +593,9 @@ details.group > summary::-webkit-details-marker { display: none; }
   const delTask = (id) => write((db) => db.doc("tasks/" + id).delete());
   const addGoal = async (g) => {
     let ref; await write(async (db) => { ref = await db.collection("goals").add({
-      title: g.title, who: g.who, deadline: g.deadline || null, done: false, doneAt: null, by: S.me || null, createdAt: Date.now(),
+      title: g.title, who: g.who, deadline: g.end || g.deadline || null, start: g.start || null, end: g.end || g.deadline || null,
+      metric: ["income", "expense", "save"].includes(g.metric) ? g.metric : "steps", target: g.target || null,
+      done: false, doneAt: null, by: S.me || null, createdAt: Date.now(),
     }); });
     return ref && ref.id;
   };
@@ -711,7 +727,7 @@ details.group > summary::-webkit-details-marker { display: none; }
     const ym = t.slice(0, 7);
     const saved = S.money.filter((m) => m.type === "save" && typeof m.date === "string" && m.date.startsWith(ym)).reduce((s, m) => s + (+m.amount || 0), 0);
     if (saved > 0) badges.push(`<span class="badge mint">${BADGE.piggy}Отложено в этом месяце: ${rub(saved)}</span>`);
-    const g = S.goals.filter((x) => !x.done).length + S.funds.length;
+    const g = S.goals.filter((x) => !x.done && goalStats(x).phase !== "over").length + S.funds.length;
     if (g) badges.push(`<span class="badge">${BADGE.target}${g} ${plural(g, ["цель", "цели", "целей"])} в работе</span>`);
     $("#heroBadges").innerHTML = badges.join("");
   }
@@ -876,45 +892,109 @@ details.group > summary::-webkit-details-marker { display: none; }
     return `<div class="groups">${parts.join("")}</div>`;
   }
 
+  const METRIC_LABEL = { steps: "По шагам", income: "Заработать", expense: "Траты не больше", save: "Отложить" };
+  const metricOptions = (sel) => Object.entries(METRIC_LABEL).map(([k, l]) => `<option value="${k}"${k === sel ? " selected" : ""}>${l}</option>`).join("");
+  const shortDate = (d) => fmt(d, { day: "numeric", month: "short" }).replace(".", "");
+  // how far a goal has come; money goals count records inside their period
+  function goalStats(g) {
+    const t = today();
+    const metric = ["income", "expense", "save"].includes(g.metric) ? g.metric : "steps";
+    const start = isISO(g.start) ? g.start : null, end = isISO(g.end) ? g.end : isISO(g.deadline) ? g.deadline : null;
+    const phase = start && t < start ? "soon" : end && t > end ? "over" : "now";
+    const daysLeft = end ? Math.max(0, diff(end, t) + 1) : null;
+    const st = { metric, start, end, phase, daysLeft, target: +g.target || 0 };
+    if (metric === "steps") {
+      st.steps = S.tasks.filter((x) => x.goal === g.id).sort((a, b) => (a.done - b.done) || byWhen(a, b));
+      st.done = st.steps.filter((x) => x.done).length;
+      st.pct = g.done ? 100 : st.steps.length ? Math.round((st.done / st.steps.length) * 100) : 0;
+      st.win = !!g.done;
+      return st;
+    }
+    const type = metric === "income" ? "in" : metric === "expense" ? "out" : "save";
+    st.value = S.money.filter((m) => m.type === type && typeof m.date === "string" && (!start || m.date >= start) && (!end || m.date <= end)
+      && (g.who === "both" || m.who === g.who || m.who === "both")).reduce((sum, m) => sum + (+m.amount || 0), 0);
+    st.pct = st.target ? Math.round((st.value / st.target) * 100) : 0;
+    st.win = metric === "expense" ? (phase === "over" && st.value <= st.target) : st.value >= st.target && st.target > 0;
+    return st;
+  }
+
   function viewGoals() {
-    const goals = S.goals.filter((g) => matchesFilter(g.who)).sort((a, b) => (a.done - b.done) || (a.deadline || "9999").localeCompare(b.deadline || "9999"));
+    const goals = S.goals.filter((g) => matchesFilter(g.who)).map((g) => ({ g, st: goalStats(g) }))
+      .sort((a, b) => ((a.st.phase === "over") - (b.st.phase === "over")) || (a.st.end || "9999").localeCompare(b.st.end || "9999"));
     const ro = !S.canWrite;
     const t = today();
-    const cards = goals.map((g) => {
+    const cards = goals.map(({ g, st }) => {
       const p = person(g.who);
-      const steps = S.tasks.filter((x) => x.goal === g.id).sort((a, b) => (a.done - b.done) || byWhen(a, b));
-      const done = steps.filter((x) => x.done).length;
-      const pct = g.done ? 100 : steps.length ? Math.round((done / steps.length) * 100) : 0;
       const meta = [`<span class="tag who" style="--pc:${p.color}"><span class="dot"></span>${esc(p.name)}</span>`];
-      if (g.done) meta.push(`<span class="tag">Достигнута ${g.doneAt ? esc(fmt(dayOf(g.doneAt), { day: "numeric", month: "long" })) : ""}</span>`);
-      else if (g.deadline) {
-        const n = diff(g.deadline, t);
-        meta.push(n < 0 ? `<span class="tag late">срок прошёл ${-n} ${plural(n, ["день", "дня", "дней"])} назад</span>`
-          : `<span class="tag mono">до ${esc(fmt(g.deadline, { day: "numeric", month: "long", year: "numeric" }))} · ${n} ${plural(n, ["день", "дня", "дней"])}</span>`);
+      if (st.start && st.end) meta.push(`<span class="tag mono">${esc(shortDate(st.start))} — ${esc(shortDate(st.end))}</span>`);
+      else if (st.end) meta.push(`<span class="tag mono">до ${esc(fmt(st.end, { day: "numeric", month: "long" }))}</span>`);
+      if (g.done && st.metric === "steps") meta.push(`<span class="tag">Достигнута</span>`);
+      else if (st.phase === "soon") { const n = diff(st.start, t); meta.push(`<span class="tag">начнётся через ${n} ${plural(n, ["день", "дня", "дней"])}</span>`); }
+      else if (st.phase === "now" && st.daysLeft != null) meta.push(`<span class="tag">${st.daysLeft === 1 ? "последний день" : `осталось ${st.daysLeft} ${plural(st.daysLeft, ["день", "дня", "дней"])}`}</span>`);
+      else if (st.phase === "over") meta.push(`<span class="tag${st.win ? "" : " late"}">период закончился</span>`);
+
+      let body;
+      if (st.metric === "steps") {
+        body = `<div><div class="bar2" aria-hidden="true"><i style="width:${st.pct}%"></i></div><div class="pct"><b>${st.pct}%</b> · ${st.steps.length ? `${st.done} из ${st.steps.length} ${plural(st.steps.length, ["шага", "шагов", "шагов"])}` : g.done ? "цель достигнута" : "добавьте первый шаг ниже"}</div></div>
+          ${st.steps.length ? `<ul class="list">${st.steps.map((x) => taskRow(x, { showWho: x.who !== g.who, showDate: true, inGoal: true })).join("")}</ul>` : ""}
+          ${ro || g.done ? "" : `<form class="quick" data-form="step" data-goal="${g.id}" data-who="${esc(g.who)}"><label class="sr" for="s-${g.id}">Новый шаг</label><input class="inp" id="s-${g.id}" placeholder="Следующий шаг" autocomplete="off"><button class="btn small" type="submit">Добавить</button></form>`}`;
+      } else {
+        const left = st.target - st.value;
+        const perDay = st.daysLeft ? left / st.daysLeft : 0;
+        let hint, cls = "";
+        if (st.metric === "expense") {
+          if (left < 0) { hint = `Перерасход ${rub(-left)}`; cls = "bad"; }
+          else if (st.phase === "over") { hint = `Уложились! Сэкономили ${rub(left)}`; cls = "win"; }
+          else if (st.phase === "soon") hint = `Лимит ${rub(st.target)} на период`;
+          else hint = `Можно потратить ещё ${rub(left)}${st.daysLeft > 1 ? ` — около ${rub(perDay)} в день` : ""}`;
+        } else {
+          if (left <= 0) { hint = "Цель выполнена!"; cls = "win"; }
+          else if (st.phase === "over") { hint = `Не хватило ${rub(left)}`; cls = "bad"; }
+          else if (st.phase === "soon") hint = `Нужно будет ${rub(st.target)}`;
+          else hint = `Осталось ${rub(left)}${st.daysLeft > 1 ? ` — примерно ${rub(perDay)} в день` : " — сегодня последний день"}`;
+        }
+        const word = st.metric === "income" ? "заработано" : st.metric === "expense" ? "потрачено" : "отложено";
+        body = `<div class="g-big"><b>${rub(st.value)}</b> из ${rub(st.target)} · ${word}</div>
+          <div><div class="bar2${st.metric === "expense" && st.value > st.target ? " over" : ""}" aria-hidden="true"><i style="width:${Math.min(100, st.pct)}%"></i></div><div class="pct"><b>${st.pct}%</b></div></div>
+          <div class="g-hint ${cls}">${esc(hint)}</div>`;
       }
       const confirming = S.confirm === "g:" + g.id;
-      return `<article class="goal${g.done ? " achieved" : ""}" style="--pc:${p.color}">
-        ${g.done ? ART.trophy : ""}
+      const achieved = st.win || (st.metric === "steps" && g.done);
+      return `<article class="goal${achieved ? " achieved" : ""}" style="--pc:${p.color}">
+        ${achieved ? ART.trophy : ""}
+        <span class="goal-kind">${esc(METRIC_LABEL[st.metric])}</span>
         <h3>${esc(g.title)}</h3>
         <div class="g-meta">${meta.join("")}</div>
-        <div><div class="bar2" aria-hidden="true"><i style="width:${pct}%"></i></div><div class="pct"><b>${pct}%</b> · ${steps.length ? `${done} из ${steps.length} ${plural(steps.length, ["шага", "шагов", "шагов"])}` : g.done ? "цель достигнута" : "добавьте первый шаг ниже"}</div></div>
-        ${steps.length ? `<ul class="list">${steps.map((x) => taskRow(x, { showWho: x.who !== g.who, showDate: true, inGoal: true })).join("")}</ul>` : ""}
-        ${ro || g.done ? "" : `<form class="quick" data-form="step" data-goal="${g.id}" data-who="${esc(g.who)}"><label class="sr" for="s-${g.id}">Новый шаг</label><input class="inp" id="s-${g.id}" placeholder="Следующий шаг" autocomplete="off"><button class="btn small" type="submit">Добавить</button></form>`}
+        ${body}
         ${ro ? "" : `<div class="row">${confirming
-          ? `<span class="status">Удалить цель? Шаги останутся в списке дел.</span><button class="btn small danger" type="button" data-act="gdel-yes" data-id="${g.id}">Удалить</button><button class="btn small ghost" type="button" data-act="del-no">Нет</button>`
-          : `<button class="btn small" type="button" data-act="gdone" data-id="${g.id}">${g.done ? "Вернуть в работу" : "Цель достигнута"}</button><button class="btn small ghost" type="button" data-act="gdel" data-id="${g.id}">Удалить</button>`}</div>`}
+          ? `<span class="status">Удалить цель?</span><button class="btn small danger" type="button" data-act="gdel-yes" data-id="${g.id}">Удалить</button><button class="btn small ghost" type="button" data-act="del-no">Нет</button>`
+          : `${st.metric === "steps" ? `<button class="btn small" type="button" data-act="gdone" data-id="${g.id}">${g.done ? "Вернуть в работу" : "Цель достигнута"}</button>` : ""}<button class="btn small ghost" type="button" data-act="gdel" data-id="${g.id}">Удалить</button>`}</div>`}
       </article>`;
     }).join("");
+    const monthEnd = (() => { const d = new Date(); return iso(new Date(d.getFullYear(), d.getMonth() + 1, 0)); })();
     const form = ro ? "" : `<form class="newgoal" data-form="goal">
       <h3>Новая цель</h3>
-      <label class="sr" for="ng-title">Цель</label><input class="inp" id="ng-title" placeholder="Например: накопить на отпуск 300 000 ₽" autocomplete="off">
       <div class="row">
-        <label class="sr" for="ng-who">Чья цель</label><select class="sel" id="ng-who">${whoOptions(defaultWho())}</select>
-        <label class="sr" for="ng-date">Срок</label><input class="inp" type="date" id="ng-date">
-        <button class="btn primary" type="submit">Поставить цель</button>
+        <label class="f" for="ng-metric">Какая цель<select class="sel" id="ng-metric">${metricOptions("income")}</select></label>
+        <label class="f" for="ng-target">Сумма, ₽<input class="inp amt-in" id="ng-target" inputmode="decimal" placeholder="250 000" autocomplete="off"></label>
+      </div>
+      <label class="f" for="ng-title">Название (можно не писать)<input class="inp" id="ng-title" placeholder="Например: заработать на отпуск" autocomplete="off"></label>
+      <div class="row">
+        <label class="f" for="ng-start">С какого числа<input class="inp" type="date" id="ng-start" value="${t}"></label>
+        <label class="f" for="ng-end">По какое число<input class="inp" type="date" id="ng-end" value="${addDays(t, 6)}"></label>
+      </div>
+      <div class="period-chips" role="group" aria-label="Быстрый выбор периода">
+        <button type="button" data-period="${addDays(t, 6)}">Неделя</button>
+        <button type="button" data-period="${addDays(t, 13)}">2 недели</button>
+        <button type="button" data-period="${monthEnd}">До конца месяца</button>
+        <button type="button" data-period="${addDays(t, 29)}">30 дней</button>
+      </div>
+      <div class="row">
+        <label class="f" for="ng-who">Чья цель<select class="sel" id="ng-who">${whoOptions(defaultWho())}</select></label>
+        <button class="btn primary" type="submit" style="align-self:flex-end">Поставить цель</button>
       </div>
     </form>`;
-    const intro = !goals.length ? `<div class="state">${ART.sprout}<strong>Какой вы хотите видеть следующий год?</strong>Поставьте первую цель: «съездить к морю», «сделать ремонт в детской», «пробежать 10 км». Разбейте её на шаги, и прогресс будет расти сам.</div>` : "";
+    const intro = !goals.length ? `<div class="state">${ART.sprout}<strong>Поставьте цель на период</strong>Например: «заработать 250 000 ₽ с 18 по 25 октября», «тратить не больше 30 000 ₽ в ноябре» или «пробежать полумарафон к маю». Скажите это в микрофон выше или заполните форму.</div>` : "";
     return `${intro}${ro && !goals.length ? "" : `<div class="goals"${intro ? ' style="margin-top:16px"' : ""}>${cards}${form}</div>`}`;
   }
 
@@ -1143,12 +1223,39 @@ details.group > summary::-webkit-details-marker { display: none; }
     if (focusId) { const el = document.getElementById(focusId); if (el) { el.focus(); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
   }
 
+  const MODES = {
+    tasks: { title: "Новые дела", sub: "Скажите, что нужно сделать — можно несколько дел подряд, с днём и временем.", ph: "Завтра в 10 записать сына к врачу. Светлане купить подарок маме до пятницы.", btn: "Разобрать дела", kinds: ["task"] },
+    goals: { title: "Новая цель", sub: "Скажите цель и период: сколько заработать, отложить или не потратить — с какого по какое число.", ph: "Заработать 250 тысяч с 18 по 25 октября. Тратить не больше 30 тысяч в ноябре.", btn: "Разобрать цель", kinds: ["goal"] },
+    money: { title: "Доходы и траты", sub: "Скажите, сколько потратили, получили или отложили.", ph: "Потратил 3 500 на продукты. Светлане пришла зарплата 80 тысяч. Отложили 10 тысяч на отпуск.", btn: "Разобрать", kinds: ["expense", "income", "save"] },
+  };
+  const modeOf = (tab) => (tab === "goals" ? "goals" : tab === "budget" ? "money" : tab === "family" ? null : "tasks");
+  function renderCapture() {
+    const mode = modeOf(S.tab);
+    const box = $("#capture");
+    box.hidden = !mode || !S.canWrite || S.noDb;
+    if (!mode) return;
+    if (S.capMode !== mode) {
+      // each section keeps its own unsent text
+      if (S.capMode) ls.set("draft:" + S.capMode, $("#dictation").value);
+      $("#dictation").value = ls.get("draft:" + mode) || "";
+      if (S.capMode) { S.preview = null; renderPreview(); status(""); }
+      S.capMode = mode;
+    }
+    const m = MODES[mode];
+    box.dataset.mode = mode;
+    $("#capLabel").textContent = m.title;
+    $("#capSub").textContent = m.sub;
+    $("#dictation").placeholder = m.ph;
+    $("#parseBtn").textContent = m.btn;
+    $("#altAdd").hidden = mode !== "tasks";
+  }
+
   function renderCaptureSelects() {
     const w = $("#plainWho"); const cur = w.value;
     w.innerHTML = whoOptions(cur || defaultWho());
     if (!cur) w.value = defaultWho();
     $("#parseBtn").hidden = !S.sample;
-    $("#capture").hidden = !S.canWrite || S.noDb;
+    renderCapture();
     $("#fab").hidden = $("#capture").hidden;
   }
 
@@ -1168,7 +1275,7 @@ details.group > summary::-webkit-details-marker { display: none; }
     const items = splitPlain(text);
     try {
       for (const title of items) await addTask({ title, who, date });
-      $("#dictation").value = ""; ls.set("draft", "");
+      $("#dictation").value = ""; ls.set("draft:" + (S.capMode || "tasks"), "");
       status(""); toast(`Добавлено: ${items.length}`);
     } catch (e) {}
   }
@@ -1181,7 +1288,8 @@ details.group > summary::-webkit-details-marker { display: none; }
     if (!text) { status("Сначала надиктуйте или напишите дело.", true); $("#dictation").focus(); return; }
     if (!S.sample) return addPlain();
     const btn = $("#parseBtn");
-    btn.disabled = true; status("Claude раскладывает по полочкам…", false, true);
+    const mode = S.capMode || "tasks";
+    btn.disabled = true; status("Раскладываю по полочкам…", false, true);
     const t = today();
     const speaker = S.me ? `${S.me} (${person(S.me).name})` : "не указан";
     const goals = S.goals.filter((g) => !g.done).map((g) => `${g.id} — ${g.title}`).join("\n") || "нет";
@@ -1200,7 +1308,8 @@ ${goals}
 - who: id того, кто должен сделать. Не назван — говорящий (если говорящий не указан — both). «Мы», «нам», «вместе» — both.
 - date: YYYY-MM-DD, если назван день или срок («завтра», «в пятницу» — ближайшая будущая пятница, «до 25-го» — 25-е число). Иначе null.
 - time: "HH:MM", если названо время, иначе null.
-- kind: "goal" для долгосрочной цели («цель», «хочу к лету», «накопить», «научиться», «похудеть»), иначе "task". Для цели date — срок цели.
+- kind: "goal" для цели («цель», «хочу к лету», «накопить», «научиться», «заработать за неделю»), иначе "task".
+  У цели: metric — "income" (заработать сумму), "expense" (тратить не больше суммы), "save" (отложить сумму) или "steps" (не денежная цель); target — сумма в рублях или null; start и end — период цели YYYY-MM-DD («с 18 по 25 октября», «за неделю» — с сегодня на 7 дней, «в ноябре» — весь ноябрь, «к маю» — end = 1 мая). Для цели date = end.
 - goal: id существующей цели, если дело явно служит ей, иначе null.
 
 Деньги:
@@ -1214,7 +1323,9 @@ ${goals}
 ${funds}
 - Если копилки нет в списке, а человек говорит о долгой денежной цели («хотим накопить 300 тысяч на машину») — это kind "goal".
 
-Ответь только JSON-массивом объектов {"kind","title","who","date","time","goal","amount","category","fund"}. Ненужные поля — null.
+Ответь только JSON-массивом объектов {"kind","title","who","date","time","goal","amount","category","fund","metric","target","start","end"}. Ненужные поля — null.
+
+Режим раздела: ${mode}. ${mode === "tasks" ? "Создавай только kind \"task\"." : mode === "goals" ? "Создавай только kind \"goal\"." : "Создавай только kind \"expense\", \"income\" или \"save\"."}
 
 Текст:
 """${text.slice(0, 4000)}"""`;
@@ -1237,8 +1348,12 @@ ${funds}
           amount: money ? parseAmount(x.amount, kind === "save") : null,
           category: kind === "income" ? (CATS.in.includes(x.category) ? x.category : "Другое") : (CATS.out.includes(x.category) ? x.category : "Другое"),
           fund: fundIds.has(x.fund) ? x.fund : null,
+          metric: ["income", "expense", "save", "steps"].includes(x.metric) ? x.metric : null,
+          target: parseAmount(x.target),
+          start: isISO(x.start) ? x.start : null,
+          end: isISO(x.end) ? x.end : null,
         };
-      }).filter((x) => x.title || x.amount != null);
+      }).filter((x) => x.title || x.amount != null).map((x) => coerce(x, mode));
       if (!items.length) { status("Не нашёл в тексте дел. Попробуйте сказать иначе или нажмите «Добавить как есть».", true); return; }
       S.preview = items; status("Проверьте и нажмите «Сохранить»"); renderPreview();
       $("#preview").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1255,22 +1370,57 @@ ${funds}
     } finally { btn.disabled = false; parseCtl = null; }
   }
 
+  // keep each section's results in its own kind: dictating in «Цели» only makes goals, and so on
+  function coerce(x, mode) {
+    const allowed = MODES[mode] ? MODES[mode].kinds : null;
+    if (!allowed || allowed.includes(x.kind)) return finishGoal(x);
+    const was = x.kind;
+    if (mode === "tasks") {
+      x.kind = "task";
+      if (x.amount != null && !/\d/.test(x.title)) x.title = (x.title || KIND_LABEL[was]) + " " + rub(Math.abs(x.amount));
+    } else if (mode === "goals") {
+      x.kind = "goal";
+      if (!x.metric) x.metric = was === "income" ? "income" : was === "save" ? "save" : was === "expense" ? "expense" : "steps";
+      if (x.target == null && x.amount != null) x.target = Math.abs(x.amount);
+      if (!x.end && x.date) x.end = x.date;
+    } else if (mode === "money") {
+      x.kind = "expense";
+      x.date = x.date || today();
+      if (!CATS.out.includes(x.category)) x.category = "Другое";
+    }
+    return finishGoal(x);
+  }
+  function finishGoal(x) {
+    if (x.kind !== "goal") return x;
+    x.metric = x.metric || (x.target ? "income" : "steps");
+    if (!x.end && x.date) x.end = x.date;
+    if (x.end && !x.start) x.start = today();
+    if (x.metric !== "steps" && !x.title && x.target) x.title = METRIC_LABEL[x.metric] + " " + rub(x.target);
+    return x;
+  }
+
   function renderPreview() {
     const box = $("#preview");
     if (!S.preview || !S.preview.length) { box.hidden = true; box.innerHTML = ""; return; }
     box.hidden = false;
     const n = S.preview.length;
+    const kindsHere = (MODES[S.capMode] || {}).kinds || Object.keys(KIND_LABEL);
     box.innerHTML = `<h3>Вот что получилось</h3><p class="cap-sub" style="margin:0">Если что-то не так — поправьте прямо здесь. Лишнее уберите крестиком.</p>` + S.preview.map((x, i) => {
       const f = [];
       if (isMoney(x.kind)) f.push(`<label class="sr" for="pv-amt-${i}">Сумма</label><input class="inp amt" id="pv-amt-${i}" data-pv="amount" data-i="${i}" inputmode="decimal" value="${esc(x.amount ?? "")}" placeholder="Сумма, ₽" style="width:8.5em">`);
       if (x.kind === "expense" || x.kind === "income") f.push(`<label class="sr" for="pv-cat-${i}">Категория</label><select class="sel" id="pv-cat-${i}" data-pv="category" data-i="${i}">${catOptions(x.kind === "income" ? "in" : "out", x.category)}</select>`);
       if (x.kind === "save") f.push(`<label class="sr" for="pv-fund-${i}">Копилка</label><select class="sel" id="pv-fund-${i}" data-pv="fund" data-i="${i}">${fundOptions(x.fund)}</select>`);
       f.push(`<label class="sr" for="pv-who-${i}">Кто</label><select class="sel" id="pv-who-${i}" data-pv="who" data-i="${i}">${whoOptions(x.who)}</select>`);
-      f.push(`<label class="sr" for="pv-date-${i}">${x.kind === "goal" ? "Срок" : "Дата"}</label><input class="inp" type="date" id="pv-date-${i}" data-pv="date" data-i="${i}" value="${esc(x.date || "")}">`);
+      if (x.kind === "goal") {
+        f.push(`<label class="sr" for="pv-metric-${i}">Вид цели</label><select class="sel" id="pv-metric-${i}" data-pv="metric" data-i="${i}">${metricOptions(x.metric || "steps")}</select>`);
+        if ((x.metric || "steps") !== "steps") f.push(`<label class="sr" for="pv-target-${i}">Сумма цели</label><input class="inp amt" id="pv-target-${i}" data-pv="target" data-i="${i}" inputmode="decimal" value="${esc(x.target ?? "")}" placeholder="Сумма, ₽" style="width:8.5em">`);
+        f.push(`<label class="sr" for="pv-start-${i}">С</label><input class="inp" type="date" id="pv-start-${i}" data-pv="start" data-i="${i}" value="${esc(x.start || "")}" title="С какого числа">`);
+        f.push(`<label class="sr" for="pv-end-${i}">По</label><input class="inp" type="date" id="pv-end-${i}" data-pv="end" data-i="${i}" value="${esc(x.end || "")}" title="По какое число">`);
+      } else f.push(`<label class="sr" for="pv-date-${i}">Дата</label><input class="inp" type="date" id="pv-date-${i}" data-pv="date" data-i="${i}" value="${esc(x.date || "")}">`);
       if (x.kind === "task") f.push(`<label class="sr" for="pv-time-${i}">Время</label><input class="inp" type="time" id="pv-time-${i}" data-pv="time" data-i="${i}" value="${esc(x.time || "")}">
         <label class="sr" for="pv-goal-${i}">Цель</label><select class="sel" id="pv-goal-${i}" data-pv="goal" data-i="${i}">${goalOptions(x.goal)}</select>`);
       return `<div class="pv-item">
-        <select class="sel kind-sel" id="pv-kind-${i}" data-pv="kind" data-i="${i}" aria-label="Тип записи">${Object.entries(KIND_LABEL).map(([k, l]) => `<option value="${k}"${k === x.kind ? " selected" : ""}>${l}</option>`).join("")}</select>
+        ${kindsHere.length > 1 ? `<select class="sel kind-sel" id="pv-kind-${i}" data-pv="kind" data-i="${i}" aria-label="Тип записи">${kindsHere.map((k) => `<option value="${k}"${k === x.kind ? " selected" : ""}>${KIND_LABEL[k]}</option>`).join("")}</select>` : `<span class="goal-kind" style="padding-top:12px">${KIND_LABEL[x.kind]}</span>`}
         <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
           <label class="sr" for="pv-title-${i}">${isMoney(x.kind) ? "Комментарий" : "Название"}</label>
           <input class="inp title" id="pv-title-${i}" data-pv="title" data-i="${i}" value="${esc(x.title)}" placeholder="${isMoney(x.kind) ? "Комментарий" : "Название"}">
@@ -1286,18 +1436,20 @@ ${funds}
     const items = S.preview || [];
     for (const x of items) {
       if (isMoney(x.kind) && parseAmount(x.amount, x.kind === "save") == null) { toast(`Укажите сумму: ${x.title || KIND_LABEL[x.kind]}`); return; }
+      if (x.kind === "goal" && x.metric && x.metric !== "steps" && parseAmount(x.target) == null) { toast("Укажите сумму цели"); return; }
+      if (x.kind === "goal" && x.metric !== "steps" && !String(x.title || "").trim()) x.title = METRIC_LABEL[x.metric] + " " + rub(parseAmount(x.target));
       if (!isMoney(x.kind) && !String(x.title || "").trim()) { toast("У дела или цели нет названия"); return; }
     }
     const btn = $('#preview [data-pv="save"]'); if (btn) btn.disabled = true;
     try {
-      for (const g of items.filter((x) => x.kind === "goal")) await addGoal({ title: g.title.trim(), who: g.who, deadline: g.date });
+      for (const g of items.filter((x) => x.kind === "goal")) await addGoal({ title: g.title.trim(), who: g.who, start: g.start, end: g.end || g.date, metric: g.metric, target: g.metric === "steps" ? null : parseAmount(g.target) });
       for (const t of items.filter((x) => x.kind === "task")) await addTask({ ...t, title: t.title.trim() });
       for (const m of items.filter((x) => isMoney(x.kind))) await addMoney({
         type: m.kind === "income" ? "in" : m.kind === "save" ? "save" : "out", amount: parseAmount(m.amount, m.kind === "save"),
         cat: m.kind === "save" ? null : m.category, note: (m.title || "").trim(), who: m.who, date: m.date || today(), fund: m.kind === "save" ? m.fund : null,
       });
       S.preview = null; renderPreview();
-      $("#dictation").value = ""; ls.set("draft", "");
+      $("#dictation").value = ""; ls.set("draft:" + (S.capMode || "tasks"), "");
       toast(`Сохранено: ${items.length}`);
     } catch (e) { if (btn) btn.disabled = false; }
   }
@@ -1305,10 +1457,9 @@ ${funds}
   // ---- events ----
   $("#parseBtn").addEventListener("click", parse);
   $("#plainBtn").addEventListener("click", addPlain);
-  $("#dictation").addEventListener("input", (e) => ls.set("draft", e.target.value));
+  $("#dictation").addEventListener("input", (e) => ls.set("draft:" + (S.capMode || "tasks"), e.target.value));
   $("#fab").addEventListener("click", () => { const c = $("#capture"); c.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" }); setTimeout(() => $("#dictation").focus(), 300); });
   $("#dictation").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); S.sample ? parse() : addPlain(); } });
-  { const d = ls.get("draft"); if (d) $("#dictation").value = d; }
 
   $("#preview").addEventListener("click", (e) => {
     const b = e.target.closest("[data-pv]"); if (!b || b.tagName === "INPUT" || b.tagName === "SELECT") return;
@@ -1326,6 +1477,7 @@ ${funds}
     const el = e.target; if (!el.dataset.pv) return;
     const x = S.preview[+el.dataset.i]; if (!x) return;
     const k = el.dataset.pv; x[k] = el.value || (k === "title" ? "" : null);
+    if (k === "metric") renderPreview();
     if (k === "kind") {
       if (isMoney(x.kind) && !x.date) x.date = today();
       const list = x.kind === "income" ? CATS.in : CATS.out;
@@ -1412,7 +1564,14 @@ ${funds}
     } catch (err) {}
   });
 
+  $("#view").addEventListener("click", (e) => {
+    const c = e.target.closest("[data-period]"); if (!c) return;
+    const st = document.getElementById("ng-start"), en = document.getElementById("ng-end");
+    if (st && !st.value) st.value = today();
+    if (en) en.value = c.dataset.period;
+  });
   $("#view").addEventListener("change", (e) => {
+    if (e.target.id === "ng-metric") { const box = document.getElementById("ng-target"); if (box) box.closest("label").hidden = e.target.value === "steps"; }
     if (e.target.name === "me") chooseMe(e.target.value);
   });
 
@@ -1425,10 +1584,15 @@ ${funds}
         inp.value = "";
         await addTask({ title, who: f.dataset.who, date: kind === "quick" ? today() : null, goal: f.dataset.goal || null });
       } else if (kind === "goal") {
-        const ti = $("#ng-title"), title = ti.value.trim(); if (!title) { ti.focus(); return; }
-        const who = $("#ng-who").value, deadline = $("#ng-date").value || null;
-        ti.value = ""; $("#ng-date").value = "";
-        await addGoal({ title, who, deadline }); toast("Цель поставлена");
+        const metric = $("#ng-metric").value, target = parseAmount($("#ng-target").value);
+        const start = $("#ng-start").value || null, end = $("#ng-end").value || null;
+        let title = $("#ng-title").value.trim();
+        if (metric !== "steps" && target == null) { toast("Укажите сумму цели"); $("#ng-target").focus(); return; }
+        if (metric === "steps" && !title) { toast("Напишите, какая цель"); $("#ng-title").focus(); return; }
+        if (start && end && end < start) { toast("Дата окончания раньше начала"); return; }
+        if (!title) title = METRIC_LABEL[metric] + " " + rub(target);
+        $("#ng-title").value = ""; $("#ng-target").value = "";
+        await addGoal({ title, who: $("#ng-who").value, metric, target: metric === "steps" ? null : target, start, end }); toast("Цель поставлена");
       } else if (kind === "money") {
         const ai = $("#m-amount"), amount = parseAmount(ai.value);
         if (amount == null) { toast("Укажите сумму"); ai.focus(); return; }

@@ -224,6 +224,40 @@
     const clean = (s) => s.replace(/\s{2,}/g, " ").replace(/^[\s,.;:—-]+|[\s,.;:—-]+$/g, "").trim();
     const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
+    // a period for goals: "с 18 по 25 октября", "с 18.10 по 25.10", "за неделю", "в ноябре", "до конца месяца"
+    const MONTH_GEN = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+    const MONTH_PREP = ["январе", "феврале", "марте", "апреле", "мае", "июне", "июле", "августе", "сентябре", "октябре", "ноябре", "декабре"];
+    const MONTH_NOM = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
+    function rangeOf(s) {
+      const t = s.toLowerCase(), now = new Date(), y = now.getFullYear();
+      const day = (yy, mi, d) => iso(new Date(yy, mi, d));
+      const yearFor = (mi, d) => (new Date(y, mi, d) < new Date(y, now.getMonth(), now.getDate() - 1) ? y + 1 : y);
+      let m = t.match(new RegExp("с\\s+(\\d{1,2})(?:-?го)?(?:\\s+(" + MONTH_GEN.join("|") + "))?\\s+(?:по|до)\\s+(\\d{1,2})(?:-?го|-?е)?\\s+(" + MONTH_GEN.join("|") + ")"));
+      if (m) {
+        const m2 = MONTH_GEN.indexOf(m[4]), m1 = m[2] ? MONTH_GEN.indexOf(m[2]) : m2;
+        const yy = yearFor(m2, +m[3]);
+        return { start: day(m1 > m2 ? yy - 1 : yy, m1, +m[1]), end: day(yy, m2, +m[3]), raw: new RegExp(m[0]) };
+      }
+      m = t.match(/с\s+(\d{1,2})[./](\d{1,2})(?:[./]\d{2,4})?\s+(?:по|до)\s+(\d{1,2})[./](\d{1,2})(?:[./]\d{2,4})?/);
+      if (m) { const yy = yearFor(+m[4] - 1, +m[3]); return { start: day(yy, +m[2] - 1, +m[1]), end: day(yy, +m[4] - 1, +m[3]), raw: new RegExp(m[0].replace(/[.]/g, "\\.")) }; }
+      if (/на этой неделе|до конца недели/.test(t)) { const add = (7 - now.getDay()) % 7; return { start: plusDays(0), end: plusDays(add), raw: /на этой неделе|до конца недели/ }; }
+      if (/(за|на|в течение)\s+(неделю|недели)/.test(t)) return { start: plusDays(0), end: plusDays(6), raw: /(за|на|в течение)\s+(неделю|недели)/ };
+      if (/(за|на|в течение)\s+(две недели|2 недели)/.test(t)) return { start: plusDays(0), end: plusDays(13), raw: /(за|на|в течение)\s+(две недели|2 недели)/ };
+      if (/в этом месяце|до конца месяца/.test(t)) return { start: plusDays(0), end: day(y, now.getMonth() + 1, 0), raw: /в этом месяце|до конца месяца/ };
+      if (/(за|на|в течение)\s+месяц/.test(t)) return { start: plusDays(0), end: plusDays(29), raw: /(за|на|в течение)\s+месяц/ };
+      if (/в этом году|до конца года|(за|на|в течение)\s+год/.test(t)) return { start: plusDays(0), end: y + "-12-31", raw: /в этом году|до конца года|(за|на|в течение)\s+год/ };
+      m = t.match(new RegExp("(?:в|за)\\s+(" + MONTH_PREP.concat(MONTH_NOM).join("|") + ")"));
+      if (m) {
+        let mi = MONTH_PREP.indexOf(m[1]); if (mi < 0) mi = MONTH_NOM.indexOf(m[1]);
+        const yy = mi < now.getMonth() ? y + 1 : y;
+        const start = mi === now.getMonth() && yy === y ? plusDays(0) : day(yy, mi, 1);
+        return { start, end: day(yy, mi + 1, 0), raw: new RegExp(m[0]) };
+      }
+      return null;
+    }
+    const GOAL_TITLE = { income: "Заработать", expense: "Траты не больше", save: "Отложить" };
+    const fmtRub = (n) => new Intl.NumberFormat("ru-RU").format(Math.round(n)) + " ₽";
+
     function parse(text, ctx) {
       const people = ctx.people || [], me = ctx.me || null, funds = ctx.funds || [];
       const parts = String(text || "").replace(/\n+/g, ". ").split(/(?<=[.!?;])\s+|\s+(?:а ещё|а еще|ещё нужно|еще нужно|потом|и ещё|и еще)\s+/i).map((x) => x.trim()).filter(Boolean);
@@ -250,11 +284,49 @@
         else if (/(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))цель(?:(?<![а-яёА-ЯЁa-zA-Z0-9])(?=[а-яёА-ЯЁa-zA-Z0-9])|(?<=[а-яёА-ЯЁa-zA-Z0-9])(?![а-яёА-ЯЁa-zA-Z0-9]))|хочу|хотим|мечта|накопить|научиться|к лету|к новому году|за год/.test(low)) kind = "goal";
         else if (amt && !planned && amt.value >= 10 && (spentPast || catHit || /расход|покупк|рубл|₽/.test(low))) kind = "expense";
 
+        const mode = ctx.mode || "all";
+        const rg = rangeOf(s);
+        if (mode === "goals") kind = "goal";
+        else if (mode === "tasks") kind = "task";
+        else if (mode === "money" && !(kind === "expense" || kind === "income" || kind === "save")) kind = /зарплат|аванс|преми|получил|пришл|заработал|вернул|доход/.test(low) ? "income" : "expense";
         let title = work;
         if (wh) title = title.replace(new RegExp(wh.raw.source, "i"), " ");
         title = title.replace(/^(мне|нам|надо|нужно|не забыть|обязательно|пожалуйста)\s+/i, "").replace(/\s+(надо|нужно)\s+/i, " ");
         const item = { kind, who: wh ? wh.who : (me || "both"), date: dt ? dt.date : null, time: tm ? tm.time : null, goal: null, amount: null, category: null, fund: null };
 
+        if (kind === "goal") {
+          let gw = rg ? work.replace(new RegExp(rg.raw.source, "i"), " ") : work;
+          let gamt = amountOf(gw);
+          if (gamt && gamt.value < 100 && !/рубл|₽|тыс|заработ|доход|отлож|накоп|трат|бюджет|лимит|копил/.test(low)) gamt = null;
+          item.metric = !gamt ? "steps"
+            : /не больше|не более|уложит|лимит|максимум|тратить|потратить/.test(low) ? "expense"
+            : /отлож|накоп|копить|сбере/.test(low) ? "save"
+            : /заработ|доход|получ|выручк|продаж|продать/.test(low) ? "income" : "income";
+          item.target = gamt ? gamt.value : null;
+          item.start = rg ? rg.start : (dt ? plusDays(0) : null);
+          item.end = rg ? rg.end : (dt ? dt.date : null);
+          item.date = item.end;
+          if (item.metric !== "steps") {
+            const what = gw.match(/(?:на|для)\s+([а-яё][а-яё\s-]{2,40})$/i);
+            item.title = GOAL_TITLE[item.metric] + " " + fmtRub(item.target) + (what && item.metric !== "income" ? " на " + clean(what[1]) : "");
+          } else {
+            gw = gw.replace(/^\s*(наша\s+|моя\s+)?цель\s*[—:-]?\s*/i, "").replace(/^\s*(я\s+|мы\s+)?(хочу|хотим)\s+/i, "");
+            if (wh) gw = gw.replace(new RegExp(wh.raw.source, "i"), " ");
+            item.title = cap(clean(gw));
+          }
+          if (!item.title) continue;
+          items.push(item);
+          continue;
+        }
+        if ((kind === "expense" || kind === "income" || kind === "save") && !amt) {
+          const table = kind === "income" ? IN_CATS : OUT_CATS;
+          const hit = table.find(([, re]) => re.test(low));
+          item.category = hit ? hit[0] : "Другое";
+          item.date = item.date || plusDays(0);
+          item.title = cap(clean(title)) || item.category;
+          items.push(item);
+          continue;
+        }
         if (kind === "expense" || kind === "income" || kind === "save") {
           item.amount = kind === "save" && /взял|снял|из копилк/.test(low) ? -amt.value : amt.value;
           item.date = item.date || plusDays(0);
@@ -293,7 +365,8 @@
     const people = (fam && Array.isArray(fam.people) ? fam.people : []);
     const funds = [...(store.get("funds") || new Map())].map(([id, d]) => ({ id, ...d }));
     let me = null; try { me = localStorage.getItem("dela:me"); } catch (e) {}
-    return LP.parse(m ? m[1] : prompt, { people, me, funds });
+    const mm = prompt.match(/Режим раздела:\s*(\w+)/);
+    return LP.parse(m ? m[1] : prompt, { people, me, funds, mode: mm ? mm[1] : "all" });
   }
 
   async function parse(input, opts) {
@@ -429,6 +502,7 @@
     .rec-bar .btn { min-height: 44px; }
     @media (max-width: 480px) { .rec-bar .btn.primary { flex: 1 1 auto; } }
     .rec-hint { font-size: 13px; color: var(--muted); }
+    .cap-how { display: block; margin-top: 4px; font-weight: 700; color: var(--accent) !important; }
     @media (prefers-reduced-motion: reduce) { .mic.on, .fab.on, .rec-dot { animation: none; } }`;
   document.head.appendChild(voiceCss);
 
@@ -503,7 +577,12 @@
     mic.setAttribute("tabindex", "0");
     mic.removeAttribute("aria-hidden");
     mic.setAttribute("aria-label", "Начать запись");
-    if (sub) sub.textContent = "Нажмите на микрофон, скажите всё подряд и нажмите «Готово». Можно держать кнопку, как рацию.";
+    if (sub && !document.getElementById("capHow")) {
+      const how = document.createElement("span");
+      how.id = "capHow"; how.className = "cap-sub cap-how";
+      how.textContent = "Нажмите на микрофон, говорите и нажмите «Готово». Можно держать кнопку, как рацию.";
+      sub.insertAdjacentElement("afterend", how);
+    }
 
     const bar = document.createElement("div");
     bar.className = "rec-bar";
