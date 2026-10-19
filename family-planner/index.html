@@ -2,42 +2,45 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Nunito:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
 /* Layout: a warm greeting with today's family progress, then the voice box, then sections.
    Phone: one column with an app-style bottom bar; desktop: tabs under the greeting, per-person columns. */
 :root {
-  /* family palette: forest green = steadiness, rose = love, gold = celebration */
-  --bg: #EEF2EC; --bg2: #E1EADF; --surface: #FFFFFF; --sunk: #F5F7F3; --ink: #18251F; --muted: #4D5B54;
-  --line: #DAE2D8; --accent: #1E5E4E; --accent-ink: #FFFFFF; --accent-soft: #DCEAE3; --sun: #E0A53A; --sun-soft: #FBEFD3;
-  --peach: #FBE4E8; --rose: #CF4F72; --rose-soft: #FBE7ED; --warn: #B85418; --ok: #2C7D52;
-  --c1: #3B6E96; --c2: #CF5778; --c3: #7A62C4; --c4: #B97B17; --both: #C88A16;
-  --shadow: 0 0 0 1px rgba(24, 45, 35, .05), 0 1px 2px rgba(24, 45, 35, .04), 0 12px 32px -10px rgba(24, 45, 35, .16);
-  --shadow-lift: 0 0 0 1px rgba(24, 45, 35, .06), 0 2px 4px rgba(24, 45, 35, .05), 0 22px 44px -12px rgba(24, 45, 35, .22);
-  --glow1: rgba(207, 79, 114, .10); --glow2: rgba(30, 94, 78, .12); --glass: rgba(255, 255, 255, .74);
-  --f-display: "Lora", Georgia, "Times New Roman", serif;
-  --f-body: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --r-lg: 22px;
+  /* family palette: deep emerald = steadiness, champagne gold = faith and celebration, garnet = love, warm ivory paper */
+  --bg: #F5F1E8; --bg2: #ECE5D6; --surface: #FFFDF8; --sunk: #F4EFE5; --ink: #17211D; --muted: #555E59;
+  --line: #E4DCCB; --accent: #1C4A3E; --accent-ink: #FFFDF8; --accent-soft: #E2EBE4; --sun: #B8913F; --sun-soft: #F5ECD7;
+  --peach: #F4E7DF; --rose: #A63A5E; --rose-soft: #F6E5EA; --warn: #B0521D; --ok: #2D7552;
+  --c1: #2E5A82; --c2: #A9466A; --c3: #6A58A8; --c4: #9A6E1E; --both: #B08A3E;
+  --gold: #B8913F; --gold-hi: #E9D49A; --deep: #123A30; --deep-2: #0B241D;
+  --shadow: 0 0 0 1px rgba(70, 56, 24, .07), 0 1px 2px rgba(40, 32, 10, .04), 0 18px 40px -22px rgba(40, 44, 24, .30);
+  --shadow-lift: 0 0 0 1px rgba(70, 56, 24, .09), 0 2px 4px rgba(40, 32, 10, .04), 0 30px 60px -26px rgba(30, 44, 24, .38);
+  --glow1: rgba(184, 145, 63, .13); --glow2: rgba(28, 74, 62, .10); --glass: rgba(255, 253, 248, .74);
+  --f-display: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+  --f-body: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r-lg: 24px;
   --r-md: 14px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0F1613; --bg2: #16221C; --surface: #16201B; --sunk: #121B16; --ink: #ECF2EE; --muted: #B2C1B9;
-    --line: #26342D; --accent: #6CC9AC; --accent-ink: #0E1813; --accent-soft: #1A3A2F; --sun: #F2C163; --sun-soft: #3A311F;
-    --peach: #3A2128; --rose: #F28AA7; --rose-soft: #3B1F28; --warn: #F09A5E; --ok: #62C98D;
-    --c1: #84B5DD; --c2: #F08DA8; --c3: #B6A2FF; --c4: #E8B456; --both: #F0BE4E;
-    --shadow: 0 0 0 1px rgba(255, 255, 255, .05), 0 1px 2px rgba(0, 0, 0, .3), 0 14px 34px -10px rgba(0, 0, 0, .55); --shadow-lift: 0 0 0 1px rgba(255, 255, 255, .07), 0 24px 48px -12px rgba(0, 0, 0, .6);
-    --glow1: rgba(242, 138, 167, .08); --glow2: rgba(108, 201, 172, .07); --glass: rgba(22, 32, 27, .72);
+    --bg: #0B110F; --bg2: #111915; --surface: #131C18; --sunk: #0F1713; --ink: #F1ECE1; --muted: #AEB5AE;
+    --line: #26312B; --accent: #86CBB0; --accent-ink: #0B110F; --accent-soft: #183229; --sun: #DDBE74; --sun-soft: #33291A;
+    --peach: #2E1F22; --rose: #EE8BA8; --rose-soft: #37202A; --warn: #EE9A62; --ok: #6CC897;
+    --c1: #8DB7DE; --c2: #EE90AE; --c3: #B8A6FF; --c4: #E5B65B; --both: #DDBE74;
+    --gold: #DDBE74; --gold-hi: #F3E2B0; --deep: #12302A; --deep-2: #0A1D18;
+    --shadow: 0 0 0 1px rgba(255, 240, 200, .06), 0 1px 2px rgba(0, 0, 0, .3), 0 18px 40px -18px rgba(0, 0, 0, .6); --shadow-lift: 0 0 0 1px rgba(255, 240, 200, .09), 0 28px 56px -18px rgba(0, 0, 0, .7);
+    --glow1: rgba(221, 190, 116, .07); --glow2: rgba(134, 203, 176, .06); --glass: rgba(19, 28, 24, .74);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0F1613; --bg2: #16221C; --surface: #16201B; --sunk: #121B16; --ink: #ECF2EE; --muted: #B2C1B9;
-  --line: #26342D; --accent: #6CC9AC; --accent-ink: #0E1813; --accent-soft: #1A3A2F; --sun: #F2C163; --sun-soft: #3A311F;
-  --peach: #3A2128; --rose: #F28AA7; --rose-soft: #3B1F28; --warn: #F09A5E; --ok: #62C98D;
-  --c1: #84B5DD; --c2: #F08DA8; --c3: #B6A2FF; --c4: #E8B456; --both: #F0BE4E;
-  --shadow: 0 0 0 1px rgba(255, 255, 255, .05), 0 1px 2px rgba(0, 0, 0, .3), 0 14px 34px -10px rgba(0, 0, 0, .55); --shadow-lift: 0 0 0 1px rgba(255, 255, 255, .07), 0 24px 48px -12px rgba(0, 0, 0, .6);
-  --glow1: rgba(242, 138, 167, .08); --glow2: rgba(108, 201, 172, .07); --glass: rgba(22, 32, 27, .72);
+  --bg: #0B110F; --bg2: #111915; --surface: #131C18; --sunk: #0F1713; --ink: #F1ECE1; --muted: #AEB5AE;
+  --line: #26312B; --accent: #86CBB0; --accent-ink: #0B110F; --accent-soft: #183229; --sun: #DDBE74; --sun-soft: #33291A;
+  --peach: #2E1F22; --rose: #EE8BA8; --rose-soft: #37202A; --warn: #EE9A62; --ok: #6CC897;
+  --c1: #8DB7DE; --c2: #EE90AE; --c3: #B8A6FF; --c4: #E5B65B; --both: #DDBE74;
+  --gold: #DDBE74; --gold-hi: #F3E2B0; --deep: #12302A; --deep-2: #0A1D18;
+  --shadow: 0 0 0 1px rgba(255, 240, 200, .06), 0 1px 2px rgba(0, 0, 0, .3), 0 18px 40px -18px rgba(0, 0, 0, .6); --shadow-lift: 0 0 0 1px rgba(255, 240, 200, .09), 0 28px 56px -18px rgba(0, 0, 0, .7);
+  --glow1: rgba(221, 190, 116, .07); --glow2: rgba(134, 203, 176, .06); --glass: rgba(19, 28, 24, .74);
   color-scheme: dark;
 }
 
@@ -129,6 +132,7 @@ h1, h2, h3 { text-wrap: balance; }
   border: 0; background: var(--sunk); border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line);
   padding: 10px 18px; font-weight: 700; cursor: pointer; min-height: 44px; transition: transform .12s, box-shadow .2s, background .2s;
 }
+a.btn { text-decoration: none; color: inherit; }
 .btn:hover { background: var(--bg2); }
 .btn:active { transform: scale(.97); }
 .btn.primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 30%, transparent); }
@@ -431,36 +435,304 @@ details.group > summary::-webkit-details-marker { display: none; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { *, *::before { transition: none !important; animation: none !important; } }
 
-/* Polish layer: soft light, glass, gentle gradients */
+/* Premium layer: emerald and champagne gold on warm ivory, serif display, hairline gold, soft depth */
+body { background: var(--bg); font-feature-settings: "ss01", "cv11"; }
 body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(70vmax 60vmax at 105% -10%, var(--glow1), transparent 60%),
-              radial-gradient(70vmax 60vmax at -10% 110%, var(--glow2), transparent 60%); }
-.hero .eyebrow { text-transform: uppercase; letter-spacing: .14em; font-size: .78rem; font-weight: 700; }
-.hero h1, .col-head h2, .goal h3, .sec-title, .panel h2, .verse h2, .month-bar h2, .cap-label, .brand-name { letter-spacing: -.012em; }
-.ring .val { stroke: url(#ringGrad); }
-.ring.full .val { stroke: var(--sun); }
-.btn.primary { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, #fff), var(--accent));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 10px 22px -8px color-mix(in srgb, var(--accent) 60%, transparent); }
-.btn.primary:hover { filter: brightness(1.05); }
-.mic, .fab { background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 80%, #fff), var(--accent)); }
-.progress i { background: linear-gradient(90deg, color-mix(in srgb, var(--pc) 55%, #fff), var(--pc)); }
-.progress.full i { background: linear-gradient(90deg, color-mix(in srgb, var(--sun) 60%, #fff), var(--sun)); }
-.tabs { background: var(--glass); -webkit-backdrop-filter: saturate(1.5) blur(18px); backdrop-filter: saturate(1.5) blur(18px); }
+  background: radial-gradient(60vmax 50vmax at 108% -8%, var(--glow1), transparent 62%),
+              radial-gradient(60vmax 55vmax at -12% 108%, var(--glow2), transparent 62%); }
+body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .5; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .4  0 0 0 0 .33  0 0 0 0 .2  0 0 0 .07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body::before { opacity: .25; mix-blend-mode: screen; } }
+:root[data-theme="dark"] body::before { opacity: .25; mix-blend-mode: screen; }
+h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
+.hero h1, .col-head h2, .goal h3, .sec-title, .panel h2, .verse h2, .month-bar h2, .cap-label, .brand-name { letter-spacing: -.005em; }
+.brand-name { font-size: 1.5rem; font-weight: 700; line-height: 1; }
+.couple { font-size: .8125rem; letter-spacing: .04em; margin-top: 3px; }
+.cap-label { font-size: 1.375rem; font-weight: 700; }
+.col-head h2 { font-size: 1.375rem; } .goal h3 { font-size: 1.4rem; line-height: 1.2; } .panel h2, .verse h2 { font-size: 1.6rem; }
+.group > h3, .card > h3, .newgoal h3 { font-size: 1.2rem; font-weight: 700; }
+.sec-title { font-size: 1.7rem; }
+.sec-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--gold), transparent); opacity: .6; }
+.month-bar h2 { font-size: 1.8rem; }
+.crest-mark { width: 44px; height: 48px; flex: none; filter: drop-shadow(0 4px 8px rgba(11, 36, 29, .28)); }
+.brand { gap: 12px; }
+
+/* Hero: a deep emerald panel with gold hairline */
+.hero { --ink: #F7F1E1; --muted: #C3D0C6; --line: rgba(233, 212, 154, .28); --glass: rgba(10, 32, 26, .58);
+  color: var(--ink); border-radius: 30px; padding: 30px 28px;
+  background:
+    radial-gradient(80% 120% at 100% 0%, rgba(233, 212, 154, .20) 0%, transparent 55%),
+    radial-gradient(90% 120% at 0% 110%, rgba(166, 58, 94, .22) 0%, transparent 60%),
+    linear-gradient(155deg, #1F5646 0%, #123A30 52%, #0B241D 100%);
+  box-shadow: 0 0 0 1px rgba(233, 212, 154, .35), inset 0 1px 0 rgba(255, 255, 255, .08), 0 34px 60px -34px rgba(11, 36, 29, .75); }
+.hero::before { content: ""; position: absolute; inset: 7px; border-radius: 24px; border: 1px solid rgba(233, 212, 154, .22); pointer-events: none; z-index: 1; }
+.wm { position: absolute; pointer-events: none; opacity: .1; z-index: 0; }
+.hero .wm { right: 150px; bottom: -48px; width: 240px; height: 300px; opacity: .07; }
+@media (max-width: 760px) { .hero .wm { right: -40px; opacity: .06; } }
+.hero > * { position: relative; z-index: 2; }
+.hero > .wm { position: absolute; z-index: 0; }
+.hero.has-photo .wm { display: none; }
+@media (max-width: 520px) {
+  .hero { padding: 24px 20px; }
+  .hero > .ring { position: absolute; right: 16px; top: 16px; width: 84px; height: 84px; }
+  .hero h1 { font-size: clamp(1.7rem, 7.4vw, 2.2rem); padding-right: 92px; }
+  .hero .eyebrow { padding-right: 92px; letter-spacing: .12em; }
+  .hero.has-photo h1, .hero.has-photo .eyebrow { padding-right: 0; }
+}
+.hero .eyebrow { color: var(--gold-hi); letter-spacing: .2em; font-size: .75rem; }
+.hero h1 { font-size: clamp(2rem, 6.2vw, 3rem); font-weight: 600; letter-spacing: -.01em; line-height: 1.05; margin: 6px 0 8px; }
+.hero .sub { color: #E4EBE3; font-size: 1.0625rem; }
+.motto q { font-size: clamp(1.15rem, 3vw, 1.45rem); color: #F3E9CC; }
+.motto cite { color: var(--gold-hi); letter-spacing: .1em; text-transform: uppercase; font-size: .75rem; opacity: .9; }
+.hero .badge { background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1px rgba(233, 212, 154, .3); color: #F7F1E1; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.hero .badge.sun, .hero .badge.mint { background: rgba(233, 212, 154, .14); }
+.hero .badge svg { color: var(--gold-hi) !important; }
+.hero .ring .trk { stroke: rgba(255, 255, 255, .16); }
+.hero .ring .lbl span { color: #C3D0C6; }
+.hero .ring .val { stroke: url(#ringGrad); }
+.hero .ring.full .val { stroke: var(--gold-hi); }
+.hero-photo { background: #0B241D; box-shadow: 0 0 0 1px rgba(233, 212, 154, .35); }
+.hero-photo .ring { background: rgba(8, 28, 22, .62); box-shadow: 0 0 0 1px rgba(233, 212, 154, .4), 0 8px 20px -8px rgba(0, 0, 0, .5); }
+.hero-photo figcaption { font-family: var(--f-display); font-size: 1.35rem; }
+.hero-photo figcaption svg { color: #F4A9C0; }
+.hero-photo::after { z-index: 1; }
+
+/* Controls */
+.tabs { background: var(--glass); -webkit-backdrop-filter: saturate(1.6) blur(18px); backdrop-filter: saturate(1.6) blur(18px); box-shadow: 0 0 0 1px rgba(184, 145, 63, .28), 0 14px 30px -18px rgba(30, 44, 24, .35); }
+.tab { font-weight: 700; letter-spacing: .01em; }
+.tab[aria-selected="true"] { background: linear-gradient(180deg, #266050, #143F34); color: #F3E2B0; box-shadow: inset 0 0 0 1px rgba(233, 212, 154, .4), 0 8px 16px -8px rgba(11, 36, 29, .6); }
+.tab .n { background: var(--gold); color: #1B1405; }
+@media (max-width: 640px) {
+  .tab[aria-selected="true"] { background: color-mix(in srgb, var(--gold) 16%, transparent); color: var(--accent); box-shadow: none; }
+  .tab[aria-selected="true"]::before { content: ""; position: absolute; top: -6px; left: 28%; right: 28%; height: 3px; border-radius: 0 0 3px 3px; background: linear-gradient(90deg, var(--gold), var(--gold-hi), var(--gold)); }
+  .tabs { box-shadow: 0 -1px 0 rgba(184, 145, 63, .35), 0 -10px 30px rgba(30, 44, 24, .12); }
+}
 .chip { background: var(--glass); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
-.capture textarea { box-shadow: inset 0 1px 3px rgba(24, 45, 35, .06); }
-.capture textarea:focus { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); }
-.sel:focus, .inp:focus { box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent); }
-.col, .goal, .group, .kpi, .card, .panel, .capture { transition: box-shadow .25s ease, transform .25s ease; }
-@media (hover: hover) { .col:hover, .goal:hover, .card:hover { box-shadow: var(--shadow-lift); } }
-.hero-photo img { box-shadow: 0 10px 30px -12px rgba(0, 0, 0, .45); }
-.badge { box-shadow: 0 0 0 1px var(--line); }
-.made { opacity: .85; }
+.btn { font-weight: 700; letter-spacing: .005em; }
+.btn.primary { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 82%, #fff), var(--accent));
+  box-shadow: inset 0 0 0 1px rgba(233, 212, 154, .38), inset 0 1px 0 rgba(255, 255, 255, .2), 0 12px 24px -10px color-mix(in srgb, var(--accent) 70%, transparent); }
+.btn.primary:hover { filter: brightness(1.07); }
+.mic, .fab { background: linear-gradient(160deg, #2B6D5A, #123A30); color: #F3E2B0; box-shadow: inset 0 0 0 1px rgba(233, 212, 154, .45), 0 12px 24px -8px rgba(11, 36, 29, .55); }
+.capture textarea { box-shadow: inset 0 1px 3px rgba(40, 32, 10, .07); }
+.capture textarea:focus { box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold) 22%, transparent); border-color: var(--gold); }
+.sel:focus, .inp:focus { box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 4px color-mix(in srgb, var(--gold) 20%, transparent); }
+.progress i { background: linear-gradient(90deg, color-mix(in srgb, var(--pc) 55%, #fff), var(--pc)); }
+.progress.full i, .goal.achieved .bar2 i { background: linear-gradient(90deg, #E9D49A, #B8913F); }
+.goal .bar2 i { background: linear-gradient(90deg, color-mix(in srgb, var(--pc) 70%, var(--gold-hi)), var(--pc)); }
+
+/* Surfaces */
+.col, .goal, .group, .kpi, .card, .panel, .capture, .state, .verse { background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--surface) 90%, var(--bg2))); transition: box-shadow .25s ease, transform .25s ease; }
+@media (hover: hover) { .col:hover, .goal:hover, .card:hover { box-shadow: var(--shadow-lift); } .goal:hover { transform: translateY(-2px); } }
+.kpi { border-top: 0; padding: 18px 20px; }
+.kpi::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; border-radius: 0 3px 3px 0; background: var(--kc, var(--gold)); }
+.kpi .l { text-transform: uppercase; letter-spacing: .1em; font-size: .72rem; }
+.kpi .v { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.5rem, 4.4vw, 2rem); font-variant-numeric: lining-nums tabular-nums; line-height: 1.1; }
+.amt-in, .g-big b, .goal .pct b, .ring .lbl b { font-variant-numeric: lining-nums tabular-nums; }
+.g-big b { font-family: var(--f-display); font-size: 1.9rem; font-weight: 700; }
+.verse { background: linear-gradient(160deg, color-mix(in srgb, var(--gold) 14%, var(--surface)), var(--surface) 70%); box-shadow: 0 0 0 1px rgba(184, 145, 63, .4), var(--shadow); }
+.verse blockquote { font-size: 1.3rem; line-height: 1.6; font-style: italic; }
+.note, .help { background: var(--sun-soft); box-shadow: inset 0 0 0 1px rgba(184, 145, 63, .3); }
+.goal::before { background: color-mix(in srgb, var(--pc) 9%, transparent); }
+.goal.achieved { background: linear-gradient(160deg, color-mix(in srgb, var(--gold) 20%, var(--surface)), var(--surface) 72%); box-shadow: 0 0 0 1px rgba(184, 145, 63, .45), var(--shadow); }
+.toast { background: var(--deep); color: #F3E2B0; box-shadow: 0 0 0 1px rgba(233, 212, 154, .4), var(--shadow-lift); }
+.made { opacity: .9; font-family: var(--f-display); font-size: 1rem; font-style: italic; letter-spacing: .02em; }
+
+/* Capital: the family's whole picture on one dark card */
+.capital { position: relative; overflow: hidden; border-radius: 30px; padding: 26px 26px 22px; color: #F7F1E1; display: grid; gap: 18px;
+  background: radial-gradient(90% 130% at 100% 0%, rgba(233, 212, 154, .2), transparent 55%), linear-gradient(155deg, #1F5646, #123A30 55%, #0B241D);
+  box-shadow: 0 0 0 1px rgba(233, 212, 154, .38), inset 0 1px 0 rgba(255, 255, 255, .08), 0 34px 60px -36px rgba(11, 36, 29, .8); }
+.capital::before { content: ""; position: absolute; inset: 7px; border-radius: 24px; border: 1px solid rgba(233, 212, 154, .2); pointer-events: none; }
+.capital .wm { right: -22px; top: -16px; width: 180px; height: 226px; }
+.capital > *:not(.wm) { position: relative; z-index: 1; }
+.capital .cap-k { font-size: .75rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-hi); }
+.capital .cap-v { font-family: var(--f-display); font-weight: 700; font-size: clamp(2.4rem, 9vw, 3.6rem); line-height: 1; letter-spacing: -.01em; font-variant-numeric: lining-nums tabular-nums; margin-top: 4px; }
+.capital .cap-s { color: #C8D5CB; font-size: .9375rem; margin-top: 6px; max-width: 46ch; }
+.cap-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.cap-stat { border-radius: 16px; padding: 12px 14px; background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px rgba(233, 212, 154, .22); }
+.cap-stat .k { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-hi); font-weight: 800; }
+.cap-stat .v { font-family: var(--f-display); font-size: 1.55rem; font-weight: 700; line-height: 1.15; font-variant-numeric: lining-nums tabular-nums; }
+.cap-stat .n { font-size: .8125rem; color: #C8D5CB; }
+.cap-stat.good .v { color: #BFEBD3; } .cap-stat.mid .v { color: #F3E2B0; } .cap-stat.low .v { color: #F7B7A1; }
+
+/* Cushion */
+.cushion { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; }
+@media (max-width: 480px) { .cushion { grid-template-columns: 1fr; justify-items: center; text-align: center; } }
+.gauge { position: relative; width: 132px; height: 132px; flex: none; }
+.gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.gauge .trk { fill: none; stroke: var(--sunk); stroke-width: 12; }
+.gauge .val { fill: none; stroke: url(#gaugeGrad); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset .9s cubic-bezier(.2, .8, .2, 1); }
+.gauge .lbl { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1; }
+.gauge .lbl b { font-family: var(--f-display); font-size: 2.3rem; font-weight: 700; font-variant-numeric: lining-nums; }
+.gauge .lbl span { font-size: .75rem; font-weight: 700; color: var(--muted); margin-top: 3px; }
+.cushion h4 { margin: 0 0 4px; font-family: var(--f-display); font-size: 1.35rem; }
+.cushion p { margin: 0; color: var(--muted); font-size: .9375rem; }
+.cushion .row { margin-top: 10px; }
+.mini-form { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.mini-form .inp { flex: 1 1 120px; min-height: 40px; }
+.fkind { font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.goal.cush { background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 10%, var(--surface)), var(--surface) 70%); }
+
+/* Donut */
+.donut-wrap { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; justify-content: center; }
+.donut { position: relative; width: 168px; height: 168px; flex: none; }
+.donut svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.donut circle { fill: none; stroke-width: 20; }
+.donut .lbl { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; line-height: 1.1; }
+.donut .lbl b { font-family: var(--f-display); font-size: 1.15rem; max-width: 96px; overflow-wrap: anywhere; font-variant-numeric: lining-nums; }
+.donut .lbl span { font-size: .75rem; color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.cat .nm { display: flex; align-items: center; gap: 8px; }
+.cat .nm i { width: 10px; height: 10px; border-radius: 3px; background: var(--cc, var(--c2)); flex: none; }
+.cat .track i { background: var(--cc, var(--c2)); opacity: .85; }
+.delta { font-size: .8125rem; font-weight: 700; color: var(--muted); }
+.delta.good { color: var(--ok); } .delta.bad { color: var(--warn); }
+.pace { display: flex; flex-direction: column; gap: 6px; }
+.pace .big { font-family: var(--f-display); font-size: 1.9rem; font-weight: 700; line-height: 1.1; font-variant-numeric: lining-nums; }
+
+/* Crest picker */
+.crest-pick { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
+.pick { border: 0; cursor: pointer; border-radius: 18px; padding: 12px 8px 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--sunk); box-shadow: inset 0 0 0 1px var(--line); font-weight: 700; font-size: .9375rem; transition: transform .15s, box-shadow .2s; }
+.pick svg { width: 100%; height: 130px; }
+.pick:hover { transform: translateY(-2px); }
+.pick.on { background: color-mix(in srgb, var(--gold) 14%, var(--surface)); box-shadow: inset 0 0 0 2px var(--gold), 0 14px 26px -16px rgba(184, 145, 63, .7); }
+.pick:disabled { cursor: default; opacity: .7; }
+/* Family tab: the crest */
+.crest-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 26px; align-items: center; padding: 28px; border-radius: 30px; max-width: 640px;
+  background: radial-gradient(90% 120% at 0% 0%, rgba(233, 212, 154, .22), transparent 55%), linear-gradient(155deg, #1F5646, #123A30 55%, #0B241D); color: #F7F1E1;
+  box-shadow: 0 0 0 1px rgba(233, 212, 154, .4), inset 0 1px 0 rgba(255, 255, 255, .08), 0 34px 60px -36px rgba(11, 36, 29, .8); position: relative; overflow: hidden; }
+.crest-card::before { content: ""; position: absolute; inset: 7px; border-radius: 24px; border: 1px solid rgba(233, 212, 154, .22); pointer-events: none; }
+.crest-card svg.crest-big { width: 190px; height: auto; max-height: 260px; filter: drop-shadow(0 14px 18px rgba(0, 0, 0, .4)); position: relative; }
+.crest-card h2 { margin: 0 0 6px; font-family: var(--f-display); font-size: 2rem; font-weight: 700; color: #F7F1E1; }
+.crest-card p { margin: 0 0 8px; color: #D4DDD4; font-size: .9375rem; line-height: 1.55; }
+.crest-card .legend-l { display: grid; gap: 6px; margin: 10px 0 14px; padding: 0; list-style: none; font-size: .875rem; color: #E4EBE3; }
+.crest-card .legend-l li { display: flex; gap: 8px; align-items: baseline; }
+.crest-card .legend-l b { color: var(--gold-hi); font-weight: 800; white-space: nowrap; }
+.crest-card .btn { background: rgba(255, 255, 255, .08); color: #F3E2B0; box-shadow: inset 0 0 0 1px rgba(233, 212, 154, .45); }
+@media (max-width: 560px) { .crest-card { grid-template-columns: 1fr; justify-items: center; text-align: center; padding: 26px 20px; } .crest-card .legend-l li { text-align: left; } }
 </style>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="crGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7E7B4"/><stop offset=".45" stop-color="#D6B25E"/><stop offset="1" stop-color="#9C7428"/></linearGradient>
+<linearGradient id="crGoldH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBEFC6"/><stop offset=".5" stop-color="#D2AC55"/><stop offset="1" stop-color="#8F6A22"/></linearGradient>
+<radialGradient id="crField" cx=".38" cy=".3" r=".9"><stop offset="0" stop-color="#2C6E59"/><stop offset=".6" stop-color="#1B4A3D"/><stop offset="1" stop-color="#0F2E26"/></radialGradient>
+<linearGradient id="crHeart" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D2557C"/><stop offset="1" stop-color="#7C1C3C"/></linearGradient>
+<linearGradient id="crRibbon" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF9EC"/><stop offset="1" stop-color="#EBDDBC"/></linearGradient>
+<clipPath id="crClip"><path d="M66 60H174V138C174 180 150 205 120 224C90 205 66 180 66 138Z"/></clipPath>
+<linearGradient id="rbGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBEFC6"/><stop offset=".42" stop-color="#D8B45F"/><stop offset="1" stop-color="#97701F"/></linearGradient>
+<linearGradient id="rbGoldH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF4D2"/><stop offset=".5" stop-color="#D2AC55"/><stop offset="1" stop-color="#8A651C"/></linearGradient>
+<linearGradient id="rbRose" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DA5E86"/><stop offset="1" stop-color="#7A1B3A"/></linearGradient>
+<radialGradient id="rbEm" cx=".4" cy=".3" r=".95"><stop offset="0" stop-color="#2E7460"/><stop offset=".6" stop-color="#1B4A3D"/><stop offset="1" stop-color="#0D2A22"/></radialGradient>
+<radialGradient id="rbGar" cx=".4" cy=".3" r=".95"><stop offset="0" stop-color="#8B2748"/><stop offset=".6" stop-color="#5E1731"/><stop offset="1" stop-color="#3A0C1E"/></radialGradient>
+<radialGradient id="rbNavy" cx=".4" cy=".25" r=".95"><stop offset="0" stop-color="#27457A"/><stop offset=".6" stop-color="#16294F"/><stop offset="1" stop-color="#0A1530"/></radialGradient>
+<linearGradient id="rbPaper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFAEE"/><stop offset="1" stop-color="#E9DBB9"/></linearGradient>
+<linearGradient id="rbSilver" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#D6DCE3"/><stop offset="1" stop-color="#8E98A5"/></linearGradient>
+
+<linearGradient id="rcGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBEFC6"/><stop offset=".42" stop-color="#D8B45F"/><stop offset="1" stop-color="#97701F"/></linearGradient>
+<linearGradient id="rcGoldH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF4D2"/><stop offset=".5" stop-color="#D2AC55"/><stop offset="1" stop-color="#8A651C"/></linearGradient>
+<linearGradient id="rcRose" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DA5E86"/><stop offset="1" stop-color="#7A1B3A"/></linearGradient>
+<radialGradient id="rcEm" cx=".4" cy=".3" r=".95"><stop offset="0" stop-color="#2E7460"/><stop offset=".6" stop-color="#1B4A3D"/><stop offset="1" stop-color="#0D2A22"/></radialGradient>
+<radialGradient id="rcGar" cx=".4" cy=".3" r=".95"><stop offset="0" stop-color="#8B2748"/><stop offset=".6" stop-color="#5E1731"/><stop offset="1" stop-color="#3A0C1E"/></radialGradient>
+<radialGradient id="rcNavy" cx=".4" cy=".25" r=".95"><stop offset="0" stop-color="#27457A"/><stop offset=".6" stop-color="#16294F"/><stop offset="1" stop-color="#0A1530"/></radialGradient>
+<linearGradient id="rcPaper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFAEE"/><stop offset="1" stop-color="#E9DBB9"/></linearGradient>
+<linearGradient id="rcSilver" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#D6DCE3"/><stop offset="1" stop-color="#8E98A5"/></linearGradient>
+
+<linearGradient id="rdGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBEFC6"/><stop offset=".42" stop-color="#D8B45F"/><stop offset="1" stop-color="#97701F"/></linearGradient>
+<linearGradient id="rdGoldH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF4D2"/><stop offset=".5" stop-color="#D2AC55"/><stop offset="1" stop-color="#8A651C"/></linearGradient>
+<linearGradient id="rdRose" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DA5E86"/><stop offset="1" stop-color="#7A1B3A"/></linearGradient>
+<radialGradient id="rdEm" cx=".4" cy=".3" r=".95"><stop offset="0" stop-color="#2E7460"/><stop offset=".6" stop-color="#1B4A3D"/><stop offset="1" stop-color="#0D2A22"/></radialGradient>
+<radialGradient id="rdGar" cx=".4" cy=".3" r=".95"><stop offset="0" stop-color="#8B2748"/><stop offset=".6" stop-color="#5E1731"/><stop offset="1" stop-color="#3A0C1E"/></radialGradient>
+<radialGradient id="rdNavy" cx=".4" cy=".25" r=".95"><stop offset="0" stop-color="#27457A"/><stop offset=".6" stop-color="#16294F"/><stop offset="1" stop-color="#0A1530"/></radialGradient>
+<linearGradient id="rdPaper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFAEE"/><stop offset="1" stop-color="#E9DBB9"/></linearGradient>
+<linearGradient id="rdSilver" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#D6DCE3"/><stop offset="1" stop-color="#8E98A5"/></linearGradient>
+</defs>
+<symbol id="crest-a" viewBox="0 0 240 304"><path d="M120 238 L116.12 237.78 L112.41 237.36 L108.86 236.75 L105.48 235.95 L102.24 234.97 L99.17 233.81 L96.24 232.47 L93.47 230.96 L90.84 229.28 L88.35 227.44 L86.01 225.44 L83.8 223.29 L81.73 220.99 L79.79 218.54 L77.99 215.95 L76.31 213.22 L74.75 210.37 L73.32 207.38 L72.01 204.27 L70.82 201.04 L69.74 197.7 L68.77 194.24 L67.91 190.68 L67.15 187.01 L66.5 183.25 L65.95 179.39 L65.5 175.45 L65.14 171.42 L64.88 167.31 L64.7 163.12 L64.62 158.86 L64.62 154.53 L64.7 150.14 L64.86 145.69 L65.09 141.19 L65.4 136.64 L65.78 132.03 L66.23 127.39 L66.75 122.71 L67.33 118 L67.97 113.26 L68.66 108.49 L69.42 103.71 L70.22 98.9 L71.08 94.09 L71.98 89.27 L72.92 84.45 L73.91 79.62 L74.94 74.81 L76 70" fill="none" stroke="#9C7428" stroke-width="1.6" stroke-linecap="round"/><path d="M0 0C4.2 -3.1500000000000004 11.55 -3.1500000000000004 15.75 0C11.55 3.1500000000000004 4.2 3.1500000000000004 0 0Z" transform="translate(99.17 233.81) rotate(-118.38)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.2 -3.1500000000000004 11.55 -3.1500000000000004 15.75 0C11.55 3.1500000000000004 4.2 3.1500000000000004 0 0Z" transform="translate(99.17 233.81) rotate(-194.38)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.0600000000000005 -3.0450000000000004 11.165000000000001 -3.0450000000000004 15.225000000000001 0C11.165000000000001 3.0450000000000004 4.0600000000000005 3.0450000000000004 0 0Z" transform="translate(88.35 227.44) rotate(-102.53)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.0600000000000005 -3.0450000000000004 11.165000000000001 -3.0450000000000004 15.225000000000001 0C11.165000000000001 3.0450000000000004 4.0600000000000005 3.0450000000000004 0 0Z" transform="translate(88.35 227.44) rotate(-178.53)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.92 -2.94 10.78 -2.94 14.7 0C10.78 2.94 3.92 2.94 0 0Z" transform="translate(79.79 218.54) rotate(-87.75)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.92 -2.94 10.78 -2.94 14.7 0C10.78 2.94 3.92 2.94 0 0Z" transform="translate(79.79 218.54) rotate(-163.75)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.7800000000000002 -2.835 10.395000000000001 -2.835 14.175 0C10.395000000000001 2.835 3.7800000000000002 2.835 0 0Z" transform="translate(73.32 207.38) rotate(-75.54)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.7800000000000002 -2.835 10.395000000000001 -2.835 14.175 0C10.395000000000001 2.835 3.7800000000000002 2.835 0 0Z" transform="translate(73.32 207.38) rotate(-151.54)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.64 -2.73 10.01 -2.73 13.65 0C10.01 2.73 3.64 2.73 0 0Z" transform="translate(68.77 194.24) rotate(-66.09)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.64 -2.73 10.01 -2.73 13.65 0C10.01 2.73 3.64 2.73 0 0Z" transform="translate(68.77 194.24) rotate(-142.09)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.5 -2.625 9.625 -2.625 13.125 0C9.625 2.625 3.5 2.625 0 0Z" transform="translate(65.95 179.39) rotate(-58.92)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.5 -2.625 9.625 -2.625 13.125 0C9.625 2.625 3.5 2.625 0 0Z" transform="translate(65.95 179.39) rotate(-134.92)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.3600000000000003 -2.5200000000000005 9.24 -2.5200000000000005 12.600000000000001 0C9.24 2.5200000000000005 3.3600000000000003 2.5200000000000005 0 0Z" transform="translate(64.7 163.12) rotate(-53.46)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.3600000000000003 -2.5200000000000005 9.24 -2.5200000000000005 12.600000000000001 0C9.24 2.5200000000000005 3.3600000000000003 2.5200000000000005 0 0Z" transform="translate(64.7 163.12) rotate(-129.46)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.22 -2.415 8.855 -2.415 12.075000000000001 0C8.855 2.415 3.22 2.415 0 0Z" transform="translate(64.86 145.69) rotate(-49.23)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.22 -2.415 8.855 -2.415 12.075000000000001 0C8.855 2.415 3.22 2.415 0 0Z" transform="translate(64.86 145.69) rotate(-125.23)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.08 -2.31 8.47 -2.31 11.55 0C8.47 2.31 3.08 2.31 0 0Z" transform="translate(66.23 127.39) rotate(-45.89)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.08 -2.31 8.47 -2.31 11.55 0C8.47 2.31 3.08 2.31 0 0Z" transform="translate(66.23 127.39) rotate(-121.89)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.94 -2.205 8.084999999999999 -2.205 11.025 0C8.084999999999999 2.205 2.94 2.205 0 0Z" transform="translate(68.66 108.49) rotate(-43.22)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.94 -2.205 8.084999999999999 -2.205 11.025 0C8.084999999999999 2.205 2.94 2.205 0 0Z" transform="translate(68.66 108.49) rotate(-119.22)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.8 -2.0999999999999996 7.699999999999999 -2.0999999999999996 10.5 0C7.699999999999999 2.0999999999999996 2.8 2.0999999999999996 0 0Z" transform="translate(71.98 89.27) rotate(-41.03)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.8 -2.0999999999999996 7.699999999999999 -2.0999999999999996 10.5 0C7.699999999999999 2.0999999999999996 2.8 2.0999999999999996 0 0Z" transform="translate(71.98 89.27) rotate(-117.03)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3 -3 9 -3 13 0C9 3 3 3 0 0Z" transform="translate(76 70) rotate(-55)" fill="url(#crGold)"/><path d="M120 238 L123.88 237.78 L127.59 237.36 L131.14 236.75 L134.52 235.95 L137.76 234.97 L140.83 233.81 L143.76 232.47 L146.53 230.96 L149.16 229.28 L151.65 227.44 L153.99 225.44 L156.2 223.29 L158.27 220.99 L160.21 218.54 L162.01 215.95 L163.69 213.22 L165.25 210.37 L166.68 207.38 L167.99 204.27 L169.18 201.04 L170.26 197.7 L171.23 194.24 L172.09 190.68 L172.85 187.01 L173.5 183.25 L174.05 179.39 L174.5 175.45 L174.86 171.42 L175.12 167.31 L175.3 163.12 L175.38 158.86 L175.38 154.53 L175.3 150.14 L175.14 145.69 L174.91 141.19 L174.6 136.64 L174.22 132.03 L173.77 127.39 L173.25 122.71 L172.67 118 L172.03 113.26 L171.34 108.49 L170.58 103.71 L169.78 98.9 L168.92 94.09 L168.02 89.27 L167.08 84.45 L166.09 79.62 L165.06 74.81 L164 70" fill="none" stroke="#9C7428" stroke-width="1.6" stroke-linecap="round"/><path d="M0 0C4.2 -3.1500000000000004 11.55 -3.1500000000000004 15.75 0C11.55 3.1500000000000004 4.2 3.1500000000000004 0 0Z" transform="translate(140.83 233.81) rotate(-61.62)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.2 -3.1500000000000004 11.55 -3.1500000000000004 15.75 0C11.55 3.1500000000000004 4.2 3.1500000000000004 0 0Z" transform="translate(140.83 233.81) rotate(14.38)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.0600000000000005 -3.0450000000000004 11.165000000000001 -3.0450000000000004 15.225000000000001 0C11.165000000000001 3.0450000000000004 4.0600000000000005 3.0450000000000004 0 0Z" transform="translate(151.65 227.44) rotate(-77.47)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.0600000000000005 -3.0450000000000004 11.165000000000001 -3.0450000000000004 15.225000000000001 0C11.165000000000001 3.0450000000000004 4.0600000000000005 3.0450000000000004 0 0Z" transform="translate(151.65 227.44) rotate(-1.47)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.92 -2.94 10.78 -2.94 14.7 0C10.78 2.94 3.92 2.94 0 0Z" transform="translate(160.21 218.54) rotate(-92.25)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.92 -2.94 10.78 -2.94 14.7 0C10.78 2.94 3.92 2.94 0 0Z" transform="translate(160.21 218.54) rotate(-16.25)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.7800000000000002 -2.835 10.395000000000001 -2.835 14.175 0C10.395000000000001 2.835 3.7800000000000002 2.835 0 0Z" transform="translate(166.68 207.38) rotate(-104.46)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.7800000000000002 -2.835 10.395000000000001 -2.835 14.175 0C10.395000000000001 2.835 3.7800000000000002 2.835 0 0Z" transform="translate(166.68 207.38) rotate(-28.46)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.64 -2.73 10.01 -2.73 13.65 0C10.01 2.73 3.64 2.73 0 0Z" transform="translate(171.23 194.24) rotate(-113.91)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.64 -2.73 10.01 -2.73 13.65 0C10.01 2.73 3.64 2.73 0 0Z" transform="translate(171.23 194.24) rotate(-37.91)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.5 -2.625 9.625 -2.625 13.125 0C9.625 2.625 3.5 2.625 0 0Z" transform="translate(174.05 179.39) rotate(-121.08)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.5 -2.625 9.625 -2.625 13.125 0C9.625 2.625 3.5 2.625 0 0Z" transform="translate(174.05 179.39) rotate(-45.08)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.3600000000000003 -2.5200000000000005 9.24 -2.5200000000000005 12.600000000000001 0C9.24 2.5200000000000005 3.3600000000000003 2.5200000000000005 0 0Z" transform="translate(175.3 163.12) rotate(-126.54)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.3600000000000003 -2.5200000000000005 9.24 -2.5200000000000005 12.600000000000001 0C9.24 2.5200000000000005 3.3600000000000003 2.5200000000000005 0 0Z" transform="translate(175.3 163.12) rotate(-50.54)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.22 -2.415 8.855 -2.415 12.075000000000001 0C8.855 2.415 3.22 2.415 0 0Z" transform="translate(175.14 145.69) rotate(-130.77)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.22 -2.415 8.855 -2.415 12.075000000000001 0C8.855 2.415 3.22 2.415 0 0Z" transform="translate(175.14 145.69) rotate(-54.77)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.08 -2.31 8.47 -2.31 11.55 0C8.47 2.31 3.08 2.31 0 0Z" transform="translate(173.77 127.39) rotate(-134.11)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.08 -2.31 8.47 -2.31 11.55 0C8.47 2.31 3.08 2.31 0 0Z" transform="translate(173.77 127.39) rotate(-58.11)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.94 -2.205 8.084999999999999 -2.205 11.025 0C8.084999999999999 2.205 2.94 2.205 0 0Z" transform="translate(171.34 108.49) rotate(-136.78)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.94 -2.205 8.084999999999999 -2.205 11.025 0C8.084999999999999 2.205 2.94 2.205 0 0Z" transform="translate(171.34 108.49) rotate(-60.78)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.8 -2.0999999999999996 7.699999999999999 -2.0999999999999996 10.5 0C7.699999999999999 2.0999999999999996 2.8 2.0999999999999996 0 0Z" transform="translate(168.02 89.27) rotate(-138.97)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.8 -2.0999999999999996 7.699999999999999 -2.0999999999999996 10.5 0C7.699999999999999 2.0999999999999996 2.8 2.0999999999999996 0 0Z" transform="translate(168.02 89.27) rotate(-62.97)" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3 -3 9 -3 13 0C9 3 3 3 0 0Z" transform="translate(164 70) rotate(-125)" fill="url(#crGold)"/><path d="M132 32L145 32M131.09 36.59L137.55 39.27M128.49 40.49L137.68 49.68M124.59 43.09L127.27 49.55M120 44L120 57M115.41 43.09L112.73 49.55M111.51 40.49L102.32 49.68M108.91 36.59L102.45 39.27M108 32L95 32M108.91 27.41L102.45 24.73M111.51 23.51L102.32 14.32M115.41 20.91L112.73 14.45M120 20L120 7M124.59 20.91L127.27 14.45M128.49 23.51L137.68 14.32M131.09 27.41L137.55 24.73" stroke="url(#crGold)" stroke-width="1.3" stroke-linecap="round" opacity=".8"/>
+<path d="M117.5 16h5v12h10v5h-10v19h-5V33h-10v-5h10z" fill="url(#crGold)" stroke="#7A5A1C" stroke-width=".7"/><path d="M66 60H174V138C174 180 150 205 120 224C90 205 66 180 66 138Z" fill="#0B241D" transform="translate(0 3)" opacity=".25"/>
+<path d="M66 60H174V138C174 180 150 205 120 224C90 205 66 180 66 138Z" fill="url(#crField)"/>
+<path d="M-60 60l120 170M-53 60l120 170M-46 60l120 170M-39 60l120 170M-32 60l120 170M-25 60l120 170M-18 60l120 170M-11 60l120 170M-4 60l120 170M3 60l120 170M10 60l120 170M17 60l120 170M24 60l120 170M31 60l120 170M38 60l120 170M45 60l120 170M52 60l120 170M59 60l120 170M66 60l120 170M73 60l120 170M80 60l120 170M87 60l120 170M94 60l120 170M101 60l120 170M108 60l120 170M115 60l120 170M122 60l120 170M129 60l120 170M136 60l120 170M143 60l120 170M150 60l120 170M157 60l120 170M164 60l120 170M171 60l120 170M178 60l120 170M185 60l120 170M192 60l120 170M199 60l120 170M206 60l120 170M213 60l120 170M220 60l120 170M227 60l120 170M234 60l120 170" clip-path="url(#crClip)" stroke="#fff" stroke-opacity=".035" stroke-width="1"/>
+<g><circle cx="106" cy="92" r="15.5" fill="none" stroke="#0B241D" stroke-width="7.2"/><circle cx="106" cy="92" r="15.5" fill="none" stroke="url(#crGoldH)" stroke-width="4.6"/><circle cx="134" cy="92" r="15.5" fill="none" stroke="#0B241D" stroke-width="7.2"/><circle cx="134" cy="92" r="15.5" fill="none" stroke="url(#crGoldH)" stroke-width="4.6"/>
+<clipPath id="crOver"><rect x="112" y="78.35" width="16" height="12"/></clipPath>
+<g clip-path="url(#crOver)"><circle cx="106" cy="92" r="15.5" fill="none" stroke="#0B241D" stroke-width="7.2"/><circle cx="106" cy="92" r="15.5" fill="none" stroke="url(#crGoldH)" stroke-width="4.6"/></g>
+<path d="M134 67l4.2 4.6-4.2 4.6-4.2-4.6z" fill="#F4EEDF" stroke="#0B241D" stroke-width=".8"/></g>
+<g clip-path="url(#crClip)"><rect x="60" y="118.5" width="120" height="17" fill="#0B241D" opacity=".55"/><ellipse cx="52" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 52 127)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="58.2" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 58.2 127)" fill="url(#crHeart)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="64.4" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 64.4 127)" fill="url(#crGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="70.6" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 70.6 127)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="76.8" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 76.8 127)" fill="url(#crHeart)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="83" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 83 127)" fill="url(#crGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="89.2" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 89.2 127)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="95.4" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 95.4 127)" fill="url(#crHeart)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="101.6" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 101.6 127)" fill="url(#crGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="107.8" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 107.8 127)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="114" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 114 127)" fill="url(#crHeart)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="120.2" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 120.2 127)" fill="url(#crGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="126.4" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 126.4 127)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="132.6" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 132.6 127)" fill="url(#crHeart)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="138.8" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 138.8 127)" fill="url(#crGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="145" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 145 127)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="151.2" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 151.2 127)" fill="url(#crHeart)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="157.4" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 157.4 127)" fill="url(#crGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="163.6" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 163.6 127)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="169.8" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 169.8 127)" fill="url(#crHeart)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="176" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 176 127)" fill="url(#crGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="182.2" cy="127" rx="8.6" ry="3.5" transform="rotate(-52 182.2 127)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><rect x="60" y="117.5" width="120" height="1.4" fill="url(#crGold)"/><rect x="60" y="135.1" width="120" height="1.4" fill="url(#crGold)"/></g>
+<path d="M120 183.75C115.8 179.55 102.15 171.15 102.15 161.7C102.15 154.35 108.45 150.15 113.175 150.15C116.85 150.15 118.95 152.25 120 155.4C121.05 152.25 123.15 150.15 126.825 150.15C131.55 150.15 137.85 154.35 137.85 161.7C137.85 171.15 124.2 179.55 120 183.75Z" fill="#0B241D" transform="translate(0 1.4)" opacity=".6"/><path d="M120 183.75C115.8 179.55 102.15 171.15 102.15 161.7C102.15 154.35 108.45 150.15 113.175 150.15C116.85 150.15 118.95 152.25 120 155.4C121.05 152.25 123.15 150.15 126.825 150.15C131.55 150.15 137.85 154.35 137.85 161.7C137.85 171.15 124.2 179.55 120 183.75Z" fill="url(#crHeart)" stroke="url(#crGold)" stroke-width="2"/><path d="M108.45 159.6c0-3 2-5.5 5-6" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M66 60H174V138C174 180 150 205 120 224C90 205 66 180 66 138Z" fill="none" stroke="url(#crGold)" stroke-width="4.2"/>
+<path d="M71.5 65.5H168.5V138C168.5 176.5 146.5 199.5 120 217C93.5 199.5 71.5 176.5 71.5 138Z" fill="none" stroke="#E9D59C" stroke-opacity=".55" stroke-width=".8"/><path d="M30 244L8 248L18 258L6 270L36 266Z" fill="#D9C79C" stroke="#9C7428" stroke-width="1"/>
+<path d="M210 244L232 248L222 258L234 270L204 266Z" fill="#D9C79C" stroke="#9C7428" stroke-width="1"/>
+<path d="M30 240C78 256 162 256 210 240L214 262C164 278 76 278 26 262Z" fill="url(#crRibbon)" stroke="url(#crGold)" stroke-width="1.6"/>
+<path id="crText" d="M30 253C80 268 160 268 210 253" fill="none"/>
+<text font-family="'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif" font-weight="700" font-size="9.4" fill="#173F33" letter-spacing=".3"><textPath href="#crText" startOffset="50%" text-anchor="middle" dominant-baseline="middle">ДВОИМ ЛУЧШЕ, НЕЖЕЛИ ОДНОМУ</textPath></text>
+<text x="120" y="296" text-anchor="middle" font-family="'Cormorant Garamond', 'Cormorant', Georgia, serif" font-weight="700" font-size="15" letter-spacing="5" fill="#9C7428">САВЕЛЬЕВЫ</text></symbol>
+<symbol id="crest-b" viewBox="0 0 240 316"><g transform="translate(64 132) rotate(-150)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 132) rotate(-138)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 132) rotate(-126)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 132) rotate(-114)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 132) rotate(-102)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 132) rotate(-90)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 132) rotate(-78)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 128) rotate(-140)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 128) rotate(-129.2)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 128) rotate(-118.4)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 128) rotate(-107.6)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 128) rotate(-96.8)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 128) rotate(-86)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 124) rotate(-128)"><path d="M0 0C12.6 -9 33.6 -8.1 42 0C33.6 8.1 12.6 9 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H37.800000000000004" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 124) rotate(-119)"><path d="M0 0C12.6 -9 33.6 -8.1 42 0C33.6 8.1 12.6 9 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H37.800000000000004" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 124) rotate(-110)"><path d="M0 0C12.6 -9 33.6 -8.1 42 0C33.6 8.1 12.6 9 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H37.800000000000004" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 124) rotate(-101)"><path d="M0 0C12.6 -9 33.6 -8.1 42 0C33.6 8.1 12.6 9 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H37.800000000000004" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(64 124) rotate(-92)"><path d="M0 0C12.6 -9 33.6 -8.1 42 0C33.6 8.1 12.6 9 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H37.800000000000004" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 132) rotate(330)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 132) rotate(318)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 132) rotate(306)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 132) rotate(294)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 132) rotate(282)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 132) rotate(270)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 132) rotate(258)"><path d="M0 0C23.4 -11 62.400000000000006 -9.9 78 0C62.400000000000006 9.9 23.4 11 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H70.2" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 128) rotate(320)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 128) rotate(309.2)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 128) rotate(298.4)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 128) rotate(287.6)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 128) rotate(276.8)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 128) rotate(266)"><path d="M0 0C18 -10 48 -9 60 0C48 9 18 10 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H54" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 124) rotate(308)"><path d="M0 0C12.6 -9 33.6 -8.1 42 0C33.6 8.1 12.6 9 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H37.800000000000004" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 124) rotate(299)"><path d="M0 0C12.6 -9 33.6 -8.1 42 0C33.6 8.1 12.6 9 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H37.800000000000004" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 124) rotate(290)"><path d="M0 0C12.6 -9 33.6 -8.1 42 0C33.6 8.1 12.6 9 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H37.800000000000004" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 124) rotate(281)"><path d="M0 0C12.6 -9 33.6 -8.1 42 0C33.6 8.1 12.6 9 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H37.800000000000004" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g><g transform="translate(176 124) rotate(272)"><path d="M0 0C12.6 -9 33.6 -8.1 42 0C33.6 8.1 12.6 9 0 0Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/><path d="M4 0H37.800000000000004" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".6"/></g>
+<path d="M66 68H174V146C174 188 150 213 120 232C90 213 66 188 66 146Z" fill="#000" opacity=".28" transform="translate(0 3.5)"/><clipPath id="rbCl"><path d="M66 68H174V146C174 188 150 213 120 232C90 213 66 188 66 146Z"/></clipPath><g clip-path="url(#rbCl)">
+<rect x="66" y="68" width="54" height="74" fill="url(#rbEm)"/><rect x="120" y="68" width="54" height="74" fill="url(#rbGar)"/>
+<rect x="66" y="142" width="54" height="120" fill="url(#rbGar)"/><rect x="120" y="142" width="54" height="120" fill="url(#rbEm)"/>
+<path d="M-60 68l120 170M-53 68l120 170M-46 68l120 170M-39 68l120 170M-32 68l120 170M-25 68l120 170M-18 68l120 170M-11 68l120 170M-4 68l120 170M3 68l120 170M10 68l120 170M17 68l120 170M24 68l120 170M31 68l120 170M38 68l120 170M45 68l120 170M52 68l120 170M59 68l120 170M66 68l120 170M73 68l120 170M80 68l120 170M87 68l120 170M94 68l120 170M101 68l120 170M108 68l120 170M115 68l120 170M122 68l120 170M129 68l120 170M136 68l120 170M143 68l120 170M150 68l120 170M157 68l120 170M164 68l120 170M171 68l120 170M178 68l120 170M185 68l120 170M192 68l120 170M199 68l120 170M206 68l120 170M213 68l120 170M220 68l120 170M227 68l120 170M234 68l120 170" stroke="#fff" stroke-opacity=".04"/>
+<path d="M112.5 134.5L112.5 71.2L105.3 24L134.7 24L127.5 71.2L127.5 134.5L127.5 134.5L190.8 134.5L238 127.3L238 156.7L190.8 149.5L127.5 149.5L127.5 149.5L127.5 212.8L134.7 260L105.3 260L112.5 212.8L112.5 149.5L112.5 149.5L49.2 149.5L2 156.7L2 127.3L49.2 134.5L112.5 134.5Z" fill="url(#rbGoldH)" stroke="#1A0A12" stroke-width="1.4" stroke-linejoin="round"/>
+<path d="M120 42V242M20 142H220" stroke="#6B4B14" stroke-opacity=".5" stroke-width=".8" transform="translate(0 0)" clip-path="none"/>
+</g><g><circle cx="87" cy="112" r="9.5" fill="none" stroke="#1A0A12" stroke-width="4.37"/><circle cx="87" cy="112" r="9.5" fill="none" stroke="url(#rbGoldH)" stroke-width="2.85"/><circle cx="99" cy="112" r="9.5" fill="none" stroke="#1A0A12" stroke-width="4.37"/><circle cx="99" cy="112" r="9.5" fill="none" stroke="url(#rbGoldH)" stroke-width="2.85"/><clipPath id="rbOv"><rect x="87" y="96.63" width="12" height="12"/></clipPath><g clip-path="url(#rbOv)"><circle cx="87" cy="112" r="9.5" fill="none" stroke="#1A0A12" stroke-width="4.37"/><circle cx="87" cy="112" r="9.5" fill="none" stroke="url(#rbGoldH)" stroke-width="2.85"/></g></g>
+<g><path d="M148 101L150.3 108.02L157.53 106.5L152.6 112L157.53 117.5L150.3 115.98L148 123L145.7 115.98L138.47 117.5L143.4 112L138.47 106.5L145.7 108.02Z" fill="url(#rbGold)"/></g>
+<g transform="translate(93 176)"><path d="M0 11.700000000000001C-3.12 8.58 -13.26 2.34 -13.26 -4.68C-13.26 -10.14 -8.58 -13.26 -5.07 -13.26C-2.34 -13.26 -0.78 -11.700000000000001 0 -9.36C0.78 -11.700000000000001 2.34 -13.26 5.07 -13.26C8.58 -13.26 13.26 -10.14 13.26 -4.68C13.26 2.34 3.12 8.58 0 11.700000000000001Z" fill="url(#rbRose)" stroke="url(#rbGold)" stroke-width="0"/><path d="M-8.58 -6.24c0-3 2-5.5 5-6" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.5" stroke-linecap="round"/></g>
+<g transform="translate(147 175)"><path d="M0 14C-9 6 -8 -4 0 -14C8 -4 9 6 0 14Z" fill="url(#rbGold)"/><path d="M0 11C-4 5 -3 -1 0 -7C3 -1 4 5 0 11Z" fill="url(#rbRose)"/></g>
+<circle cx="120" cy="142" r="10.5" fill="url(#rbRose)" stroke="url(#rbGold)" stroke-width="2.4"/><path d="M115 139Q120 134 125 139" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.2"/><path d="M66 68H174V146C174 188 150 213 120 232C90 213 66 188 66 146Z" fill="none" stroke="url(#rbGold)" stroke-width="4.4"/><path d="M66 73H174V151C174 193 150 207 120 226C90 207 66 193 66 151Z" transform="translate(0 0)" fill="none" stroke="#E9D59C" stroke-opacity=".5" stroke-width=".8"/><g>
+<path d="M90 44C90 18 112 13 120 11C128 13 150 18 150 44Z" fill="url(#rbGar)" stroke="#6B4B14" stroke-width=".8"/>
+<path d="M90 44C90 18 112 13 120 11M150 44C150 18 128 13 120 11M105 44C105 24 114 14 120 11M135 44C135 24 126 14 120 11" fill="none" stroke="url(#rbGold)" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M86 42H154L151 57H89Z" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".9"/>
+<ellipse cx="100" cy="50.5" rx="3.2" ry="3.6" fill="#C23B63" stroke="#6B4B14" stroke-width=".7"/><ellipse cx="110" cy="50.5" rx="3.2" ry="3.6" fill="#2F6FB5" stroke="#6B4B14" stroke-width=".7"/><ellipse cx="120" cy="50.5" rx="3.2" ry="3.6" fill="#2B8A62" stroke="#6B4B14" stroke-width=".7"/><ellipse cx="130" cy="50.5" rx="3.2" ry="3.6" fill="#C23B63" stroke="#6B4B14" stroke-width=".7"/><ellipse cx="140" cy="50.5" rx="3.2" ry="3.6" fill="#2F6FB5" stroke="#6B4B14" stroke-width=".7"/><circle cx="92" cy="43.5" r="1.9" fill="url(#rbSilver)" stroke="#6B4B14" stroke-width=".4"/><circle cx="99" cy="43.5" r="1.9" fill="url(#rbSilver)" stroke="#6B4B14" stroke-width=".4"/><circle cx="106" cy="43.5" r="1.9" fill="url(#rbSilver)" stroke="#6B4B14" stroke-width=".4"/><circle cx="113" cy="43.5" r="1.9" fill="url(#rbSilver)" stroke="#6B4B14" stroke-width=".4"/><circle cx="120" cy="43.5" r="1.9" fill="url(#rbSilver)" stroke="#6B4B14" stroke-width=".4"/><circle cx="127" cy="43.5" r="1.9" fill="url(#rbSilver)" stroke="#6B4B14" stroke-width=".4"/><circle cx="134" cy="43.5" r="1.9" fill="url(#rbSilver)" stroke="#6B4B14" stroke-width=".4"/><circle cx="141" cy="43.5" r="1.9" fill="url(#rbSilver)" stroke="#6B4B14" stroke-width=".4"/><circle cx="148" cy="43.5" r="1.9" fill="url(#rbSilver)" stroke="#6B4B14" stroke-width=".4"/>
+<circle cx="120" cy="7" r="4.2" fill="url(#rbGold)" stroke="#6B4B14" stroke-width=".7"/>
+<path d="M118.1 -8.9L118.1 -13.3L116.28 -17.5L123.72 -17.5L121.9 -13.3L121.9 -8.9L121.9 -8.9L126.3 -8.9L130.5 -10.72L130.5 -3.28L126.3 -5.1L121.9 -5.1L121.9 -5.1L121.9 -0.7L123.72 3.5L116.28 3.5L118.1 -0.7L118.1 -5.1L118.1 -5.1L113.7 -5.1L109.5 -3.28L109.5 -10.72L113.7 -8.9L118.1 -8.9Z" fill="url(#rbGoldH)" stroke="#6B4B14" stroke-width="0.8" stroke-linejoin="round"/>
+</g>
+<path d="M30 254L8 258L18 268L6 280L36 276Z" fill="#D9C79C" stroke="#9C7428" stroke-width="1"/>
+<path d="M210 254L232 258L222 268L234 280L204 276Z" fill="#D9C79C" stroke="#9C7428" stroke-width="1"/>
+<path d="M30 250C78 266 162 266 210 250L214 272C164 288 76 288 26 272Z" fill="url(#rbPaper)" stroke="url(#rbGold)" stroke-width="1.6"/>
+<path id="rbTxt" d="M30 263C80 278 160 278 210 263" fill="none"/>
+<text font-family="'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif" font-weight="700" font-size="9.4" fill="#4A1229" letter-spacing=".3"><textPath href="#rbTxt" startOffset="50%" text-anchor="middle">ДВОИМ ЛУЧШЕ, НЕЖЕЛИ ОДНОМУ</textPath></text>
+<text x="120" y="308" text-anchor="middle" font-family="'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif" font-weight="700" font-size="15" letter-spacing="5" fill="#8A651C">САВЕЛЬЕВЫ</text></symbol>
+<symbol id="crest-c" viewBox="0 0 240 240">
+<circle cx="120" cy="123" r="116" fill="#000" opacity=".25"/>
+<circle cx="120" cy="120" r="116" fill="url(#rcGold)"/><circle cx="120" cy="120" r="113.5" fill="#0B241D"/>
+<circle cx="120" cy="120" r="112" fill="url(#rcEm)"/><path d="M232 120L227 120M231.85 125.86L229.35 125.73M231.39 131.71L228.9 131.45M230.62 137.52L228.15 137.13M229.55 143.29L227.11 142.77M228.18 148.99L223.35 147.69M226.52 154.61L224.14 153.84M224.56 160.14L222.23 159.24M222.32 165.55L220.03 164.54M219.79 170.85L217.57 169.71M216.99 176L212.66 173.5M213.93 181L211.83 179.64M210.61 185.83L208.59 184.36M207.04 190.48L205.1 188.91M203.23 194.94L201.37 193.27M199.2 199.2L195.66 195.66M194.94 203.23L193.27 201.37M190.48 207.04L188.91 205.1M185.83 210.61L184.36 208.59M181 213.93L179.64 211.83M176 216.99L173.5 212.66M170.85 219.79L169.71 217.57M165.55 222.32L164.54 220.03M160.14 224.56L159.24 222.23M154.61 226.52L153.84 224.14M148.99 228.18L147.69 223.35M143.29 229.55L142.77 227.11M137.52 230.62L137.13 228.15M131.71 231.39L131.45 228.9M125.86 231.85L125.73 229.35M120 232L120 227M114.14 231.85L114.27 229.35M108.29 231.39L108.55 228.9M102.48 230.62L102.87 228.15M96.71 229.55L97.23 227.11M91.01 228.18L92.31 223.35M85.39 226.52L86.16 224.14M79.86 224.56L80.76 222.23M74.45 222.32L75.46 220.03M69.15 219.79L70.29 217.57M64 216.99L66.5 212.66M59 213.93L60.36 211.83M54.17 210.61L55.64 208.59M49.52 207.04L51.09 205.1M45.06 203.23L46.73 201.37M40.8 199.2L44.34 195.66M36.77 194.94L38.63 193.27M32.96 190.48L34.9 188.91M29.39 185.83L31.41 184.36M26.07 181L28.17 179.64M23.01 176L27.34 173.5M20.21 170.85L22.43 169.71M17.68 165.55L19.97 164.54M15.44 160.14L17.77 159.24M13.48 154.61L15.86 153.84M11.82 148.99L16.65 147.69M10.45 143.29L12.89 142.77M9.38 137.52L11.85 137.13M8.61 131.71L11.1 131.45M8.15 125.86L10.65 125.73M8 120L13 120M8.15 114.14L10.65 114.27M8.61 108.29L11.1 108.55M9.38 102.48L11.85 102.87M10.45 96.71L12.89 97.23M11.82 91.01L16.65 92.31M13.48 85.39L15.86 86.16M15.44 79.86L17.77 80.76M17.68 74.45L19.97 75.46M20.21 69.15L22.43 70.29M23.01 64L27.34 66.5M26.07 59L28.17 60.36M29.39 54.17L31.41 55.64M32.96 49.52L34.9 51.09M36.77 45.06L38.63 46.73M40.8 40.8L44.34 44.34M45.06 36.77L46.73 38.63M49.52 32.96L51.09 34.9M54.17 29.39L55.64 31.41M59 26.07L60.36 28.17M64 23.01L66.5 27.34M69.15 20.21L70.29 22.43M74.45 17.68L75.46 19.97M79.86 15.44L80.76 17.77M85.39 13.48L86.16 15.86M91.01 11.82L92.31 16.65M96.71 10.45L97.23 12.89M102.48 9.38L102.87 11.85M108.29 8.61L108.55 11.1M114.14 8.15L114.27 10.65M120 8L120 13M125.86 8.15L125.73 10.65M131.71 8.61L131.45 11.1M137.52 9.38L137.13 11.85M143.29 10.45L142.77 12.89M148.99 11.82L147.69 16.65M154.61 13.48L153.84 15.86M160.14 15.44L159.24 17.77M165.55 17.68L164.54 19.97M170.85 20.21L169.71 22.43M176 23.01L173.5 27.34M181 26.07L179.64 28.17M185.83 29.39L184.36 31.41M190.48 32.96L188.91 34.9M194.94 36.77L193.27 38.63M199.2 40.8L195.66 44.34M203.23 45.06L201.37 46.73M207.04 49.52L205.1 51.09M210.61 54.17L208.59 55.64M213.93 59L211.83 60.36M216.99 64L212.66 66.5M219.79 69.15L217.57 70.29M222.32 74.45L220.03 75.46M224.56 79.86L222.23 80.76M226.52 85.39L224.14 86.16M228.18 91.01L223.35 92.31M229.55 96.71L227.11 97.23M230.62 102.48L228.15 102.87M231.39 108.29L228.9 108.55M231.85 114.14L229.35 114.27" stroke="#E9D59C" stroke-opacity=".7" stroke-width=".9"/>
+<path id="rcTop" d="M28 120A92 92 0 0 1 212 120" fill="none"/>
+<path id="rcBot" d="M27 120A93 93 0 0 0 213 120" fill="none"/>
+<text font-family="'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif" font-weight="700" font-size="21" letter-spacing="9" fill="#F3E2B0"><textPath href="#rcTop" startOffset="50%" text-anchor="middle">САВЕЛЬЕВЫ</textPath></text>
+<text font-family="'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif" font-weight="700" font-size="12.5" letter-spacing="2.2" fill="#F3E2B0" dominant-baseline="hanging"><textPath href="#rcBot" startOffset="50%" text-anchor="middle">ДВОИМ ЛУЧШЕ, НЕЖЕЛИ ОДНОМУ</textPath></text>
+<path d="M24 117.4L25.12 120.46L28.37 120.58L25.81 122.59L26.7 125.72L24 123.9L21.3 125.72L22.19 122.59L19.63 120.58L22.88 120.46Z" fill="#E9D59C"/><path d="M216 117.4L217.12 120.46L220.37 120.58L217.81 122.59L218.7 125.72L216 123.9L213.3 125.72L214.19 122.59L211.63 120.58L214.88 120.46Z" fill="#E9D59C"/>
+<circle cx="120" cy="120" r="77" fill="none" stroke="url(#rcGold)" stroke-width="2.4"/><circle cx="120" cy="120" r="82.5" fill="none" stroke="url(#rcGold)" stroke-width=".8"/>
+<circle cx="120" cy="120" r="71" fill="url(#rcNavy)" opacity="0"/>
+<circle cx="120" cy="120" r="74.5" fill="url(#rcEm)"/><path d="M140 120L190 120M139.92 121.74L189.73 126.1M139.7 123.47L188.94 132.16M139.32 125.18L187.61 138.12M138.79 126.84L185.78 143.94M138.13 128.45L183.44 149.58M137.32 130L180.62 155M136.38 131.47L177.34 160.15M135.32 132.86L173.62 165M134.14 134.14L169.5 169.5M132.86 135.32L165 173.62M131.47 136.38L160.15 177.34M130 137.32L155 180.62M128.45 138.13L149.58 183.44M126.84 138.79L143.94 185.78M125.18 139.32L138.12 187.61M123.47 139.7L132.16 188.94M121.74 139.92L126.1 189.73M120 140L120 190M118.26 139.92L113.9 189.73M116.53 139.7L107.84 188.94M114.82 139.32L101.88 187.61M113.16 138.79L96.06 185.78M111.55 138.13L90.42 183.44M110 137.32L85 180.62M108.53 136.38L79.85 177.34M107.14 135.32L75 173.62M105.86 134.14L70.5 169.5M104.68 132.86L66.38 165M103.62 131.47L62.66 160.15M102.68 130L59.38 155M101.87 128.45L56.56 149.58M101.21 126.84L54.22 143.94M100.68 125.18L52.39 138.12M100.3 123.47L51.06 132.16M100.08 121.74L50.27 126.1M100 120L50 120M100.08 118.26L50.27 113.9M100.3 116.53L51.06 107.84M100.68 114.82L52.39 101.88M101.21 113.16L54.22 96.06M101.87 111.55L56.56 90.42M102.68 110L59.38 85M103.62 108.53L62.66 79.85M104.68 107.14L66.38 75M105.86 105.86L70.5 70.5M107.14 104.68L75 66.38M108.53 103.62L79.85 62.66M110 102.68L85 59.38M111.55 101.87L90.42 56.56M113.16 101.21L96.06 54.22M114.82 100.68L101.88 52.39M116.53 100.3L107.84 51.06M118.26 100.08L113.9 50.27M120 100L120 50M121.74 100.08L126.1 50.27M123.47 100.3L132.16 51.06M125.18 100.68L138.12 52.39M126.84 101.21L143.94 54.22M128.45 101.87L149.58 56.56M130 102.68L155 59.38M131.47 103.62L160.15 62.66M132.86 104.68L165 66.38M134.14 105.86L169.5 70.5M135.32 107.14L173.62 75M136.38 108.53L177.34 79.85M137.32 110L180.62 85M138.13 111.55L183.44 90.42M138.79 113.16L185.78 96.06M139.32 114.82L187.61 101.88M139.7 116.53L188.94 107.84M139.92 118.26L189.73 113.9" stroke="#E9D59C" stroke-opacity=".10" stroke-width=".8"/>
+<circle cx="120" cy="120" r="74.5" fill="none" stroke="#0B241D" stroke-width="1.5"/>
+<ellipse cx="188" cy="120" rx="7.54" ry="3.12" transform="rotate(38 188 120)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="187.07" cy="131.19" rx="7.54" ry="3.12" transform="rotate(47.47 187.07 131.19)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="184.32" cy="142.08" rx="7.54" ry="3.12" transform="rotate(56.95 184.32 142.08)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="179.8" cy="152.36" rx="7.54" ry="3.12" transform="rotate(66.42 179.8 152.36)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="173.66" cy="161.77" rx="7.54" ry="3.12" transform="rotate(75.89 173.66 161.77)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="166.06" cy="170.03" rx="7.54" ry="3.12" transform="rotate(85.37 166.06 170.03)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="157.19" cy="176.93" rx="7.54" ry="3.12" transform="rotate(94.84 157.19 176.93)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="147.32" cy="182.27" rx="7.54" ry="3.12" transform="rotate(104.32 147.32 182.27)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="136.69" cy="185.92" rx="7.54" ry="3.12" transform="rotate(113.79 136.69 185.92)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="125.62" cy="187.77" rx="7.54" ry="3.12" transform="rotate(123.26 125.62 187.77)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="114.38" cy="187.77" rx="7.54" ry="3.12" transform="rotate(132.74 114.38 187.77)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="103.31" cy="185.92" rx="7.54" ry="3.12" transform="rotate(142.21 103.31 185.92)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="92.68" cy="182.27" rx="7.54" ry="3.12" transform="rotate(151.68 92.68 182.27)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="82.81" cy="176.93" rx="7.54" ry="3.12" transform="rotate(161.16 82.81 176.93)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="73.94" cy="170.03" rx="7.54" ry="3.12" transform="rotate(170.63 73.94 170.03)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="66.34" cy="161.77" rx="7.54" ry="3.12" transform="rotate(180.11 66.34 161.77)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="60.2" cy="152.36" rx="7.54" ry="3.12" transform="rotate(189.58 60.2 152.36)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="55.68" cy="142.08" rx="7.54" ry="3.12" transform="rotate(199.05 55.68 142.08)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="52.93" cy="131.19" rx="7.54" ry="3.12" transform="rotate(208.53 52.93 131.19)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="52" cy="120" rx="7.54" ry="3.12" transform="rotate(218 52 120)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="52.93" cy="108.81" rx="7.54" ry="3.12" transform="rotate(227.47 52.93 108.81)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="55.68" cy="97.92" rx="7.54" ry="3.12" transform="rotate(236.95 55.68 97.92)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="60.2" cy="87.64" rx="7.54" ry="3.12" transform="rotate(246.42 60.2 87.64)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="66.34" cy="78.23" rx="7.54" ry="3.12" transform="rotate(255.89 66.34 78.23)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="73.94" cy="69.97" rx="7.54" ry="3.12" transform="rotate(265.37 73.94 69.97)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="82.81" cy="63.07" rx="7.54" ry="3.12" transform="rotate(274.84 82.81 63.07)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="92.68" cy="57.73" rx="7.54" ry="3.12" transform="rotate(284.32 92.68 57.73)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="103.31" cy="54.08" rx="7.54" ry="3.12" transform="rotate(293.79 103.31 54.08)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="114.38" cy="52.23" rx="7.54" ry="3.12" transform="rotate(303.26 114.38 52.23)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="125.62" cy="52.23" rx="7.54" ry="3.12" transform="rotate(312.74 125.62 52.23)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="136.69" cy="54.08" rx="7.54" ry="3.12" transform="rotate(322.21 136.69 54.08)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="147.32" cy="57.73" rx="7.54" ry="3.12" transform="rotate(331.68 147.32 57.73)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="157.19" cy="63.07" rx="7.54" ry="3.12" transform="rotate(341.16 157.19 63.07)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="166.06" cy="69.97" rx="7.54" ry="3.12" transform="rotate(350.63 166.06 69.97)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="173.66" cy="78.23" rx="7.54" ry="3.12" transform="rotate(360.11 173.66 78.23)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="179.8" cy="87.64" rx="7.54" ry="3.12" transform="rotate(369.58 179.8 87.64)" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width=".7"/><ellipse cx="184.32" cy="97.92" rx="7.54" ry="3.12" transform="rotate(379.05 184.32 97.92)" fill="#F4EEDF" stroke="#0B241D" stroke-width=".7"/><ellipse cx="187.07" cy="108.81" rx="7.54" ry="3.12" transform="rotate(388.53 187.07 108.81)" fill="url(#rcRose)" stroke="#0B241D" stroke-width=".7"/>
+<circle cx="120" cy="120" r="62" fill="none" stroke="url(#rcGold)" stroke-width="1"/>
+<path d="M114.25 105.25L114.25 83.4L108.73 65L131.27 65L125.75 83.4L125.75 105.25L125.75 105.25L147.6 105.25L166 99.73L166 122.27L147.6 116.75L125.75 116.75L125.75 116.75L125.75 138.6L131.27 157L108.73 157L114.25 138.6L114.25 116.75L114.25 116.75L92.4 116.75L74 122.27L74 99.73L92.4 105.25L114.25 105.25Z" fill="url(#rcGoldH)" stroke="#0B241D" stroke-width="1.2" stroke-linejoin="round"/>
+<circle cx="120" cy="111" r="7.4" fill="url(#rcRose)" stroke="url(#rcGold)" stroke-width="2"/>
+<circle cx="112.5" cy="156" r="10.5" fill="none" stroke="#0B241D" stroke-width="4.83"/><circle cx="112.5" cy="156" r="10.5" fill="none" stroke="url(#rcGoldH)" stroke-width="3.15"/><circle cx="127.5" cy="156" r="10.5" fill="none" stroke="#0B241D" stroke-width="4.83"/><circle cx="127.5" cy="156" r="10.5" fill="none" stroke="url(#rcGoldH)" stroke-width="3.15"/><clipPath id="rcOv"><rect x="114" y="140.65" width="12" height="12"/></clipPath><g clip-path="url(#rcOv)"><circle cx="112.5" cy="156" r="10.5" fill="none" stroke="#0B241D" stroke-width="4.83"/><circle cx="112.5" cy="156" r="10.5" fill="none" stroke="url(#rcGoldH)" stroke-width="3.15"/></g>
+</symbol>
+<symbol id="crest-d" viewBox="0 0 240 316"><clipPath id="rdCl"><path d="M66 58H174V136C174 178 150 209 120 228C90 209 66 178 66 136Z"/></clipPath>
+<path d="M120 130L40.26 97.78M120 130L42.45 84.32M120 130L46.95 70.84M120 130L53.79 57.75M120 130L62.96 45.44M120 130L74.37 34.33M120 130L87.84 24.81M120 130L103.15 17.25M120 130L120 12M120 130L136.85 17.25M120 130L152.16 24.81M120 130L165.63 34.33M120 130L177.04 45.44M120 130L186.21 57.75M120 130L193.05 70.84M120 130L197.55 84.32M120 130L199.74 97.78" stroke="url(#rdGold)" stroke-width="3" stroke-linecap="round" opacity=".65"/>
+<path d="M120 250 L116.12 249.78 L112.41 249.36 L108.86 248.75 L105.48 247.95 L102.24 246.97 L99.17 245.81 L96.24 244.47 L93.47 242.96 L90.84 241.28 L88.35 239.44 L86.01 237.44 L83.8 235.29 L81.73 232.99 L79.79 230.54 L77.99 227.95 L76.31 225.22 L74.75 222.37 L73.32 219.38 L72.01 216.27 L70.82 213.04 L69.74 209.7 L68.77 206.24 L67.91 202.68 L67.15 199.01 L66.5 195.25 L65.95 191.39 L65.5 187.45 L65.14 183.42 L64.88 179.31 L64.7 175.12 L64.62 170.86 L64.62 166.53 L64.7 162.14 L64.86 157.69 L65.09 153.19 L65.4 148.64 L65.78 144.03 L66.23 139.39 L66.75 134.71 L67.33 130 L67.97 125.26 L68.66 120.49 L69.42 115.71 L70.22 110.9 L71.08 106.09 L71.98 101.27 L72.92 96.45 L73.91 91.62 L74.94 86.81 L76 82" fill="none" stroke="#9C7428" stroke-width="1.6" stroke-linecap="round"/><path d="M0 0C4.2 -3.1500000000000004 11.55 -3.1500000000000004 15.75 0C11.55 3.1500000000000004 4.2 3.1500000000000004 0 0Z" transform="translate(99.17 245.81) rotate(-118.38)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.2 -3.1500000000000004 11.55 -3.1500000000000004 15.75 0C11.55 3.1500000000000004 4.2 3.1500000000000004 0 0Z" transform="translate(99.17 245.81) rotate(-194.38)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.0600000000000005 -3.0450000000000004 11.165000000000001 -3.0450000000000004 15.225000000000001 0C11.165000000000001 3.0450000000000004 4.0600000000000005 3.0450000000000004 0 0Z" transform="translate(88.35 239.44) rotate(-102.53)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.0600000000000005 -3.0450000000000004 11.165000000000001 -3.0450000000000004 15.225000000000001 0C11.165000000000001 3.0450000000000004 4.0600000000000005 3.0450000000000004 0 0Z" transform="translate(88.35 239.44) rotate(-178.53)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.92 -2.94 10.78 -2.94 14.7 0C10.78 2.94 3.92 2.94 0 0Z" transform="translate(79.79 230.54) rotate(-87.75)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.92 -2.94 10.78 -2.94 14.7 0C10.78 2.94 3.92 2.94 0 0Z" transform="translate(79.79 230.54) rotate(-163.75)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.7800000000000002 -2.835 10.395000000000001 -2.835 14.175 0C10.395000000000001 2.835 3.7800000000000002 2.835 0 0Z" transform="translate(73.32 219.38) rotate(-75.54)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.7800000000000002 -2.835 10.395000000000001 -2.835 14.175 0C10.395000000000001 2.835 3.7800000000000002 2.835 0 0Z" transform="translate(73.32 219.38) rotate(-151.54)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.64 -2.73 10.01 -2.73 13.65 0C10.01 2.73 3.64 2.73 0 0Z" transform="translate(68.77 206.24) rotate(-66.09)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.64 -2.73 10.01 -2.73 13.65 0C10.01 2.73 3.64 2.73 0 0Z" transform="translate(68.77 206.24) rotate(-142.09)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.5 -2.625 9.625 -2.625 13.125 0C9.625 2.625 3.5 2.625 0 0Z" transform="translate(65.95 191.39) rotate(-58.92)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.5 -2.625 9.625 -2.625 13.125 0C9.625 2.625 3.5 2.625 0 0Z" transform="translate(65.95 191.39) rotate(-134.92)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.3600000000000003 -2.5200000000000005 9.24 -2.5200000000000005 12.600000000000001 0C9.24 2.5200000000000005 3.3600000000000003 2.5200000000000005 0 0Z" transform="translate(64.7 175.12) rotate(-53.46)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.3600000000000003 -2.5200000000000005 9.24 -2.5200000000000005 12.600000000000001 0C9.24 2.5200000000000005 3.3600000000000003 2.5200000000000005 0 0Z" transform="translate(64.7 175.12) rotate(-129.46)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.22 -2.415 8.855 -2.415 12.075000000000001 0C8.855 2.415 3.22 2.415 0 0Z" transform="translate(64.86 157.69) rotate(-49.23)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.22 -2.415 8.855 -2.415 12.075000000000001 0C8.855 2.415 3.22 2.415 0 0Z" transform="translate(64.86 157.69) rotate(-125.23)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.08 -2.31 8.47 -2.31 11.55 0C8.47 2.31 3.08 2.31 0 0Z" transform="translate(66.23 139.39) rotate(-45.89)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.08 -2.31 8.47 -2.31 11.55 0C8.47 2.31 3.08 2.31 0 0Z" transform="translate(66.23 139.39) rotate(-121.89)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.94 -2.205 8.084999999999999 -2.205 11.025 0C8.084999999999999 2.205 2.94 2.205 0 0Z" transform="translate(68.66 120.49) rotate(-43.22)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.94 -2.205 8.084999999999999 -2.205 11.025 0C8.084999999999999 2.205 2.94 2.205 0 0Z" transform="translate(68.66 120.49) rotate(-119.22)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.8 -2.0999999999999996 7.699999999999999 -2.0999999999999996 10.5 0C7.699999999999999 2.0999999999999996 2.8 2.0999999999999996 0 0Z" transform="translate(71.98 101.27) rotate(-41.03)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.8 -2.0999999999999996 7.699999999999999 -2.0999999999999996 10.5 0C7.699999999999999 2.0999999999999996 2.8 2.0999999999999996 0 0Z" transform="translate(71.98 101.27) rotate(-117.03)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M120 250 L123.88 249.78 L127.59 249.36 L131.14 248.75 L134.52 247.95 L137.76 246.97 L140.83 245.81 L143.76 244.47 L146.53 242.96 L149.16 241.28 L151.65 239.44 L153.99 237.44 L156.2 235.29 L158.27 232.99 L160.21 230.54 L162.01 227.95 L163.69 225.22 L165.25 222.37 L166.68 219.38 L167.99 216.27 L169.18 213.04 L170.26 209.7 L171.23 206.24 L172.09 202.68 L172.85 199.01 L173.5 195.25 L174.05 191.39 L174.5 187.45 L174.86 183.42 L175.12 179.31 L175.3 175.12 L175.38 170.86 L175.38 166.53 L175.3 162.14 L175.14 157.69 L174.91 153.19 L174.6 148.64 L174.22 144.03 L173.77 139.39 L173.25 134.71 L172.67 130 L172.03 125.26 L171.34 120.49 L170.58 115.71 L169.78 110.9 L168.92 106.09 L168.02 101.27 L167.08 96.45 L166.09 91.62 L165.06 86.81 L164 82" fill="none" stroke="#9C7428" stroke-width="1.6" stroke-linecap="round"/><path d="M0 0C4.2 -3.1500000000000004 11.55 -3.1500000000000004 15.75 0C11.55 3.1500000000000004 4.2 3.1500000000000004 0 0Z" transform="translate(140.83 245.81) rotate(-61.62)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.2 -3.1500000000000004 11.55 -3.1500000000000004 15.75 0C11.55 3.1500000000000004 4.2 3.1500000000000004 0 0Z" transform="translate(140.83 245.81) rotate(14.38)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.0600000000000005 -3.0450000000000004 11.165000000000001 -3.0450000000000004 15.225000000000001 0C11.165000000000001 3.0450000000000004 4.0600000000000005 3.0450000000000004 0 0Z" transform="translate(151.65 239.44) rotate(-77.47)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C4.0600000000000005 -3.0450000000000004 11.165000000000001 -3.0450000000000004 15.225000000000001 0C11.165000000000001 3.0450000000000004 4.0600000000000005 3.0450000000000004 0 0Z" transform="translate(151.65 239.44) rotate(-1.47)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.92 -2.94 10.78 -2.94 14.7 0C10.78 2.94 3.92 2.94 0 0Z" transform="translate(160.21 230.54) rotate(-92.25)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.92 -2.94 10.78 -2.94 14.7 0C10.78 2.94 3.92 2.94 0 0Z" transform="translate(160.21 230.54) rotate(-16.25)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.7800000000000002 -2.835 10.395000000000001 -2.835 14.175 0C10.395000000000001 2.835 3.7800000000000002 2.835 0 0Z" transform="translate(166.68 219.38) rotate(-104.46)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.7800000000000002 -2.835 10.395000000000001 -2.835 14.175 0C10.395000000000001 2.835 3.7800000000000002 2.835 0 0Z" transform="translate(166.68 219.38) rotate(-28.46)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.64 -2.73 10.01 -2.73 13.65 0C10.01 2.73 3.64 2.73 0 0Z" transform="translate(171.23 206.24) rotate(-113.91)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.64 -2.73 10.01 -2.73 13.65 0C10.01 2.73 3.64 2.73 0 0Z" transform="translate(171.23 206.24) rotate(-37.91)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.5 -2.625 9.625 -2.625 13.125 0C9.625 2.625 3.5 2.625 0 0Z" transform="translate(174.05 191.39) rotate(-121.08)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.5 -2.625 9.625 -2.625 13.125 0C9.625 2.625 3.5 2.625 0 0Z" transform="translate(174.05 191.39) rotate(-45.08)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.3600000000000003 -2.5200000000000005 9.24 -2.5200000000000005 12.600000000000001 0C9.24 2.5200000000000005 3.3600000000000003 2.5200000000000005 0 0Z" transform="translate(175.3 175.12) rotate(-126.54)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.3600000000000003 -2.5200000000000005 9.24 -2.5200000000000005 12.600000000000001 0C9.24 2.5200000000000005 3.3600000000000003 2.5200000000000005 0 0Z" transform="translate(175.3 175.12) rotate(-50.54)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.22 -2.415 8.855 -2.415 12.075000000000001 0C8.855 2.415 3.22 2.415 0 0Z" transform="translate(175.14 157.69) rotate(-130.77)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.22 -2.415 8.855 -2.415 12.075000000000001 0C8.855 2.415 3.22 2.415 0 0Z" transform="translate(175.14 157.69) rotate(-54.77)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.08 -2.31 8.47 -2.31 11.55 0C8.47 2.31 3.08 2.31 0 0Z" transform="translate(173.77 139.39) rotate(-134.11)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C3.08 -2.31 8.47 -2.31 11.55 0C8.47 2.31 3.08 2.31 0 0Z" transform="translate(173.77 139.39) rotate(-58.11)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.94 -2.205 8.084999999999999 -2.205 11.025 0C8.084999999999999 2.205 2.94 2.205 0 0Z" transform="translate(171.34 120.49) rotate(-136.78)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.94 -2.205 8.084999999999999 -2.205 11.025 0C8.084999999999999 2.205 2.94 2.205 0 0Z" transform="translate(171.34 120.49) rotate(-60.78)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.8 -2.0999999999999996 7.699999999999999 -2.0999999999999996 10.5 0C7.699999999999999 2.0999999999999996 2.8 2.0999999999999996 0 0Z" transform="translate(168.02 101.27) rotate(-138.97)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/><path d="M0 0C2.8 -2.0999999999999996 7.699999999999999 -2.0999999999999996 10.5 0C7.699999999999999 2.0999999999999996 2.8 2.0999999999999996 0 0Z" transform="translate(168.02 101.27) rotate(-62.97)" fill="url(#rdGold)" stroke="#7A5A1C" stroke-width=".5"/>
+<path d="M66 58H174V136C174 178 150 209 120 228C90 209 66 178 66 136Z" fill="#000" opacity=".3" transform="translate(0 3.5)"/>
+<g clip-path="url(#rdCl)"><rect x="60" y="50" width="120" height="190" fill="url(#rdNavy)"/>
+<path d="M-60 58l120 170M60 58l-120 170M-54 58l120 170M66 58l-120 170M-48 58l120 170M72 58l-120 170M-42 58l120 170M78 58l-120 170M-36 58l120 170M84 58l-120 170M-30 58l120 170M90 58l-120 170M-24 58l120 170M96 58l-120 170M-18 58l120 170M102 58l-120 170M-12 58l120 170M108 58l-120 170M-6 58l120 170M114 58l-120 170M0 58l120 170M120 58l-120 170M6 58l120 170M126 58l-120 170M12 58l120 170M132 58l-120 170M18 58l120 170M138 58l-120 170M24 58l120 170M144 58l-120 170M30 58l120 170M150 58l-120 170M36 58l120 170M156 58l-120 170M42 58l120 170M162 58l-120 170M48 58l120 170M168 58l-120 170M54 58l120 170M174 58l-120 170M60 58l120 170M180 58l-120 170M66 58l120 170M186 58l-120 170M72 58l120 170M192 58l-120 170M78 58l120 170M198 58l-120 170M84 58l120 170M204 58l-120 170M90 58l120 170M210 58l-120 170M96 58l120 170M216 58l-120 170M102 58l120 170M222 58l-120 170M108 58l120 170M228 58l-120 170M114 58l120 170M234 58l-120 170M120 58l120 170M240 58l-120 170M126 58l120 170M246 58l-120 170M132 58l120 170M252 58l-120 170M138 58l120 170M258 58l-120 170M144 58l120 170M264 58l-120 170M150 58l120 170M270 58l-120 170M156 58l120 170M276 58l-120 170M162 58l120 170M282 58l-120 170M168 58l120 170M288 58l-120 170M174 58l120 170M294 58l-120 170M180 58l120 170M300 58l-120 170M186 58l120 170M306 58l-120 170M192 58l120 170M312 58l-120 170M198 58l120 170M318 58l-120 170M204 58l120 170M324 58l-120 170M210 58l120 170M330 58l-120 170M216 58l120 170M336 58l-120 170M222 58l120 170M342 58l-120 170M228 58l120 170M348 58l-120 170M234 58l120 170M354 58l-120 170" stroke="#fff" stroke-opacity=".03"/>
+<path d="M120 58V230M66 138H174" stroke="url(#rdGold)" stroke-width="1.2" opacity=".7"/>
+<path d="M109 127L109 73.2L98.44 30L141.56 30L131 73.2L131 127L131 127L184.8 127L228 116.44L228 159.56L184.8 149L131 149L131 149L131 202.8L141.56 246L98.44 246L109 202.8L109 149L109 149L55.2 149L12 159.56L12 116.44L55.2 127L109 127Z" fill="url(#rdGoldH)" stroke="#070E22" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M120 40V236M22 138H218" stroke="#6B4B14" stroke-opacity=".45" stroke-width=".9"/></g>
+<g><g transform="translate(93 105) scale(0.95)"><path d="M-17 -9Q-8 -14 0 -8Q8 -14 17 -9V10Q8 5 0 11Q-8 5 -17 10Z" fill="url(#rdPaper)" stroke="url(#rdGold)" stroke-width="1.8" stroke-linejoin="round"/><path d="M0 -8V11" stroke="#070E22" stroke-width="1.2"/><path d="M-13 -4Q-8 -6 -3.5 -3.5M-13 0Q-8 -2 -3.5 .5M-13 4Q-8 2 -3.5 4.5M13 -4Q8 -6 3.5 -3.5M13 0Q8 -2 3.5 .5M13 4Q8 2 3.5 4.5" fill="none" stroke="#070E22" stroke-opacity=".5" stroke-width=".9" stroke-linecap="round"/></g></g>
+<g transform="translate(147 106)"><path d="M0 9.3C-2.48 6.82 -10.54 1.8599999999999999 -10.54 -3.7199999999999998C-10.54 -8.06 -6.82 -10.54 -4.03 -10.54C-1.8599999999999999 -10.54 -0.62 -9.3 0 -7.4399999999999995C0.62 -9.3 1.8599999999999999 -10.54 4.03 -10.54C6.82 -10.54 10.54 -8.06 10.54 -3.7199999999999998C10.54 1.8599999999999999 2.48 6.82 0 9.3Z" fill="url(#rdRose)" stroke="url(#rdGold)" stroke-width="2"/><path d="M-6.82 -4.96c0-3 2-5.5 5-6" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.5" stroke-linecap="round"/></g>
+<g><circle cx="87.5" cy="174" r="8.2" fill="none" stroke="#070E22" stroke-width="3.772"/><circle cx="87.5" cy="174" r="8.2" fill="none" stroke="url(#rdGoldH)" stroke-width="2.4599999999999995"/><circle cx="98.5" cy="174" r="8.2" fill="none" stroke="#070E22" stroke-width="3.772"/><circle cx="98.5" cy="174" r="8.2" fill="none" stroke="url(#rdGoldH)" stroke-width="2.4599999999999995"/><clipPath id="rdOv"><rect x="87" y="159.92" width="12" height="12"/></clipPath><g clip-path="url(#rdOv)"><circle cx="87.5" cy="174" r="8.2" fill="none" stroke="#070E22" stroke-width="3.772"/><circle cx="87.5" cy="174" r="8.2" fill="none" stroke="url(#rdGoldH)" stroke-width="2.4599999999999995"/></g></g>
+<g><path d="M147 163L149.3 170.02L156.53 168.5L151.6 174L156.53 179.5L149.3 177.98L147 185L144.7 177.98L137.47 179.5L142.4 174L137.47 168.5L144.7 170.02Z" fill="url(#rdGold)"/></g>
+<circle cx="120" cy="138" r="12.5" fill="url(#rdNavy)" stroke="url(#rdGold)" stroke-width="2.6"/><path d="M120 130L121.3 134.86L125.66 132.34L123.14 136.7L128 138L123.14 139.3L125.66 143.66L121.3 141.14L120 146L118.7 141.14L114.34 143.66L116.86 139.3L112 138L116.86 136.7L114.34 132.34L118.7 134.86Z" fill="url(#rdGoldH)"/>
+<path d="M66 58H174V136C174 178 150 209 120 228C90 209 66 178 66 136Z" fill="none" stroke="url(#rdGold)" stroke-width="4.4"/>
+<path d="M66 63H174V141C174 183 150 202 120 221C90 202 66 183 66 141Z" fill="none" stroke="#E9D59C" stroke-opacity=".5" stroke-width=".8"/>
+<g transform="translate(120 26)"><circle r="21" fill="none" stroke="url(#rdGold)" stroke-width="1" opacity=".7"/><path d="M-2.6 -2.6L-2.6 -10.2L-5.1 -17L5.1 -17L2.6 -10.2L2.6 -2.6L2.6 -2.6L10.2 -2.6L17 -5.1L17 5.1L10.2 2.6L2.6 2.6L2.6 2.6L2.6 10.2L5.1 17L-5.1 17L-2.6 10.2L-2.6 2.6L-2.6 2.6L-10.2 2.6L-17 5.1L-17 -5.1L-10.2 -2.6L-2.6 -2.6Z" fill="url(#rdGoldH)" stroke="#6B4B14" stroke-width="0.9" stroke-linejoin="round"/></g>
+<path d="M30 256L8 260L18 270L6 282L36 278Z" fill="#D9C79C" stroke="#9C7428" stroke-width="1"/>
+<path d="M210 256L232 260L222 270L234 282L204 278Z" fill="#D9C79C" stroke="#9C7428" stroke-width="1"/>
+<path d="M30 252C78 268 162 268 210 252L214 274C164 290 76 290 26 274Z" fill="url(#rdPaper)" stroke="url(#rdGold)" stroke-width="1.6"/>
+<path id="rdTxt" d="M30 265C80 280 160 280 210 265" fill="none"/>
+<text font-family="'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif" font-weight="700" font-size="9.4" fill="#10213F" letter-spacing=".3"><textPath href="#rdTxt" startOffset="50%" text-anchor="middle">ДВОИМ ЛУЧШЕ, НЕЖЕЛИ ОДНОМУ</textPath></text>
+<text x="120" y="308" text-anchor="middle" font-family="'Cormorant Garamond','Cormorant',Georgia,'Times New Roman',serif" font-weight="700" font-size="15" letter-spacing="5" fill="#8A651C">САВЕЛЬЕВЫ</text></symbol>
+</svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E9D49A"/><stop offset="1" stop-color="#B8913F"/></linearGradient></defs></svg>
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <svg class="logo" viewBox="0 0 40 34" style="width:40px" aria-hidden="true"><circle cx="15" cy="17" r="10" fill="none" stroke="var(--c1)" stroke-width="3.2"/><circle cx="25" cy="17" r="10" fill="none" stroke="var(--c2)" stroke-width="3.2"/><path d="M20 22c-2.8-1.9-4.6-3.5-4.6-5.5 0-1.3 1-2.3 2.3-2.3 1 0 1.8.5 2.3 1.4.5-.9 1.3-1.4 2.3-1.4 1.3 0 2.3 1 2.3 2.3 0 2-1.8 3.6-4.6 5.5z" fill="var(--rose)"/></svg>
+      <svg class="crest-mark" data-crest="mark" aria-hidden="true"></svg>
       <div><span class="brand-name">Дела Савельевых</span><span class="couple" id="couple"></span></div>
       <button class="help-btn" id="helpBtn" type="button" aria-label="Как пользоваться" title="Как пользоваться">?</button>
     </div>
@@ -468,6 +740,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
   </header>
 
   <section class="hero" id="hero" aria-labelledby="greet">
+    <svg class="wm" data-crest="full" aria-hidden="true"></svg>
     <figure class="hero-photo" id="heroPhoto" hidden><img id="heroImg" alt="" decoding="async"><figcaption id="heroCap"></figcaption></figure>
     <div class="hero-text">
       <p class="eyebrow" id="todayLabel"></p>
@@ -576,7 +849,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
     return Math.round(n * 100) / 100;
   };
   const CATS = {
-    out: ["Продукты", "Кафе и доставка", "Дом и ЖКХ", "Транспорт", "Дети", "Здоровье", "Одежда", "Связь и подписки", "Развлечения", "Подарки", "Кредиты", "Другое"],
+    out: ["Продукты", "Кафе и доставка", "Дом и ЖКХ", "Транспорт", "Дети", "Здоровье", "Одежда", "Связь и подписки", "Развлечения", "Подарки", "Кредиты", "Десятина и пожертвования", "Другое"],
     in: ["Зарплата", "Подработка", "Возвраты и кэшбэк", "Подарки", "Другое"],
   };
   const monthName = (ym) => { const [y, m] = ym.split("-").map(Number); const s = new Date(y, m - 1, 1).toLocaleDateString("ru-RU", { month: "long", year: "numeric" }).replace(/\s*г\.?$/, ""); return s.charAt(0).toUpperCase() + s.slice(1); };
@@ -596,7 +869,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
     family: null, people: [], tasks: [], goals: [], loaded: { family: false, tasks: false, goals: false },
     me: null, tab: ls.get("tab") || "today", filter: ls.get("filter") || "all",
     editing: null, confirm: null, preview: null, noDb: false,
-    money: [], funds: [], limits: {}, month: today().slice(0, 7), mType: "out", editLimits: false,
+    money: [], funds: [], limits: {}, crest: ls.get("crest") || "b", month: today().slice(0, 7), mType: "out", editLimits: false,
   };
 
   // ---- people ----
@@ -668,13 +941,54 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
   const patchMoney = (id, p) => write((db) => db.doc("money/" + id).update(p));
   const delMoney = (id) => write((db) => db.doc("money/" + id).delete());
   const addFund = (f) => write((db) => db.collection("funds").add({
-    title: f.title, target: f.target, deadline: f.deadline || null, who: f.who, by: S.me || null, createdAt: Date.now(),
+    title: f.title, target: f.target || 0, deadline: f.deadline || null, who: f.who, kind: f.kind || "goal", months: f.months || null, by: S.me || null, createdAt: Date.now(),
   }));
+  const patchFund = (id, p) => write((db) => db.doc("funds/" + id).update(p));
+  const saveCrest = (v) => write((db) => db.doc("family/crest").set({ v }));
   const delFund = (id) => write(async (db) => {
     for (const m of S.money.filter((m) => m.fund === id)) await db.doc("money/" + m.id).update({ fund: null });
     await db.doc("funds/" + id).delete();
   });
   const saveLimits = (limits) => write((db) => db.doc("budget/limits").set({ limits }));
+  // ---- crests: four designs share the same symbols, the family picks one ----
+  const CRESTS = {
+    a: { name: "Классика", note: "Изумруд, кольца, тройная нить, сердце, лавр", full: "0 0 240 304", mark: "56 52 128 182", w: 240, h: 304, legend: [["Крест", "Бог в центре нашего дома"], ["Два кольца", "мы вместе"], ["Нить из трёх прядей", "Екклесиаст 4:12"], ["Сердце", "любовь, на которой всё держится"]] },
+    b: { name: "Королевский", note: "Корона с крестом, золотые крылья, крест на щите", full: "0 0 240 316", mark: "34 0 172 236", w: 240, h: 316, legend: [["Крест", "делит щит на четыре части: Бог — основа"], ["Корона", "семья — маленькое царство"], ["Кольца и звезда", "наш союз и наш свет"], ["Сердце и пламя", "любовь и молитва"]] },
+    c: { name: "Печать", note: "Круглая печать, по краю — нить из трёх прядей", full: "0 0 240 240", mark: "0 0 240 240", w: 240, h: 240, legend: [["Крест", "в центре всего"], ["Кольцо из нити", "три пряди: он, она и Бог"], ["Два кольца", "наш союз"], ["Надпись", "наш девиз по кругу"]] },
+    d: { name: "Ночной орден", note: "Тёмно-синий щит, золотой крест, Библия", full: "0 0 240 316", mark: "40 0 160 236", w: 240, h: 316, legend: [["Большой крест", "держит весь щит"], ["Книга", "Слово Божье в основе семьи"], ["Кольца, сердце, звезда", "союз, любовь и надежда"], ["Лавр", "награда за верность"]] },
+  };
+  const crestKey = () => (CRESTS[S.crest] ? S.crest : "b");
+  function renderCrest() {
+    const k = crestKey(), c = CRESTS[k];
+    document.querySelectorAll("svg[data-crest]").forEach((el) => {
+      const mode = el.dataset.crest, key = k + mode;
+      if (el.dataset.cv === key) return;
+      el.dataset.cv = key;
+      el.setAttribute("viewBox", mode === "mark" ? c.mark : c.full);
+      el.innerHTML = `<use href="#crest-${k}" x="0" y="0" width="${c.w}" height="${c.h}"/>`;
+    });
+    document.querySelectorAll("[data-crest-pick]").forEach((el) => {
+      const v = el.dataset.crestPick, cc = CRESTS[v];
+      if (el.dataset.cv === v) return;
+      el.dataset.cv = v; el.setAttribute("viewBox", cc.full);
+      el.innerHTML = `<use href="#crest-${v}" x="0" y="0" width="${cc.w}" height="${cc.h}"/>`;
+    });
+  }
+
+  // ---- money helpers: cushion and capital ----
+  const sumAmt = (arr) => arr.reduce((t, m) => t + (+m.amount || 0), 0);
+  const fundKind = (f) => (f.kind === "cushion" || (!f.kind && /подушк/i.test(f.title || "")) ? "cushion" : f.kind === "invest" ? "invest" : "goal");
+  const FUND_LABEL = { goal: "Мечта или покупка", cushion: "Подушка безопасности", invest: "Накопления и вклады" };
+  function avgMonthlyOut() {
+    const cur = today().slice(0, 7);
+    const per = (ym) => sumAmt(S.money.filter((m) => m.type === "out" && typeof m.date === "string" && m.date.startsWith(ym)));
+    const vals = [-1, -2, -3].map((n) => per(shiftMonth(cur, n))).filter((v) => v > 0);
+    if (vals.length) return vals.reduce((a, b) => a + b, 0) / vals.length;
+    return per(cur);
+  }
+  const fundSaved = (f) => sumAmt(S.money.filter((m) => m.type === "save" && m.fund === f.id));
+  const fundTarget = (f) => (fundKind(f) === "cushion" && avgMonthlyOut() > 0 ? Math.round(avgMonthlyOut() * (+f.months || 6)) : +f.target || 0);
+  const CAT_COLORS = ["#B8913F", "#1C4A3E", "#A63A5E", "#2E5A82", "#7B63B8", "#D07A2D", "#2E8A7A", "#D9798F", "#7D8B3A", "#5F6B78", "#8E5B32", "#3F7FA8"];
   const catOptions = (type, sel) => CATS[type].map((c) => `<option${c === sel ? " selected" : ""}>${esc(c)}</option>`).join("");
   const fundOptions = (sel) => '<option value="">Без копилки</option>' + S.funds
     .map((f) => `<option value="${esc(f.id)}"${f.id === sel ? " selected" : ""}>${esc(f.title)}</option>`).join("");
@@ -1122,9 +1436,17 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
     const rest = inc - out - sav;
     const arrow = (d) => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
 
+    const pym = shiftMonth(ym, -1);
+    const prevM = mine.filter((m) => m.date.startsWith(pym));
+    const pInc = sum(prevM.filter((m) => m.type === "in")), pOut = sum(prevM.filter((m) => m.type === "out"));
+    const cmp = (cur, prev, lessGood) => {
+      if (!prev || !cur) return "";
+      const d = Math.round(((cur - prev) / prev) * 100); if (!d) return "";
+      return `<span class="delta ${(lessGood ? d < 0 : d > 0) ? "good" : "bad"}">${d > 0 ? "▲" : "▼"} ${Math.abs(d)}% к прошлому месяцу</span>`;
+    };
     const kpis = `<div class="kpis">
-      <div class="kpi in"><span class="l">Доходы</span><span class="v">${rub(inc)}</span></div>
-      <div class="kpi out"><span class="l">Расходы</span><span class="v">${rub(out)}</span>${inc ? `<span class="s">${Math.round((out / inc) * 100)}% от доходов</span>` : ""}</div>
+      <div class="kpi in"><span class="l">Доходы</span><span class="v">${rub(inc)}</span>${cmp(inc, pInc, false)}</div>
+      <div class="kpi out"><span class="l">Расходы</span><span class="v">${rub(out)}</span>${inc ? `<span class="s">${Math.round((out / inc) * 100)}% от доходов</span>` : ""}${cmp(out, pOut, true)}</div>
       <div class="kpi sav"><span class="l">Отложено</span><span class="v">${sav < 0 ? "−" : ""}${rub(Math.abs(sav))}</span></div>
       <div class="kpi rest${rest < 0 ? " neg" : ""}"><span class="l">Остаток</span><span class="v">${rest < 0 ? "−" : ""}${rub(Math.abs(rest))}</span><span class="s">столько осталось на руках</span></div>
     </div>`;
@@ -1160,16 +1482,24 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
     const max = Math.max(1, ...rows.map((r) => Math.max(r.v, r.lim)));
     const catHtml = rows.length ? rows.map((r, i) => {
       const over = r.lim && r.v > r.lim;
-      return `<div class="cat${over ? " over" : ""}">
-        <span class="nm">${esc(r.c)}</span><span class="am"><b>${rub(r.v)}</b>${r.lim ? ` из ${rub(r.lim)}` : ""}</span>
+      return `<div class="cat${over ? " over" : ""}" style="--cc:${CAT_COLORS[i % CAT_COLORS.length]}">
+        <span class="nm"><i></i>${esc(r.c)}</span><span class="am"><b>${rub(r.v)}</b>${r.lim ? ` из ${rub(r.lim)}` : ""}</span>
         <div class="track"><i style="width:${(r.v / max) * 100}%"></i>${r.lim ? `<u style="left:calc(${(r.lim / max) * 100}% - 1px)"></u>` : ""}</div>
         ${over ? `<span class="over-note">Сверх лимита на ${rub(r.v - r.lim)}</span>` : ""}
         ${S.editLimits ? `<label class="lim" for="lim-${i}">Лимит в месяц <input class="inp" id="lim-${i}" data-cat="${esc(r.c)}" inputmode="decimal" value="${r.lim || ""}" placeholder="нет"></label>` : ""}
       </div>`;
     }).join("") : `<div class="empty">Расходов в этом месяце пока нет.</div>`;
+    const dTot = rows.reduce((t, r) => t + r.v, 0), DC = 2 * Math.PI * 62;
+    let dCum = 0;
+    const donut = dTot > 0 && !S.editLimits ? `<div class="donut-wrap"><div class="donut"><svg viewBox="0 0 168 168" aria-hidden="true"><circle cx="84" cy="84" r="62" stroke="var(--sunk)"/>${rows.map((r, i) => {
+      if (!r.v) return "";
+      const len = (r.v / dTot) * DC, seg = Math.max(0, len - 2.5);
+      const el = `<circle cx="84" cy="84" r="62" stroke="${CAT_COLORS[i % CAT_COLORS.length]}" stroke-dasharray="${seg.toFixed(2)} ${(DC - seg).toFixed(2)}" stroke-dashoffset="${(-dCum).toFixed(2)}"/>`;
+      dCum += len; return el;
+    }).join("")}</svg><div class="lbl"><b>${rub(out)}</b><span>расходы</span></div></div></div>` : "";
     const catCard = S.editLimits && !ro
       ? `<form class="card" data-form="limits"><h3>Лимиты на месяц <span class="row"><button class="btn small primary" type="submit">Сохранить</button><button class="btn small ghost" type="button" data-act="limits-off">Отмена</button></span></h3>${catHtml}</form>`
-      : `<div class="card"><h3>Расходы по категориям${ro ? "" : ' <button class="btn small ghost" type="button" data-act="limits-on">Лимиты трат</button>'}</h3>${catHtml}</div>`;
+      : `<div class="card"><h3>Расходы по категориям${ro ? "" : ' <button class="btn small ghost" type="button" data-act="limits-on">Лимиты трат</button>'}</h3>${donut}${catHtml}</div>`;
 
     const months = [];
     for (let i = 5; i >= 0; i--) months.push(shiftMonth(ym, -i));
@@ -1181,11 +1511,11 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
       : `<div class="empty">График появится, когда накопятся записи.</div>`;
 
     const saves = S.money.filter((m) => m.type === "save");
-    const funds = S.funds.filter((f) => matchesFilter(f.who)).sort((a, b) => (a.deadline || "9999").localeCompare(b.deadline || "9999"));
+    const funds = S.funds.filter((f) => matchesFilter(f.who) && fundKind(f) !== "cushion").sort((a, b) => (a.deadline || "9999").localeCompare(b.deadline || "9999"));
     const fundHtml = funds.map((f) => {
       const p = person(f.who);
       const saved = sum(saves.filter((m) => m.fund === f.id));
-      const target = +f.target || 0;
+      const target = fundTarget(f);
       const pct = target ? Math.max(0, Math.min(100, Math.round((saved / target) * 100))) : 0;
       const left = Math.max(0, target - saved);
       const meta = [`<span class="tag who" style="--pc:${p.color}"><span class="dot"></span>${esc(p.name)}</span>`];
@@ -1199,6 +1529,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
       const confirming = S.confirm === "f:" + f.id;
       return `<article class="goal${target && left <= 0 ? " achieved" : ""}" style="--pc:${p.color}">
         ${target && left <= 0 ? ART.trophy : ""}
+        <span class="fkind">${esc(FUND_LABEL[fundKind(f)])}</span>
         <h3>${esc(f.title)}</h3>
         <div class="g-meta">${meta.join("")}</div>
         <div><div class="bar2" aria-hidden="true"><i style="width:${pct}%"></i></div><div class="pct"><b>${rub(saved)}</b> из ${rub(target)} · ${pct}%${left > 0 ? ` · осталось ${rub(left)}` : ""}</div></div>
@@ -1209,8 +1540,9 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
       </article>`;
     }).join("");
     const fundForm = ro ? "" : `<form class="newgoal" data-form="fund">
-      <h3>Новая финансовая цель</h3>
-      <label class="sr" for="nf-title">Название</label><input class="inp" id="nf-title" placeholder="Например: отпуск летом, подушка безопасности" autocomplete="off">
+      <h3>Новая копилка</h3>
+      <label class="sr" for="nf-title">Название</label><input class="inp" id="nf-title" placeholder="Например: отпуск летом, машина, вклад" autocomplete="off">
+      <div class="row"><label class="sr" for="nf-kind">Вид</label><select class="sel" id="nf-kind" style="flex:1 1 100%"><option value="goal">Мечта или покупка</option><option value="invest">Накопления и вклады</option></select></div>
       <div class="row">
         <label class="sr" for="nf-target">Сколько нужно</label><input class="inp amt-in" id="nf-target" inputmode="decimal" placeholder="Сумма, ₽" autocomplete="off" style="flex:1 1 120px">
         <label class="sr" for="nf-date">К какому сроку</label><input class="inp" type="date" id="nf-date">
@@ -1218,7 +1550,50 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
       <div class="row"><label class="sr" for="nf-who">Чья цель</label><select class="sel" id="nf-who">${whoOptions("both")}</select><button class="btn primary" type="submit">Создать копилку</button></div>
     </form>`;
 
+    const allSaves = S.money.filter((m) => m.type === "save");
+    const capital = sum(allSaves);
+    const cushion = S.funds.find((f) => fundKind(f) === "cushion");
+    const cushSaved = cushion ? fundSaved(cushion) : 0;
+    const avg = avgMonthlyOut();
+    const covered = avg > 0 ? cushSaved / avg : 0;
+    const fm1 = (x) => (Math.round(x * 10) / 10).toString().replace(".", ",");
+    const investSaved = sum(allSaves.filter((m) => { const f = S.funds.find((x) => x.id === m.fund); return f && fundKind(f) === "invest"; }));
+    const dreamSaved = capital - cushSaved - investSaved;
+    const rate = inc > 0 ? Math.round((sav / inc) * 100) : null;
+    const rateCls = rate == null ? "" : rate >= 20 ? "good" : rate >= 10 ? "mid" : "low";
+    const capitalHtml = `<section class="capital" aria-label="Наш капитал"><svg class="wm" data-crest="full" aria-hidden="true"></svg>
+      <div><div class="cap-k">Наш капитал</div><div class="cap-v">${rub(capital)}</div><div class="cap-s">Всё, что вы отложили вместе: подушка безопасности, мечты и накопления.</div></div>
+      <div class="cap-stats">
+        <div class="cap-stat ${cushion ? (covered >= 3 ? "good" : covered >= 1 ? "mid" : "low") : ""}"><div class="k">Подушка безопасности</div><div class="v">${cushion ? fm1(covered) + " мес." : "—"}</div><div class="n">${cushion ? (avg > 0 ? "хватит на столько месяцев трат" : "траты ещё не записаны") : "ещё не создана"}</div></div>
+        <div class="cap-stat ${rateCls}"><div class="k">Норма сбережений</div><div class="v">${rate == null ? "—" : rate + "%"}</div><div class="n">${rate == null ? "запишите доходы месяца" : "от доходов месяца; хорошо — от 10%"}</div></div>
+        <div class="cap-stat"><div class="k">Мечты и покупки</div><div class="v">${rub(dreamSaved)}</div><div class="n">копилки на цели</div></div>
+        <div class="cap-stat"><div class="k">Накопления и вклады</div><div class="v">${rub(investSaved)}</div><div class="n">долгие деньги</div></div>
+      </div></section>`;
+    let cushionHtml;
+    if (cushion) {
+      const cTarget = fundTarget(cushion), cMonths = +cushion.months || 6;
+      const cPct = cTarget ? Math.max(0, Math.min(100, Math.round((cushSaved / cTarget) * 100))) : 0;
+      cushionHtml = `<section class="card" aria-label="Подушка безопасности"><h3>Подушка безопасности</h3><div class="cushion">
+        <div class="gauge"><svg viewBox="0 0 132 132" aria-hidden="true"><circle class="trk" cx="66" cy="66" r="54"/><circle class="val" cx="66" cy="66" r="54" stroke-dasharray="339.29" stroke-dashoffset="${(339.29 * (1 - cPct / 100)).toFixed(2)}"/></svg><div class="lbl"><b>${cPct}%</b><span>от цели</span></div></div>
+        <div><h4>${rub(cushSaved)} из ${rub(cTarget)}</h4>
+          <p>${avg > 0 ? `Хватит на ${fm1(covered)} мес. привычных трат (в среднем ${rub(avg)} в месяц). Цель — ${cMonths} мес.` : "Когда вы запишете расходы, сайт сам посчитает цель — обычно 3–6 месяцев трат."}</p>
+          ${ro ? "" : `<div class="seg" role="group" aria-label="Сколько месяцев в подушке" style="margin-top:10px">${[3, 6, 9, 12].map((n) => `<button type="button" data-act="cush-months" data-id="${cushion.id}" data-v="${n}" aria-pressed="${cMonths === n}">${n} мес.</button>`).join("")}</div>
+          <form class="mini-form" data-form="fund-move" data-fund="${cushion.id}" data-who="${esc(cushion.who)}"><label class="sr" for="fm-${cushion.id}">Сумма</label><input class="inp" id="fm-${cushion.id}" inputmode="decimal" placeholder="Сумма, ₽" autocomplete="off"><button class="btn small primary" type="submit" value="in">Отложить</button><button class="btn small ghost" type="submit" value="out">Взять</button></form>`}
+        </div></div></section>`;
+    } else {
+      cushionHtml = `<section class="card" aria-label="Подушка безопасности"><h3>Подушка безопасности</h3><div class="cushion">
+        <div class="gauge"><svg viewBox="0 0 132 132" aria-hidden="true"><circle class="trk" cx="66" cy="66" r="54"/></svg><div class="lbl"><b>0%</b><span>от цели</span></div></div>
+        <div><h4>Запас на трудный день</h4><p>Деньги на случай болезни, потери работы или большой поломки. Обычно копят 3–6 месяцев привычных расходов. Сайт сам посчитает цель по вашим тратам.</p>
+        ${ro ? "" : `<div class="row"><button class="btn primary" type="button" data-act="cush-create">Создать подушку</button></div>`}</div></div></section>`;
+    }
+    let paceHtml = "";
+    if (isCur && out > 0) {
+      const now = new Date(), dayN = now.getDate(), dim = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const fc = (out / dayN) * dim;
+      paceHtml = `<div class="card pace"><h3>Темп трат</h3><div class="big">≈ ${rub(fc)}</div><p style="margin:0;color:var(--muted)">К концу месяца, если тратить как сейчас — около ${rub(out / dayN)} в день.</p>${inc ? `<span class="delta ${fc > inc ? "bad" : "good"}">${fc > inc ? "Это больше доходов месяца — стоит притормозить" : "Это в пределах доходов месяца"}</span>` : ""}</div>`;
+    }
     return `<div class="stack">
+      ${capitalHtml}${cushionHtml}
       <div class="month-bar">
         <button class="icon-btn" type="button" data-act="month" data-v="-1" aria-label="Предыдущий месяц">${arrow("M15 6l-6 6 6 6")}</button>
         <h2>${esc(monthName(ym))}</h2>
@@ -1228,7 +1603,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
       ${kpis}
       <div class="bgrid">
         <div class="stack">${form}<div class="groups">${list}</div></div>
-        <div class="stack">${catCard}<div class="card"><h3>Последние 6 месяцев</h3>${trendHtml}</div></div>
+        <div class="stack">${paceHtml}${catCard}<div class="card"><h3>Последние 6 месяцев</h3>${trendHtml}</div></div>
       </div>
       <h2 class="sec-title">Финансовые цели</h2>
       ${!funds.length && ro ? '<div class="state"><strong>Копилок пока нет</strong></div>' : `<div class="goals">${fundHtml}${fundForm}</div>`}
@@ -1246,7 +1621,14 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
     const shareNote = window.__standalone
       ? "Чтобы второй человек тоже видел и вёл список, отправьте ему ссылку на сайт и семейный код."
       : "Чтобы супруга видела и меняла список, откройте меню «Поделиться» у этой страницы и пригласите её по почте с правом редактирования. Без этого права она сможет только смотреть.";
-    return `<div class="fam-stack"><section class="verse" aria-labelledby="verseTitle">
+    const cv = CRESTS[crestKey()];
+    const crestCard = `<section class="crest-card" aria-labelledby="crestTitle"><svg class="crest-big" data-crest="full" aria-hidden="true"></svg>
+      <div><h2 id="crestTitle">Герб семьи Савельевых</h2><p>${esc(cv.note)}.</p>
+      <ul class="legend-l">${cv.legend.map(([a, b]) => `<li><b>${esc(a)}</b><span>— ${esc(b)}</span></li>`).join("")}</ul>
+      ${window.__standalone ? `<a class="btn" href="/crests/${crestKey()}.svg" download="gerb-savelievy.svg">Скачать герб</a>` : ""}</div></section>
+    <section class="panel" aria-labelledby="pickTitle"><h2 id="pickTitle">Выберите герб</h2><p>Выбор общий: герб поменяется у вас обоих.</p>
+      <div class="crest-pick" role="group" aria-label="Вариант герба">${Object.entries(CRESTS).map(([k, c]) => `<button type="button" class="pick${k === crestKey() ? " on" : ""}" data-act="crest" data-v="${k}" aria-pressed="${k === crestKey()}"${ro ? " disabled" : ""}><svg data-crest-pick="${k}" aria-hidden="true"></svg><span>${esc(c.name)}</span></button>`).join("")}</div></section>`;
+    return `<div class="fam-stack">${crestCard}<section class="verse" aria-labelledby="verseTitle">
       <h2 id="verseTitle">Наш девиз</h2>
       <blockquote><sup>9</sup>Двоим лучше, нежели одному; потому что у них есть доброе вознаграждение в труде их: <sup>10</sup>ибо если упадёт один, то другой поднимет товарища своего. Но горе одному, когда упадёт, а другого нет, который поднял бы его. <sup>11</sup>Также, если лежат двое, то тепло им; а одному как согреться? <sup>12</sup>И если начнёт одолевать кто-либо одного, то двое устоят против него: и нитка, втрое скрученная, нескоро порвётся.</blockquote>
       <cite>Екклесиаст 4:9–12, Синодальный перевод</cite>
@@ -1311,6 +1693,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
       if (el.tagName !== "SELECT") el.value = keep[id];
       else if ([...el.options].some((o) => o.value === keep[id])) el.value = keep[id];
     }
+    renderCrest();
     if (focusId) { const el = document.getElementById(focusId); if (el) { el.focus(); if (sel) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
   }
 
@@ -1350,7 +1733,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-event
     $("#fab").hidden = $("#capture").hidden;
   }
 
-  function renderAll() { renderHeader(); renderChips(); renderTabs(); renderView(); renderCaptureSelects(); }
+  function renderAll() { renderHeader(); renderChips(); renderTabs(); renderView(); renderCaptureSelects(); renderCrest(); }
 
   // ---- dictation parsing ----
   function splitPlain(text) {
@@ -1629,6 +2012,9 @@ ${funds}
         if (on) { burstFrom(b, false, true); toast("Спасибо отправлено ♥"); }
         await patchTask(id, { hearts });
       }
+      else if (act === "crest" && CRESTS[b.dataset.v]) { S.crest = b.dataset.v; ls.set("crest", S.crest); renderAll(); await saveCrest(S.crest); toast(`Герб: ${CRESTS[S.crest].name}`); }
+      else if (act === "cush-create") { await addFund({ title: "Подушка безопасности", target: 0, who: "both", kind: "cushion", months: 6 }); toast("Подушка безопасности создана"); }
+      else if (act === "cush-months") { await patchFund(id, { months: +b.dataset.v }); }
       else if (act === "photo-del") { await window.__removePhoto(); renderAll(); toast("Фото убрано"); }
       else if (act === "fs") { document.documentElement.dataset.fs = b.dataset.v; ls.set("fs", b.dataset.v); renderView(); }
       else if (act === "mtype") { S.mType = b.dataset.v === "in" ? "in" : "out"; renderView(); }
@@ -1702,7 +2088,7 @@ ${funds}
         const ti = $("#nf-title"), title = ti.value.trim(), target = parseAmount($("#nf-target").value);
         if (!title) { ti.focus(); return; }
         if (target == null) { toast("Укажите, сколько нужно накопить"); $("#nf-target").focus(); return; }
-        const rec = { title, target, deadline: $("#nf-date").value || null, who: $("#nf-who").value };
+        const rec = { title, target, deadline: $("#nf-date").value || null, who: $("#nf-who").value, kind: $("#nf-kind").value };
         ti.value = ""; $("#nf-target").value = ""; $("#nf-date").value = "";
         await addFund(rec); toast("Копилка создана");
       } else if (kind === "fund-move") {
@@ -1713,11 +2099,11 @@ ${funds}
         const fund = S.funds.find((x) => x.id === f.dataset.fund);
         const before = S.money.filter((m) => m.type === "save" && m.fund === f.dataset.fund).reduce((s, m) => s + (+m.amount || 0), 0);
         if (!out) {
-          if (fund && +fund.target && before < +fund.target && before + amount >= +fund.target) setTimeout(() => { celebrate(); toast(`Копилка «${fund.title}» собрана!`); }, 200);
+          if (fund && fundTarget(fund) && before < fundTarget(fund) && before + amount >= fundTarget(fund)) setTimeout(() => { celebrate(); toast(`Копилка «${fund.title}» собрана!`); }, 200);
           else burstFrom(e.submitter, false);
         }
         await addMoney({ type: "save", amount: out ? -amount : amount, fund: f.dataset.fund, who: S.me || f.dataset.who, date: today() });
-        if (out || !(fund && +fund.target && before + amount >= +fund.target && before < +fund.target)) toast(out ? `Взяли ${rub(amount)} из копилки` : `Отложено ${rub(amount)}. Так держать!`);
+        if (out || !(fund && fundTarget(fund) && before + amount >= fundTarget(fund) && before < fundTarget(fund))) toast(out ? `Взяли ${rub(amount)} из копилки` : `Отложено ${rub(amount)}. Так держать!`);
       } else if (kind === "limits") {
         const limits = {};
         f.querySelectorAll("input[data-cat]").forEach((el) => { const v = parseAmount(el.value); if (v != null) limits[el.dataset.cat] = v; });
@@ -1781,6 +2167,11 @@ ${funds}
     }, fail);
     db.collection("funds").onSnapshot((snap) => {
       S.funds = snap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((f) => typeof f.title === "string");
+      renderAll();
+    }, fail);
+    db.doc("family/crest").onSnapshot((snap) => {
+      const d = snap.exists ? snap.data() : null;
+      if (d && CRESTS[d.v]) { S.crest = d.v; ls.set("crest", d.v); }
       renderAll();
     }, fail);
     db.doc("budget/limits").onSnapshot((snap) => {

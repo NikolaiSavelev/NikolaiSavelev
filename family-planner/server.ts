@@ -247,7 +247,7 @@ setInterval(tick, 60_000);
 // ---- page ----
 const HEAD =`<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#1E5E4E">
+<meta name="theme-color" content="#123A30">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Дела">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -262,12 +262,15 @@ async function buildPage() {
 const PAGE = await buildPage();
 const STANDALONE_JS = await Bun.file(new URL("./standalone.js", import.meta.url)).text();
 const SW_JS = await Bun.file(new URL("./sw.js", import.meta.url)).text();
+const CREST_SVG: Record<string, string> = {};
+for (const k of ["a", "b", "c", "d"]) CREST_SVG[k] = await Bun.file(new URL(`./crests/${k}.svg`, import.meta.url)).text();
+const crestChoice = () => { try { const r = getDoc.get("family", "crest"); const v = r && JSON.parse(r.data).v; return CREST_SVG[v] ? v : "b"; } catch { return "b"; } };
 const PNG = { "/icon-192.png": new URL("./icon-192.png", import.meta.url), "/icon-512.png": new URL("./icon-512.png", import.meta.url) } as Record<string, URL>;
 
-const ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#EEF2EC"/><circle cx="24" cy="32" r="14" fill="none" stroke="#3B6E96" stroke-width="4.5"/><circle cx="40" cy="32" r="14" fill="none" stroke="#CF5778" stroke-width="4.5"/><path d="M32 39c-3.9-2.7-6.4-4.9-6.4-7.7 0-1.8 1.4-3.2 3.2-3.2 1.4 0 2.5.7 3.2 2 .7-1.3 1.8-2 3.2-2 1.8 0 3.2 1.4 3.2 3.2 0 2.8-2.5 5-6.4 7.7z" fill="#CF4F72"/></svg>`;
+const ICON = CREST_SVG.b.replace('viewBox="0 0 240 316"', 'viewBox="34 0 172 236"');
 const MANIFEST = JSON.stringify({
   name: "Дела Савельевых", short_name: "Дела", start_url: "/", display: "standalone",
-  background_color: "#F1F5EF", theme_color: "#1E5E4E", lang: "ru",
+  background_color: "#F5F1E8", theme_color: "#123A30", lang: "ru",
   icons: [
     { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
     { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
@@ -275,22 +278,24 @@ const MANIFEST = JSON.stringify({
   ],
 });
 
-const LOGIN = `${HEAD}<title>Дела Савельевых</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,700;1,500&family=Nunito:wght@400;700&display=swap">
+const loginPage = () => `${HEAD}<title>Дела Савельевых</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@500;700;800&display=swap">
 <style>
-:root{--bg:#F1F5EF;--surface:#fff;--ink:#1E2B26;--muted:#64736C;--accent:#1E5E4E;--line:#DCE5DA;--warn:#C2571B}
-@media (prefers-color-scheme:dark){:root{--bg:#101814;--surface:#17221D;--ink:#E7EFE9;--muted:#9AAEA4;--accent:#5CC9A7;--line:#26352E;--warn:#F09A5E;color-scheme:dark}}
-body{background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:16px;box-sizing:border-box}
-form{box-sizing:border-box;background:var(--surface);border-radius:28px;padding:32px 24px;max-width:360px;width:100%;box-shadow:0 8px 24px rgba(30,60,45,.08);display:flex;flex-direction:column;gap:14px;text-align:center}
-h1{font-family:Lora,Georgia,serif;margin:8px 0 0;font-size:24px}p{margin:0;color:var(--muted)}
-input{font:inherit;font-size:22px;text-align:center;letter-spacing:.15em;padding:12px;border-radius:14px;border:0;box-shadow:inset 0 0 0 2px var(--line);background:var(--bg);color:var(--ink)}
-input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--accent)}
-button{font:inherit;font-weight:700;border:0;border-radius:999px;padding:13px;background:var(--accent);color:var(--surface);cursor:pointer}
+:root{--bg:#F5F1E8;--surface:#FFFDF8;--ink:#17211D;--muted:#555E59;--accent:#1C4A3E;--line:#E4DCCB;--warn:#B0521D;--gold:#B8913F}
+@media (prefers-color-scheme:dark){:root{--bg:#0B110F;--surface:#131C18;--ink:#F1ECE1;--muted:#AEB5AE;--accent:#86CBB0;--line:#26312B;--warn:#EE9A62;--gold:#DDBE74;color-scheme:dark}}
+body{background:radial-gradient(60vmax 50vmax at 108% -8%,rgba(184,145,63,.16),transparent 62%),radial-gradient(60vmax 55vmax at -12% 108%,rgba(28,74,62,.14),transparent 62%),var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:16px;box-sizing:border-box}
+form{box-sizing:border-box;background:var(--surface);border-radius:30px;padding:30px 24px 26px;max-width:380px;width:100%;box-shadow:0 0 0 1px rgba(184,145,63,.35),0 30px 60px -30px rgba(30,44,24,.45);display:flex;flex-direction:column;gap:14px;text-align:center}
+.crest{height:190px;margin:-4px auto 0;display:block;filter:drop-shadow(0 10px 14px rgba(11,36,29,.3))}.crest svg{height:100%;width:auto}
+h1{font-family:'Cormorant Garamond',Georgia,serif;margin:2px 0 0;font-size:34px;line-height:1;font-weight:700;letter-spacing:-.005em}p{margin:0;color:var(--muted)}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border:0;margin:0}
+input{font:inherit;font-size:22px;text-align:center;letter-spacing:.2em;padding:13px;border-radius:16px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--bg);color:var(--ink)}
+input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--accent),0 0 0 4px rgba(184,145,63,.22)}
+button{font:inherit;font-weight:800;letter-spacing:.02em;border:0;border-radius:999px;padding:14px;background:linear-gradient(180deg,#266050,#143F34);color:#F3E2B0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(233,212,154,.45),0 14px 24px -12px rgba(11,36,29,.7)}
 .err{color:var(--warn);min-height:1.4em}
-.motto{font-family:Lora,Georgia,serif;font-style:italic;color:var(--ink);line-height:1.5}.motto small{font-family:Nunito,sans-serif;font-style:normal;font-weight:700;color:var(--muted)}
+.motto{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;color:var(--ink);line-height:1.4;font-size:19px}.motto small{font-family:Manrope,sans-serif;font-style:normal;font-weight:800;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;font-size:11px}
 </style></head><body>
-<form id="f"><svg width="72" height="60" viewBox="0 0 40 34" style="margin:0 auto" aria-hidden="true"><circle cx="15" cy="17" r="10" fill="none" stroke="#3B6E96" stroke-width="3.2"/><circle cx="25" cy="17" r="10" fill="none" stroke="#CF5778" stroke-width="3.2"/><path d="M20 22c-2.8-1.9-4.6-3.5-4.6-5.5 0-1.3 1-2.3 2.3-2.3 1 0 1.8.5 2.3 1.4.5-.9 1.3-1.4 2.3-1.4 1.3 0 2.3 1 2.3 2.3 0 2-1.8 3.6-4.6 5.5z" fill="#CF4F72"/></svg>
-<h1>Дела Савельевых</h1><p class="motto">«Двоим лучше, нежели одному… и нитка, втрое скрученная, нескоро порвётся»<br><small>Екклесиаст 4:9, 12</small></p><p>Введите семейный код</p>
+<form id="f"><div class="crest">${CREST_SVG[crestChoice()]}</div>
+<h1>Дела Савельевых</h1><hr class="rule"><p class="motto">«Двоим лучше, нежели одному… и нитка, втрое скрученная, нескоро порвётся»<br><small>Екклесиаст 4:9, 12</small></p><p>Введите семейный код</p>
 <label for="pin" style="position:absolute;left:-9999px">Семейный код</label>
 <input id="pin" type="password" autocomplete="current-password" autofocus required>
 <button type="submit">Войти</button><div class="err" id="err" role="status"></div></form>
@@ -321,6 +326,9 @@ const server = Bun.serve({
     if (path === "/sw.js") return new Response(SW_JS, { headers: { "content-type": "text/javascript; charset=utf-8", "cache-control": "no-cache" } });
     if (path === "/manifest.webmanifest") return new Response(MANIFEST, { headers: { "content-type": "application/manifest+json" } });
 
+    const cm = path.match(/^\/crests\/([a-d])\.svg$/);
+    if (cm) return new Response(CREST_SVG[cm[1]], { headers: { "content-type": "image/svg+xml", "cache-control": "public, max-age=86400" } });
+
     if (path === "/api/login" && req.method === "POST") {
       const ip = clientIp(req, srv);
       if (limited("login:" + ip, 10, 15 * 60_000)) return json({ error: "rate_limited" }, 429);
@@ -334,7 +342,7 @@ const server = Bun.serve({
     }
 
     if (!authed(req)) {
-      if (path === "/" || path === "/index.html") return html(LOGIN);
+      if (path === "/" || path === "/index.html") return html(loginPage());
       return json({ error: "unauthorized" }, 401);
     }
 
