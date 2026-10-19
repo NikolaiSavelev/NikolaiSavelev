@@ -407,7 +407,7 @@
   const bellCss = document.createElement("style");
   bellCss.textContent = `
     .top-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-    .bell { border: 0; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); border-radius: 999px; padding: 6px 14px 6px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 15px; font-weight: 700; color: var(--ink); }
+    .bell { border: 0; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); border-radius: 999px; padding: 6px 14px 6px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 1rem; font-weight: 700; color: var(--ink); }
     .bell svg { color: var(--accent); }
     .bell.on { background: var(--accent-soft); box-shadow: none; }
     .bell.on svg { color: var(--accent); }
@@ -496,12 +496,12 @@
     .rec-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px 14px; border-radius: 18px; background: color-mix(in srgb, var(--c2) 10%, var(--surface)); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--c2) 35%, transparent); }
     .rec-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c2); flex: none; animation: recblink 1s steps(2, start) infinite; }
     @keyframes recblink { to { opacity: .25; } }
-    .rec-time { font-family: var(--f-display); font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums; min-width: 3.2em; }
+    .rec-time { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; font-variant-numeric: tabular-nums; min-width: 3.2em; }
     .rec-level { flex: 1 1 140px; display: flex; align-items: center; gap: 3px; height: 32px; min-width: 0; overflow: hidden; }
     .rec-level i { flex: 1; max-width: 6px; min-width: 3px; border-radius: 3px; background: var(--c2); height: 4px; transition: height .08s; }
     .rec-bar .btn { min-height: 44px; }
     @media (max-width: 480px) { .rec-bar .btn.primary { flex: 1 1 auto; } }
-    .rec-hint { font-size: 13px; color: var(--muted); }
+    .rec-hint { font-size: 0.875rem; color: var(--muted); }
     .cap-how { display: block; margin-top: 4px; font-weight: 700; color: var(--accent) !important; }
     @media (prefers-reduced-motion: reduce) { .mic.on, .fab.on, .rec-dot { animation: none; } }`;
   document.head.appendChild(voiceCss);
