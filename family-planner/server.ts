@@ -3,7 +3,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import webpush from "web-push";
 import { Database } from "bun:sqlite";
-import { mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, unlinkSync } from "node:fs";
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 
 const PORT = Number(Bun.env.PORT || 3000);
@@ -45,6 +45,11 @@ if (!secret) {
   setMeta.run("secret", secret);
 }
 let rev = Number(getMeta.get("rev")?.v || 0);
+const bumpRev = () => { rev += 1; setMeta.run("rev", String(rev)); };
+// the family photo lives only on the data volume, never in the repository
+const PHOTO_PATH = `${DATA_DIR}/photo.jpg`;
+let photoRev = Number(getMeta.get("photoRev")?.v || 0);
+const MAX_PHOTO = 6 * 1024 * 1024;
 // changing FAMILY_PIN signs everyone out
 const TOKEN = createHmac("sha256", secret).update("family:" + PIN).digest("hex");
 
@@ -340,7 +345,28 @@ const server = Bun.serve({
       const since = Number(url.searchParams.get("rev") ?? -1);
       if (since === rev) return json({ rev, same: true });
       const docs = allDocs.all().map((r) => ({ c: r.coll, id: r.id, d: JSON.parse(r.data) }));
-      return json({ rev, docs, ai: !!anthropic, stt: !!STT });
+      return json({ rev, docs, ai: !!anthropic, stt: !!STT, photo: photoRev && existsSync(PHOTO_PATH) ? `/api/photo?v=${photoRev}` : null });
+    }
+
+    if (path === "/api/photo") {
+      if (req.method === "GET") {
+        if (!existsSync(PHOTO_PATH)) return json({ error: "not_found" }, 404);
+        return new Response(Bun.file(PHOTO_PATH), { headers: { "content-type": "image/jpeg", "cache-control": "private, max-age=31536000, immutable" } });
+      }
+      if (req.method === "POST") {
+        const type = (req.headers.get("content-type") || "").split(";")[0].trim();
+        if (type !== "image/jpeg") return json({ error: "jpeg_only" }, 415);
+        const buf = new Uint8Array(await req.arrayBuffer());
+        if (!buf.length || buf.length > MAX_PHOTO || buf[0] !== 0xff || buf[1] !== 0xd8) return json({ error: "bad_image" }, 400);
+        await Bun.write(PHOTO_PATH, buf);
+        photoRev = Date.now(); setMeta.run("photoRev", String(photoRev)); bumpRev();
+        return json({ ok: true, photo: `/api/photo?v=${photoRev}` });
+      }
+      if (req.method === "DELETE") {
+        try { unlinkSync(PHOTO_PATH); } catch {}
+        photoRev = 0; setMeta.run("photoRev", "0"); bumpRev();
+        return json({ ok: true });
+      }
     }
 
     if (path === "/api/write" && req.method === "POST") {

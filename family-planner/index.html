@@ -354,6 +354,24 @@ details.group > summary::-webkit-details-marker { display: none; }
 .alt[open] summary { margin-bottom: 10px; }
 .alt label { font-weight: 700; font-size: 0.9375rem; color: var(--muted); }
 
+/* Family photo in the greeting card */
+.hero.has-photo { grid-template-columns: 300px minmax(0, 1fr) auto; }
+.hero-photo { margin: -26px 0 -26px -24px; align-self: stretch; position: relative; min-height: 280px; border-radius: 28px 0 0 28px; overflow: hidden; }
+.hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+.hero-photo::after { content: ""; position: absolute; inset: auto 0 0 0; height: 45%; background: linear-gradient(to top, rgba(14, 24, 20, .55), transparent); }
+.hero-photo figcaption { position: absolute; left: 16px; right: 16px; bottom: 12px; z-index: 1; color: #fff; font-family: var(--f-display); font-style: italic; font-size: 1.125rem; display: flex; align-items: center; gap: 6px; text-shadow: 0 1px 6px rgba(0, 0, 0, .35); }
+.hero-photo figcaption svg { color: #FFB3C6; }
+@media (max-width: 760px) {
+  .hero.has-photo { grid-template-columns: minmax(0, 1fr) auto; }
+  .hero-photo { grid-column: 1 / -1; margin: -26px -24px 4px; min-height: 0; height: 230px; border-radius: 28px 28px 0 0; }
+}
+@media (max-width: 520px) {
+  .hero-photo { margin: -22px -18px 4px; height: 210px; }
+  .hero.has-photo .ring { top: 228px; }
+}
+.photo-box { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.photo-box img { width: 120px; height: 120px; object-fit: cover; object-position: 50% 30%; border-radius: 16px; }
+
 /* Goals with a period */
 .g-big { font-size: 1rem; color: var(--muted); font-weight: 600; }
 .g-big b { font-family: var(--f-body); font-weight: 800; font-size: 1.5rem; color: var(--ink); font-variant-numeric: tabular-nums; }
@@ -416,8 +434,9 @@ details.group > summary::-webkit-details-marker { display: none; }
     <div class="whobox" id="whoBox"></div>
   </header>
 
-  <section class="hero" aria-labelledby="greet">
-    <div>
+  <section class="hero" id="hero" aria-labelledby="greet">
+    <figure class="hero-photo" id="heroPhoto" hidden><img id="heroImg" alt="" decoding="async"><figcaption id="heroCap"></figcaption></figure>
+    <div class="hero-text">
       <p class="eyebrow" id="todayLabel"></p>
       <h1 id="greet">Добро пожаловать</h1>
       <p class="sub" id="heroSub">Здесь живут дела, цели и бюджет вашей семьи.</p>
@@ -702,7 +721,19 @@ details.group > summary::-webkit-details-marker { display: none; }
     return n;
   };
 
+  function renderPhoto() {
+    const url = window.__photoUrl || null;
+    const fig = $("#heroPhoto"), img = $("#heroImg");
+    fig.hidden = !url;
+    $("#hero").classList.toggle("has-photo", !!url);
+    if (url && img.getAttribute("src") !== url) img.src = url;
+    const names = S.people.map((p) => p.name).filter(Boolean);
+    img.alt = names.length ? names.join(" и ") : "Наша семья";
+    $("#heroCap").innerHTML = names.length >= 2 ? names.map(esc).join(" " + HEART + " ") : "";
+  }
+
   function renderHero() {
+    renderPhoto();
     const names = S.people.map((p) => p.name).filter(Boolean);
     $("#couple").innerHTML = names.length >= 2 ? names.map(esc).join(" " + HEART + " ") : "";
     const h = new Date().getHours();
@@ -1183,6 +1214,18 @@ details.group > summary::-webkit-details-marker { display: none; }
       <blockquote><sup>9</sup>Двоим лучше, нежели одному; потому что у них есть доброе вознаграждение в труде их: <sup>10</sup>ибо если упадёт один, то другой поднимет товарища своего. Но горе одному, когда упадёт, а другого нет, который поднял бы его. <sup>11</sup>Также, если лежат двое, то тепло им; а одному как согреться? <sup>12</sup>И если начнёт одолевать кто-либо одного, то двое устоят против него: и нитка, втрое скрученная, нескоро порвётся.</blockquote>
       <cite>Екклесиаст 4:9–12, Синодальный перевод</cite>
     </section>
+    ${window.__standalone ? `<section class="panel" aria-labelledby="photoTitle">
+      <h2 id="photoTitle">Наше фото</h2>
+      <p>Фото стоит вверху на всех страницах. Хранится только на вашем сервере, за семейным кодом.</p>
+      <div class="photo-box">
+        ${window.__photoUrl ? `<img src="${esc(window.__photoUrl)}" alt="Наше фото">` : ""}
+        <div class="row">
+          <label class="btn primary" for="photoFile" style="cursor:pointer">${window.__photoUrl ? "Сменить фото" : "Выбрать фото"}</label>
+          <input type="file" id="photoFile" accept="image/*" hidden>
+          ${window.__photoUrl ? `<button class="btn ghost" type="button" data-act="photo-del">Убрать фото</button>` : ""}
+        </div>
+      </div>
+    </section>` : ""}
     <section class="panel" aria-labelledby="fsTitle">
       <h2 id="fsTitle">Размер текста</h2>
       <p>Запоминается на этом телефоне.</p>
@@ -1549,6 +1592,7 @@ ${funds}
         if (on) { burstFrom(b, false, true); toast("Спасибо отправлено ♥"); }
         await patchTask(id, { hearts });
       }
+      else if (act === "photo-del") { await window.__removePhoto(); renderAll(); toast("Фото убрано"); }
       else if (act === "fs") { document.documentElement.dataset.fs = b.dataset.v; ls.set("fs", b.dataset.v); renderView(); }
       else if (act === "mtype") { S.mType = b.dataset.v === "in" ? "in" : "out"; renderView(); }
       else if (act === "month") { const v = +b.dataset.v; S.month = v ? shiftMonth(S.month, v) : today().slice(0, 7); S.editing = null; S.confirm = null; renderView(); }
@@ -1582,7 +1626,13 @@ ${funds}
     if (st && !st.value) st.value = today();
     if (en) en.value = c.dataset.period;
   });
-  $("#view").addEventListener("change", (e) => {
+  $("#view").addEventListener("change", async (e) => {
+    if (e.target.id === "photoFile" && e.target.files && e.target.files[0]) {
+      toast("Загружаю фото…");
+      try { await window.__uploadPhoto(e.target.files[0]); renderAll(); toast("Фото на месте ♥"); }
+      catch (err) { toast("Не получилось загрузить фото. Попробуйте другое"); }
+      return;
+    }
     if (e.target.id === "ng-metric") { const box = document.getElementById("ng-target"); if (box) box.closest("label").hidden = e.target.value === "steps"; }
     if (e.target.name === "me") chooseMe(e.target.value);
   });

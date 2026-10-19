@@ -29,6 +29,7 @@
       const j = await r.json();
       if (j.same) return;
       rev = j.rev;
+      window.__photoUrl = j.photo || null;
       ai = !!j.ai;
       stt = !!j.stt;
       store.clear();
@@ -385,6 +386,31 @@
   const sample = async (input, opts) => ({ text: JSON.stringify(await parse(input, opts)), truncated: false });
   sample.json = parse;
   sample.limits = async () => ({ maxPromptBytes: 20000 });
+
+  // shrink a phone photo to ~1600px JPEG in the browser, then store it on the server
+  window.__uploadPhoto = async (file) => {
+    const url = URL.createObjectURL(file);
+    try {
+      const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+      const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      const blob = await new Promise((res) => c.toBlob(res, "image/jpeg", 0.86));
+      const r = await fetch("/api/photo", { method: "POST", headers: { "content-type": "image/jpeg" }, body: blob });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      window.__photoUrl = j.photo;
+      await refresh();
+      return true;
+    } finally { URL.revokeObjectURL(url); }
+  };
+  window.__removePhoto = async () => {
+    const r = await fetch("/api/photo", { method: "DELETE" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    window.__photoUrl = null;
+    await refresh();
+  };
 
   window.claude = {
     async use(name) {
