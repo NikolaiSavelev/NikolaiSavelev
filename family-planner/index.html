@@ -12,11 +12,12 @@
   --line: #DAE2D8; --accent: #1E5E4E; --accent-ink: #FFFFFF; --accent-soft: #DCEAE3; --sun: #E0A53A; --sun-soft: #FBEFD3;
   --peach: #FBE4E8; --rose: #CF4F72; --rose-soft: #FBE7ED; --warn: #B85418; --ok: #2C7D52;
   --c1: #3B6E96; --c2: #CF5778; --c3: #7A62C4; --c4: #B97B17; --both: #C88A16;
-  --shadow: 0 1px 2px rgba(24, 45, 35, .05), 0 8px 24px rgba(24, 45, 35, .07);
-  --shadow-lift: 0 2px 4px rgba(24, 45, 35, .06), 0 14px 32px rgba(24, 45, 35, .12);
+  --shadow: 0 0 0 1px rgba(24, 45, 35, .05), 0 1px 2px rgba(24, 45, 35, .04), 0 12px 32px -10px rgba(24, 45, 35, .16);
+  --shadow-lift: 0 0 0 1px rgba(24, 45, 35, .06), 0 2px 4px rgba(24, 45, 35, .05), 0 22px 44px -12px rgba(24, 45, 35, .22);
+  --glow1: rgba(207, 79, 114, .10); --glow2: rgba(30, 94, 78, .12); --glass: rgba(255, 255, 255, .74);
   --f-display: "Lora", Georgia, "Times New Roman", serif;
   --f-body: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --r-lg: 20px;
+  --r-lg: 22px;
   --r-md: 14px;
 }
 @media (prefers-color-scheme: dark) {
@@ -25,7 +26,8 @@
     --line: #26342D; --accent: #6CC9AC; --accent-ink: #0E1813; --accent-soft: #1A3A2F; --sun: #F2C163; --sun-soft: #3A311F;
     --peach: #3A2128; --rose: #F28AA7; --rose-soft: #3B1F28; --warn: #F09A5E; --ok: #62C98D;
     --c1: #84B5DD; --c2: #F08DA8; --c3: #B6A2FF; --c4: #E8B456; --both: #F0BE4E;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25); --shadow-lift: 0 14px 32px rgba(0, 0, 0, .4);
+    --shadow: 0 0 0 1px rgba(255, 255, 255, .05), 0 1px 2px rgba(0, 0, 0, .3), 0 14px 34px -10px rgba(0, 0, 0, .55); --shadow-lift: 0 0 0 1px rgba(255, 255, 255, .07), 0 24px 48px -12px rgba(0, 0, 0, .6);
+    --glow1: rgba(242, 138, 167, .08); --glow2: rgba(108, 201, 172, .07); --glass: rgba(22, 32, 27, .72);
     color-scheme: dark;
   }
 }
@@ -34,7 +36,8 @@
   --line: #26342D; --accent: #6CC9AC; --accent-ink: #0E1813; --accent-soft: #1A3A2F; --sun: #F2C163; --sun-soft: #3A311F;
   --peach: #3A2128; --rose: #F28AA7; --rose-soft: #3B1F28; --warn: #F09A5E; --ok: #62C98D;
   --c1: #84B5DD; --c2: #F08DA8; --c3: #B6A2FF; --c4: #E8B456; --both: #F0BE4E;
-  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25); --shadow-lift: 0 14px 32px rgba(0, 0, 0, .4);
+  --shadow: 0 0 0 1px rgba(255, 255, 255, .05), 0 1px 2px rgba(0, 0, 0, .3), 0 14px 34px -10px rgba(0, 0, 0, .55); --shadow-lift: 0 0 0 1px rgba(255, 255, 255, .07), 0 24px 48px -12px rgba(0, 0, 0, .6);
+  --glow1: rgba(242, 138, 167, .08); --glow2: rgba(108, 201, 172, .07); --glass: rgba(22, 32, 27, .72);
   color-scheme: dark;
 }
 
@@ -354,23 +357,28 @@ details.group > summary::-webkit-details-marker { display: none; }
 .alt[open] summary { margin-bottom: 10px; }
 .alt label { font-weight: 700; font-size: 0.9375rem; color: var(--muted); }
 
-/* Family photo in the greeting card */
-.hero.has-photo { grid-template-columns: 300px minmax(0, 1fr) auto; }
-.hero-photo { margin: -26px 0 -26px -24px; align-self: stretch; position: relative; min-height: 280px; border-radius: 28px 0 0 28px; overflow: hidden; }
-.hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
-.hero-photo::after { content: ""; position: absolute; inset: auto 0 0 0; height: 45%; background: linear-gradient(to top, rgba(14, 24, 20, .55), transparent); }
-.hero-photo figcaption { position: absolute; left: 16px; right: 16px; bottom: 12px; z-index: 1; color: #fff; font-family: var(--f-display); font-style: italic; font-size: 1.125rem; display: flex; align-items: center; gap: 6px; text-shadow: 0 1px 6px rgba(0, 0, 0, .35); }
+/* Family photo in the greeting card: shown whole, never cropped; a soft blur of itself fills any spare room */
+.hero.has-photo { grid-template-columns: 320px minmax(0, 1fr); }
+.hero-photo { margin: -26px 0 -26px -24px; align-self: stretch; position: relative; overflow: hidden; border-radius: 28px 0 0 28px; background: #1B2621; display: flex; align-items: center; justify-content: center; }
+.hero-photo::before { content: ""; position: absolute; inset: -30px; background: var(--photo) center / cover no-repeat; filter: blur(26px) brightness(.75) saturate(1.1); }
+.hero-photo img { position: relative; display: block; width: 100%; height: auto; max-height: 78vh; object-fit: contain; }
+.hero-photo::after { content: ""; position: absolute; inset: auto 0 0 0; height: 35%; background: linear-gradient(to top, rgba(14, 24, 20, .55), transparent); pointer-events: none; }
+.hero-photo figcaption { position: absolute; left: 16px; right: 112px; bottom: 14px; z-index: 1; color: #fff; font-family: var(--f-display); font-style: italic; font-size: 1.125rem; display: flex; align-items: center; gap: 6px; text-shadow: 0 1px 6px rgba(0, 0, 0, .35); }
 .hero-photo figcaption svg { color: #FFB3C6; }
 @media (max-width: 760px) {
-  .hero.has-photo { grid-template-columns: minmax(0, 1fr) auto; }
-  .hero-photo { grid-column: 1 / -1; margin: -26px -24px 4px; min-height: 0; height: 230px; border-radius: 28px 28px 0 0; }
+  .hero.has-photo { grid-template-columns: minmax(0, 1fr); }
+  .hero-photo { grid-column: 1 / -1; margin: -26px -24px 4px; border-radius: 28px 28px 0 0; }
 }
 @media (max-width: 520px) {
-  .hero-photo { margin: -22px -18px 4px; height: 210px; }
-  .hero.has-photo .ring { top: 228px; }
+  .hero-photo { margin: -22px -18px 4px; }
+  .hero.has-photo h1 { padding-right: 0; }
 }
+.hero-photo .ring { position: absolute; top: auto; left: auto; right: 14px; bottom: 14px; z-index: 2; width: 88px; height: 88px; padding: 6px;
+  border-radius: 50%; background: var(--glass); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 8px 20px -8px rgba(0, 0, 0, .35); }
+.hero-photo .ring .lbl b { font-size: 1.1rem; }
+.hero-photo .ring .lbl span { font-size: .7rem; }
 .photo-box { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-.photo-box img { width: 120px; height: 120px; object-fit: cover; object-position: 50% 30%; border-radius: 16px; }
+.photo-box img { width: 120px; height: auto; max-height: 180px; object-fit: contain; border-radius: 16px; }
 
 /* Goals with a period */
 .g-big { font-size: 1rem; color: var(--muted); font-weight: 600; }
@@ -422,6 +430,31 @@ details.group > summary::-webkit-details-marker { display: none; }
 #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 40; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { *, *::before { transition: none !important; animation: none !important; } }
+
+/* Polish layer: soft light, glass, gentle gradients */
+body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(70vmax 60vmax at 105% -10%, var(--glow1), transparent 60%),
+              radial-gradient(70vmax 60vmax at -10% 110%, var(--glow2), transparent 60%); }
+.hero .eyebrow { text-transform: uppercase; letter-spacing: .14em; font-size: .78rem; font-weight: 700; }
+.hero h1, .col-head h2, .goal h3, .sec-title, .panel h2, .verse h2, .month-bar h2, .cap-label, .brand-name { letter-spacing: -.012em; }
+.ring .val { stroke: url(#ringGrad); }
+.ring.full .val { stroke: var(--sun); }
+.btn.primary { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, #fff), var(--accent));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 10px 22px -8px color-mix(in srgb, var(--accent) 60%, transparent); }
+.btn.primary:hover { filter: brightness(1.05); }
+.mic, .fab { background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 80%, #fff), var(--accent)); }
+.progress i { background: linear-gradient(90deg, color-mix(in srgb, var(--pc) 55%, #fff), var(--pc)); }
+.progress.full i { background: linear-gradient(90deg, color-mix(in srgb, var(--sun) 60%, #fff), var(--sun)); }
+.tabs { background: var(--glass); -webkit-backdrop-filter: saturate(1.5) blur(18px); backdrop-filter: saturate(1.5) blur(18px); }
+.chip { background: var(--glass); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.capture textarea { box-shadow: inset 0 1px 3px rgba(24, 45, 35, .06); }
+.capture textarea:focus { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); }
+.sel:focus, .inp:focus { box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent); }
+.col, .goal, .group, .kpi, .card, .panel, .capture { transition: box-shadow .25s ease, transform .25s ease; }
+@media (hover: hover) { .col:hover, .goal:hover, .card:hover { box-shadow: var(--shadow-lift); } }
+.hero-photo img { box-shadow: 0 10px 30px -12px rgba(0, 0, 0, .45); }
+.badge { box-shadow: 0 0 0 1px var(--line); }
+.made { opacity: .85; }
 </style>
 
 <div class="wrap">
@@ -445,7 +478,7 @@ details.group > summary::-webkit-details-marker { display: none; }
       <div class="badges" id="heroBadges"></div>
     </div>
     <div class="ring" id="heroRing" aria-hidden="true">
-      <svg viewBox="0 0 120 120"><circle class="trk" cx="60" cy="60" r="50"/><circle class="val" cx="60" cy="60" r="50" stroke-dasharray="314.16" stroke-dashoffset="314.16"/></svg>
+      <svg viewBox="0 0 120 120"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--accent)"/><stop offset="1" style="stop-color:var(--rose)"/></linearGradient></defs><circle class="trk" cx="60" cy="60" r="50"/><circle class="val" cx="60" cy="60" r="50" stroke-dasharray="314.16" stroke-dashoffset="314.16"/></svg>
       <div class="lbl"><b id="ringPct">0%</b><span>сегодня</span></div>
     </div>
   </section>
@@ -726,7 +759,11 @@ details.group > summary::-webkit-details-marker { display: none; }
     const fig = $("#heroPhoto"), img = $("#heroImg");
     fig.hidden = !url;
     $("#hero").classList.toggle("has-photo", !!url);
-    if (url && img.getAttribute("src") !== url) img.src = url;
+    // with a photo the day's ring sits on the photo, giving the greeting full width
+    const ring = $("#heroRing");
+    if (url && ring.parentElement !== fig) fig.appendChild(ring);
+    if (!url && ring.parentElement !== $("#hero")) $("#hero").appendChild(ring);
+    if (url && img.getAttribute("src") !== url) { img.src = url; fig.style.setProperty("--photo", `url("${url}")`); }
     const names = S.people.map((p) => p.name).filter(Boolean);
     img.alt = names.length ? names.join(" и ") : "Наша семья";
     $("#heroCap").innerHTML = names.length >= 2 ? names.map(esc).join(" " + HEART + " ") : "";
