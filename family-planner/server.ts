@@ -236,7 +236,7 @@ function salaryLines(date: string, evening: boolean): string[] {
 
 function summaryText(date: string) {
   const ym = shiftYm(date.slice(0, 7), -1);
-  const rows = listOf("money").filter((m) => typeof m.date === "string" && m.date.startsWith(ym));
+  const rows = listOf("money").filter((m) => !m.transfer && typeof m.date === "string" && m.date.startsWith(ym));
   const sum = (t: string) => rows.filter((m) => m.type === t).reduce((a, m) => a + (+m.amount || 0), 0);
   const inc = sum("in"), out = sum("out"), sav = sum("save");
   if (!inc && !out && !sav) return null;

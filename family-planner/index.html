@@ -602,8 +602,10 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
 .oblig-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
 .tag.ok { background: color-mix(in srgb, var(--ok) 14%, transparent); color: var(--ok); }
 .tag.due { background: color-mix(in srgb, var(--gold) 24%, transparent); color: var(--ink); }
-.panel label.f { display: flex; flex-direction: column; gap: 4px; font-size: .875rem; font-weight: 700; color: var(--muted); flex: 1 1 160px; min-width: 0; }
-.panel label.f .inp, .panel label.f .sel { width: 100%; }
+.panel label.f, .card label.f { display: flex; flex-direction: column; gap: 4px; font-size: .875rem; font-weight: 700; color: var(--muted); flex: 1 1 160px; min-width: 0; }
+.panel label.f .inp, .panel label.f .sel, .card label.f .inp, .card label.f .sel { width: 100%; }
+.cat-checks { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.card .mini-form .inp[type="date"] { flex: 0 1 11em; }
 .salary-setup .row { align-items: flex-end; }
 .check-row { display: flex; gap: 10px; align-items: center; font-weight: 600; font-size: .9375rem; color: var(--ink); }
 .check-row input { width: 22px; height: 22px; accent-color: var(--accent); flex: none; }
@@ -867,7 +869,7 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
     family: null, people: [], tasks: [], goals: [], loaded: { family: false, tasks: false, goals: false },
     me: null, tab: ls.get("tab") || "today", filter: ls.get("filter") || "all",
     editing: null, confirm: null, preview: null, noDb: false,
-    money: [], funds: [], payments: [], debts: [], salary: null, salaryEdit: false, limits: {}, crest: ls.get("crest") || "f", month: today().slice(0, 7), mType: "out", editLimits: false,
+    money: [], funds: [], payments: [], debts: [], salary: null, salaryEdit: false, salMonth: null, limits: {}, crest: ls.get("crest") || "f", month: today().slice(0, 7), mType: "out", editLimits: false,
   };
 
   // ---- people ----
@@ -934,7 +936,7 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
   const saveFamily = (people) => write((db) => db.doc("family/members").set({ people }));
   const addMoney = (m) => write((db) => db.collection("money").add({
     type: m.type, amount: m.amount, cat: m.cat || null, note: m.note || "", who: m.who, date: m.date || today(),
-    fund: m.fund || null, payKey: m.payKey || null, salaryKey: m.salaryKey || null, principal: m.principal || null, by: S.me || null, createdAt: Date.now(),
+    fund: m.fund || null, payKey: m.payKey || null, salaryKey: m.salaryKey || null, forIncome: m.forIncome || null, transfer: m.transfer ? true : null, principal: m.principal || null, by: S.me || null, createdAt: Date.now(),
   }));
   const patchMoney = (id, p) => write((db) => db.doc("money/" + id).update(p));
   const delMoney = (id) => write((db) => db.doc("money/" + id).delete());
@@ -1053,8 +1055,26 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
   }
 
   // salary of one person: pay days from the settings, matched with income records of that month
-  const salaryCfg = () => (S.salary && Array.isArray(S.salary.slots) && S.salary.slots.length ? S.salary : null);
+  const salaryCfg = () => (S.salary && (S.salary.mode === "percent" ? +S.salary.pct > 0 : Array.isArray(S.salary.slots) && S.salary.slots.length) ? S.salary : null);
   const salaryWho = () => { const w = S.salary && S.salary.who; if (w && S.people.some((p) => p.id === w)) return w; return (S.people[1] || S.people[0] || { id: "both" }).id; };
+  const salMode = () => (S.salary && S.salary.mode === "percent" ? "percent" : "fixed");
+  const salaryTotalIn = (ym) => S.money.filter((m) => m.type === "in" && m.who === salaryWho() && typeof m.date === "string" && m.date.startsWith(ym)).reduce((t, m) => t + (+m.amount || 0), 0);
+  // percent mode: her salary is a share of someone else's income; every payout is written by hand (date and sum)
+  const earnerId = () => { const e = S.salary && S.salary.earner; if (e && e !== salaryWho() && S.people.some((p) => p.id === e)) return e; return (S.people.find((p) => p.id !== salaryWho()) || S.people[0] || { id: "both" }).id; };
+  const shareCats = () => (S.salary && Array.isArray(S.salary.cats) && S.salary.cats.length ? S.salary.cats : CATS.in.filter((c) => c !== "Возвраты и кэшбэк"));
+  const shareRate = () => (+(S.salary && S.salary.pct) || 0) / 100;
+  const shareSince = () => (S.salary && isISO(S.salary.since) ? S.salary.since : "0000-01-01");
+  const shareOf = (m) => Math.round((+m.amount || 0) * shareRate());
+  const isPayout = (m) => !!m.transfer && m.type === "in" && m.cat === "Зарплата" && m.who === salaryWho();
+  function shareState() {
+    const ern = earnerId(), cats = shareCats(), since = shareSince();
+    const inc = S.money.filter((m) => m.type === "in" && !m.transfer && m.who === ern && cats.includes(m.cat) && typeof m.date === "string" && m.date >= since)
+      .sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+    const pays = S.money.filter((m) => isPayout(m) && typeof m.date === "string" && m.date >= since)
+      .sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+    const accrued = inc.reduce((t, m) => t + shareOf(m), 0), paid = pays.reduce((t, m) => t + (+m.amount || 0), 0);
+    return { inc, pays, accrued, paid, owed: accrued - paid, since };
+  }
   function salaryMonth(ym) {
     const cfg = salaryCfg(); if (!cfg) return null;
     const who = salaryWho();
@@ -1380,7 +1400,7 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
       return st;
     }
     const type = metric === "income" ? "in" : metric === "expense" ? "out" : "save";
-    st.value = S.money.filter((m) => m.type === type && typeof m.date === "string" && (!start || m.date >= start) && (!end || m.date <= end)
+    st.value = S.money.filter((m) => !m.transfer && m.type === type && typeof m.date === "string" && (!start || m.date >= start) && (!end || m.date <= end)
       && (g.who === "both" || m.who === g.who || m.who === "both")).reduce((sum, m) => sum + (+m.amount || 0), 0);
     st.pct = st.target ? Math.round((st.value / st.target) * 100) : 0;
     st.win = metric === "expense" ? (phase === "over" && st.value <= st.target) : st.value >= st.target && st.target > 0;
@@ -1478,6 +1498,7 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
     const title = m.type === "save" ? (amt < 0 ? "Взяли из копилки" : "В копилку") + (f ? ` «${f.title}»` : "")
       : (m.note || m.cat || (m.type === "in" ? "Доход" : "Расход"));
     const meta = [`<span class="tag who" style="--pc:${p.color}"><span class="dot"></span>${esc(p.name)}</span>`];
+    if (m.transfer) meta.push(`<span class="tag">доля из чужого дохода, не считается дважды</span>`);
     if (m.type !== "save" && m.cat && m.note) meta.push(`<span class="tag">${esc(m.cat)}</span>`);
     if (m.type === "save" && m.note) meta.push(`<span class="tag">${esc(m.note)}</span>`);
     const confirming = S.confirm === "m:" + m.id;
@@ -1511,8 +1532,10 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
   function viewBudget() {
     const ym = S.month, t = today(), ro = !S.canWrite, isCur = ym === t.slice(0, 7);
     const sum = (arr) => arr.reduce((s, m) => s + (+m.amount || 0), 0);
-    const mine = S.money.filter((m) => matchesFilter(m.who) && typeof m.date === "string");
+    const mineAll = S.money.filter((m) => matchesFilter(m.who) && typeof m.date === "string");
+    const mine = mineAll.filter((m) => !m.transfer);
     const inMonth = mine.filter((m) => m.date.startsWith(ym));
+    const inMonthAll = mineAll.filter((m) => m.date.startsWith(ym));
     const inc = sum(inMonth.filter((m) => m.type === "in"));
     const out = sum(inMonth.filter((m) => m.type === "out"));
     const sav = sum(inMonth.filter((m) => m.type === "save"));
@@ -1549,7 +1572,7 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
       </div>
     </form>`;
 
-    const entries = inMonth.slice().sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
+    const entries = inMonthAll.slice().sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
     const days = new Map();
     for (const m of entries) { if (!days.has(m.date)) days.set(m.date, []); days.get(m.date).push(m); }
     const list = entries.length
@@ -1700,34 +1723,125 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
   // ---- salary tab ----
   function salarySetup(cfg) {
     const who = salaryWho();
-    const two = !cfg || cfg.slots.length > 1;
-    const s1 = (cfg && cfg.slots[0]) || { id: "s1", label: "Аванс", day: 20, amount: "" };
-    const s2 = (cfg && cfg.slots[1]) || { id: "s2", label: "Зарплата", day: 5, amount: "" };
+    const type = cfg ? (cfg.mode === "percent" ? "percent" : "fixed") : "percent";
+    const ern = cfg && cfg.mode === "percent" ? earnerId() : (S.people.find((p) => p.id !== who) || S.people[0] || { id: "both" }).id;
+    const two = !cfg || !Array.isArray(cfg.slots) || cfg.slots.length > 1;
+    const slots = cfg && Array.isArray(cfg.slots) ? cfg.slots : [];
+    const s1 = slots[0] || { id: "s1", label: "Аванс", day: 20, amount: "" };
+    const s2 = slots[1] || { id: "s2", label: "Зарплата", day: 5, amount: "" };
+    const pctV = cfg && cfg.mode === "percent" ? cfg.pct : 10;
+    const sinceV = cfg && cfg.mode === "percent" && isISO(cfg.since) ? cfg.since : thisYm() + "-01";
+    const cats = cfg && cfg.mode === "percent" ? shareCats() : CATS.in.filter((c) => c !== "Возвраты и кэшбэк");
+    const personOpts = (sel) => S.people.map((p) => `<option value="${esc(p.id)}"${p.id === sel ? " selected" : ""}>${esc(person(p.id).name)}</option>`).join("");
     const slot = (n, s) => `<div class="row sal-slot">
         <label class="f" for="sal-l${n}">Название<input class="inp" id="sal-l${n}" value="${esc(s.label)}" autocomplete="off"></label>
         <label class="f" for="sal-d${n}">Число месяца<input class="inp" id="sal-d${n}" type="number" min="1" max="31" value="${esc(s.day)}"></label>
         <label class="f" for="sal-a${n}">Сумма на руки, ₽<input class="inp amt-in" id="sal-a${n}" inputmode="decimal" value="${esc(s.amount)}" placeholder="40 000" autocomplete="off"></label></div>`;
     return `<form class="panel salary-setup" data-form="salary-cfg">
-      <h2>${cfg ? "График зарплаты" : "Настроим зарплату"}</h2>
-      <p>Укажите, когда и сколько приходит. Сайт будет ждать выплату, напомнит о ней и посчитает, сколько уже получено.</p>
+      <h2>${cfg ? "Настройки зарплаты" : "Настроим зарплату"}</h2>
       <div class="row">
-        <label class="f" for="sal-who">Чья зарплата<select class="sel" id="sal-who">${S.people.map((p) => `<option value="${esc(p.id)}"${p.id === who ? " selected" : ""}>${esc(person(p.id).name)}</option>`).join("")}</select></label>
-        <label class="f" for="sal-mode">Как платят<select class="sel" id="sal-mode"><option value="two"${two ? " selected" : ""}>Аванс и зарплата, два раза в месяц</option><option value="one"${two ? "" : " selected"}>Один раз в месяц</option></select></label>
+        <label class="f" for="sal-who">Чья зарплата<select class="sel" id="sal-who">${personOpts(who)}</select></label>
+        <label class="f" for="sal-type">Как считается<select class="sel" id="sal-type"><option value="percent"${type === "percent" ? " selected" : ""}>Процент от чужого дохода</option><option value="fixed"${type === "fixed" ? " selected" : ""}>По графику: число и сумма</option></select></label>
       </div>
-      ${slot(1, s1)}
-      <div id="sal-row2"${two ? "" : " hidden"}>${slot(2, s2)}</div>
-      <label class="check-row"><input type="checkbox" id="sal-shift"${!cfg || cfg.shift !== false ? " checked" : ""}> Если число выпадает на выходной, деньги приходят в пятницу</label>
+      <div id="sal-pct-box"${type === "percent" ? "" : " hidden"}>
+        <p>Зарплата растёт вместе с доходом: чем больше зарабатывает второй человек, тем больше доля. Когда и сколько выплатить, вы пишете сами: число и сумму каждой выплаты можно ввести вручную.</p>
+        <div class="row">
+          <label class="f" for="sal-earner">Чей доход считаем<select class="sel" id="sal-earner">${personOpts(ern)}</select></label>
+          <label class="f" for="sal-pct">Какой процент, %<input class="inp amt-in" id="sal-pct" type="number" step="0.5" min="0.5" max="100" value="${esc(pctV)}"></label>
+          <label class="f" for="sal-since">Считать с даты<input class="inp" type="date" id="sal-since" value="${esc(sinceV)}"></label>
+        </div>
+        <div class="cat-checks" role="group" aria-label="Какие доходы считать">${CATS.in.map((c) => `<label class="check-row"><input type="checkbox" data-salcat="${esc(c)}"${cats.includes(c) ? " checked" : ""}> ${esc(c)}</label>`).join("")}</div>
+      </div>
+      <div id="sal-fixed-box"${type === "fixed" ? "" : " hidden"}>
+        <p>Укажите, когда и сколько приходит. Сайт будет ждать выплату, напомнит о ней и посчитает, сколько уже получено.</p>
+        <label class="f" for="sal-mode">Сколько раз в месяц<select class="sel" id="sal-mode"><option value="two"${two ? " selected" : ""}>Аванс и зарплата, два раза</option><option value="one"${two ? "" : " selected"}>Один раз</option></select></label>
+        ${slot(1, s1)}
+        <div id="sal-row2"${two ? "" : " hidden"}>${slot(2, s2)}</div>
+        <label class="check-row"><input type="checkbox" id="sal-shift"${!cfg || cfg.shift !== false ? " checked" : ""}> Если число выпадает на выходной, деньги приходят в пятницу</label>
+      </div>
       <div class="row"><button class="btn primary" type="submit">Сохранить</button>${cfg ? '<button class="btn ghost" type="button" data-act="sal-cancel">Отмена</button>' : ""}</div>
     </form>`;
+  }
+
+  function salaryAlloc(cfg, base, monthWord, ro) {
+    const al = cfg.alloc || { need: 50, save: 20, life: 30 };
+    const cushion = S.funds.find((f) => fundKind(f) === "cushion");
+    return `<form class="card" data-form="salary-alloc"><h3>Куда направить зарплату</h3>
+      <p class="cap-sub" style="margin:0">Разложите зарплату на три части. Суммы считаются от ${rub(base)}, это ${esc(monthWord)}.</p>
+      ${[["need", "Обязательное: платежи, кредиты, дом"], ["save", "В накопления и подушку"], ["life", "На жизнь и радости"]].map(([k, l]) => `<div class="alloc-row"><label for="al-${k}">${l}</label><input class="inp" id="al-${k}" type="number" min="0" max="100" value="${+al[k] || 0}"><span class="amt">${rub((base * (+al[k] || 0)) / 100)}</span></div>`).join("")}
+      ${ro ? "" : `<div class="row"><button class="btn primary small" type="submit">Сохранить доли</button>${base && +al.save ? `<button class="btn small" type="button" data-act="alloc-save" data-amount="${Math.round((base * al.save) / 100)}">${cushion ? "Отложить в подушку" : "Отложить"} ${rub((base * al.save) / 100)}</button>` : ""}</div>`}
+    </form>`;
+  }
+  const salaryExtraForm = (ro) => ro ? "" : `<form class="card mform" data-form="salary-extra"><h3>Премия или подработка</h3>
+      <div class="row"><label class="sr" for="se-amount">Сумма</label><input class="inp amt-in" id="se-amount" inputmode="decimal" placeholder="Сумма, ₽" autocomplete="off">
+        <label class="sr" for="se-cat">Что это</label><select class="sel" id="se-cat">${["Премия", "Подработка", "Возвраты и кэшбэк", "Другое"].map((c) => `<option>${esc(c)}</option>`).join("")}</select></div>
+      <div class="row"><label class="sr" for="se-note">Комментарий</label><input class="inp" id="se-note" placeholder="Комментарий, например «квартальная премия»" autocomplete="off"></div>
+      <div class="row"><button class="btn primary" type="submit">Записать</button></div></form>`;
+
+  // her salary as a share of someone else's income
+  function viewSalaryPercent(cfg) {
+    const ro = !S.canWrite, her = salaryWho(), herName = person(her).name, ern = earnerId(), ernName = person(ern).name;
+    const t = today(), sm = S.salMonth || thisYm(), isCur = sm === thisYm(), monthWord = monthName(sm).toLowerCase();
+    const st = shareState(), pctTxt = String(+cfg.pct).replace(".", ",");
+    const incM = st.inc.filter((m) => m.date.startsWith(sm)), paysM = st.pays.filter((m) => m.date.startsWith(sm));
+    const sum = (a, f) => a.reduce((s, m) => s + f(m), 0);
+    const ernIncM = sum(incM, (m) => +m.amount || 0), accM = sum(incM, shareOf), paidM = sum(paysM, (m) => +m.amount || 0);
+    const ym = thisYm();
+    const hist = [-5, -4, -3, -2, -1, 0].map((n) => shiftMonth(ym, n)).map((m) => ({ ym: m, v: salaryTotalIn(m) }));
+    const withData = hist.filter((h) => h.v > 0), hmax = Math.max(1, ...hist.map((h) => h.v));
+    const arrow = (d) => `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+    const msg = st.owed > 0 ? `Накопилось ${pctTxt}% от дохода ${genitive(ernName)} с ${shortDate(st.since)}. Когда и сколько выплатить, решаете вы.`
+      : st.owed === 0 ? "Всё выплачено. Новая доля появится, когда вы запишете доход." : `Выплачено вперёд на ${rub(-st.owed)}.`;
+
+    const hero = `<section class="capital salary-hero" aria-label="Зарплата ${esc(genitive(herName))}"><svg class="wm" data-crest="full" aria-hidden="true"></svg>
+      <div><div class="cap-k">Зарплата ${esc(genitive(herName))}: к выплате</div><div class="cap-v">${rub(Math.max(0, st.owed))}</div><div class="cap-s">${esc(msg)}</div></div>
+      <div class="cap-stats">
+        <div class="cap-stat"><div class="k">Доход ${esc(genitive(ernName))}</div><div class="v">${rub(ernIncM)}</div><div class="n">${esc(monthWord)}, ${incM.length} ${plural(incM.length, ["поступление", "поступления", "поступлений"])}</div></div>
+        <div class="cap-stat"><div class="k">Её доля, ${esc(pctTxt)}%</div><div class="v">${rub(accM)}</div><div class="n">начислено за месяц</div></div>
+        <div class="cap-stat ${paidM ? "good" : ""}"><div class="k">Выплачено</div><div class="v">${rub(paidM)}</div><div class="n">за ${esc(monthWord)}</div></div>
+        <div class="cap-stat"><div class="k">Всего выплачено</div><div class="v">${rub(st.paid)}</div><div class="n">с ${esc(shortDate(st.since))}</div></div>
+      </div></section>`;
+
+    const payForm = ro ? "" : `<form class="card mform" data-form="salary-pay"><h3>Выплатить зарплату</h3>
+      <p class="cap-sub" style="margin:0">Напишите число и сумму сами. Если сумму не писать, выплатится всё накопленное.</p>
+      <div class="row"><label class="f" for="sp-date">Число<input class="inp" type="date" id="sp-date" value="${t}"></label>
+        <label class="f" for="sp-amount">Сумма, ₽<input class="inp amt-in" id="sp-amount" inputmode="decimal" placeholder="${st.owed > 0 ? rub(st.owed).replace(" ₽", "") : "Сумма"}" autocomplete="off"></label></div>
+      <div class="row"><label class="sr" for="sp-note">Комментарий</label><input class="inp" id="sp-note" placeholder="Комментарий, например «за октябрь»" autocomplete="off"></div>
+      <div class="row"><button class="btn primary" type="submit">Записать выплату</button>${st.owed > 0 ? `<button class="btn" type="button" data-act="pay-all" data-amount="${st.owed}">Выплатить всё: ${rub(st.owed)}</button>` : ""}</div></form>`;
+
+    const incRow = (m) => {
+      const sh = shareOf(m), linked = st.pays.filter((p) => p.forIncome === m.id), lp = sum(linked, (p) => +p.amount || 0), left = sh - lp;
+      const head = `<div><div class="t-title">${esc(m.note || m.cat || "Доход")}</div><div class="t-meta"><span class="tag mono">${esc(shortDate(m.date))}</span><span class="tag">доход ${rub(+m.amount || 0)}</span>`;
+      if (left <= 0.5) return `<li class="task mrow oblig done">${head}<span class="tag ok">выплачено ${rub(lp)}</span></div></div><span class="amt">${pctTxt}% = ${rub(sh)}</span><div class="t-act">${ro ? "" : `<button class="btn small ghost" type="button" data-act="share-undo" data-id="${m.id}">Вернуть</button>`}</div></li>`;
+      return `<li class="oblig-open"><div class="oblig-head">${head}${lp ? `<span class="tag mono">уже ${rub(lp)}</span>` : ""}</div></div><span class="amt">${pctTxt}% = ${rub(sh)}</span></div>
+        ${ro ? "" : `<form class="mini-form" data-form="salary-share" data-id="${m.id}"><label class="sr" for="ssd-${m.id}">Число выплаты</label><input class="inp" type="date" id="ssd-${m.id}" value="${t}"><label class="sr" for="ssa-${m.id}">Сумма</label><input class="inp amt-in" id="ssa-${m.id}" inputmode="decimal" placeholder="${Math.round(left)}" autocomplete="off"><button class="btn small primary" type="submit">Выплатить</button></form>`}</li>`;
+    };
+    const incCard = `<section class="card"><div class="month-bar" style="justify-content:space-between;flex-wrap:nowrap">
+        <button class="icon-btn" type="button" data-act="salmonth" data-v="-1" aria-label="Предыдущий месяц">${arrow("M15 6l-6 6 6 6")}</button>
+        <h3 style="margin:0;text-align:center">Доходы ${esc(genitive(ernName))}, ${esc(monthWord)}</h3>
+        <button class="icon-btn" type="button" data-act="salmonth" data-v="1" aria-label="Следующий месяц">${arrow("M9 6l6 6-6 6")}</button></div>
+      ${isCur ? "" : `<div class="row"><button class="btn small ghost" type="button" data-act="salmonth" data-v="0">К текущему месяцу</button></div>`}
+      ${incM.length ? `<ul class="list">${incM.map(incRow).join("")}</ul>` : `<div class="empty">${ART.wallet}<span>В этом месяце доходов нет. Запишите доход голосом выше, в разделе «Бюджет»: ${esc(pctTxt)}% сразу превратятся в зарплату.</span></div>`}</section>`;
+
+    const paysCard = `<section class="card"><h3>Выплаты, ${esc(monthWord)}</h3>${paysM.length ? `<ul class="list">${paysM.map(moneyRow).join("")}</ul>` : `<div class="empty">Выплат за месяц ещё не было.</div>`}</section>`;
+    const histCard = `<section class="card"><h3>Как приходила зарплата</h3>${withData.length
+      ? `<div class="trend">${hist.map((h) => `<span class="mo${h.ym === ym ? " cur" : ""}">${esc(shortMonth(h.ym))}</span><div class="bars"><i class="bi" style="width:${(h.v / hmax) * 100}%;background:var(--gold)"></i></div><span class="amt">${h.v ? rub(h.v) : "—"}</span>`).join("")}</div>`
+      : `<div class="empty">График появится после первой выплаты.</div>`}</section>`;
+    const allocCard = salaryAlloc(cfg, Math.max(accM, paidM), monthWord, ro);
+
+    return `<div class="stack">${hero}
+      <div class="bgrid"><div class="stack">${payForm}${incCard}${paysCard}</div><div class="stack">${histCard}${allocCard}${salaryExtraForm(ro)}
+        ${ro ? "" : `<div class="row"><button class="btn ghost" type="button" data-act="sal-edit">Изменить процент и настройки</button></div>`}</div></div></div>`;
   }
 
   function viewSalary() {
     const ro = !S.canWrite, cfg = salaryCfg();
     if (!cfg || S.salaryEdit) return ro && !cfg ? `<div class="state"><strong>Зарплата ещё не настроена</strong>Попросите владельца открыть страницу.</div>` : salarySetup(cfg);
+    if (salMode() === "percent") return viewSalaryPercent(cfg);
     const who = salaryWho(), name = person(who).name, t = today(), ym = thisYm();
     const cur = salaryMonth(ym), np = nextPay(), nm = np.slot, nd = diff(nm.date, t);
     const when = nd >= 0 ? nowText(nd) : `ждём уже ${-nd} ${dword(-nd)}`;
-    const hist = [-5, -4, -3, -2, -1, 0].map((n) => shiftMonth(ym, n)).map((m) => ({ ym: m, v: salaryMonth(m).total }));
+    const hist = [-5, -4, -3, -2, -1, 0].map((n) => shiftMonth(ym, n)).map((m) => ({ ym: m, v: salaryTotalIn(m) }));
     const withData = hist.filter((h) => h.v > 0);
     const avg = withData.length ? withData.reduce((s, h) => s + h.v, 0) / withData.length : 0;
     const hmax = Math.max(1, ...hist.map((h) => h.v));
@@ -1762,23 +1876,12 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
     const histCard = `<section class="card"><h3>Как приходила зарплата</h3>${withData.length
       ? `<div class="trend">${hist.map((h, i) => { const prev = hist[i - 1]; const dd = prev && prev.v && h.v ? Math.round(((h.v - prev.v) / prev.v) * 100) : null;
         return `<span class="mo${h.ym === ym ? " cur" : ""}">${esc(shortMonth(h.ym))}</span><div class="bars"><i class="bi" style="width:${(h.v / hmax) * 100}%;background:var(--gold)"></i></div><span class="amt">${h.v ? rub(h.v) : "—"}${dd ? ` <span class="delta ${dd > 0 ? "good" : "bad"}">${dd > 0 ? "▲" : "▼"}${Math.abs(dd)}%</span>` : ""}</span>`; }).join("")}</div>
-        <div class="cap-sub">За 12 месяцев: <b>${rub([...Array(12).keys()].map((i) => salaryMonth(shiftMonth(ym, -i)).total).reduce((a, b) => a + b, 0))}</b>.</div>`
+        <div class="cap-sub">За 12 месяцев: <b>${rub([...Array(12).keys()].map((i) => salaryTotalIn(shiftMonth(ym, -i))).reduce((a, b) => a + b, 0))}</b>.</div>`
       : `<div class="empty">График появится, когда вы отметите первую выплату.</div>`}</section>`;
 
-    const al = cfg.alloc || { need: 50, save: 20, life: 30 };
-    const base = cur.expected || cur.got;
-    const cushion = S.funds.find((f) => fundKind(f) === "cushion");
-    const allocCard = `<form class="card" data-form="salary-alloc"><h3>Куда направить зарплату</h3>
-      <p class="cap-sub" style="margin:0">Разложите зарплату на три части. Суммы считаются от ${rub(base)}, это ${esc(monthWord)}.</p>
-      ${[["need", "Обязательное: платежи, кредиты, дом"], ["save", "В накопления и подушку"], ["life", "На жизнь и радости"]].map(([k, l]) => `<div class="alloc-row"><label for="al-${k}">${l}</label><input class="inp" id="al-${k}" type="number" min="0" max="100" value="${+al[k] || 0}"><span class="amt">${rub((base * (+al[k] || 0)) / 100)}</span></div>`).join("")}
-      ${ro ? "" : `<div class="row"><button class="btn primary small" type="submit">Сохранить доли</button>${base && +al.save ? `<button class="btn small" type="button" data-act="alloc-save" data-amount="${Math.round((base * al.save) / 100)}">${cushion ? "Отложить в подушку" : "Отложить"} ${rub((base * al.save) / 100)}</button>` : ""}</div>`}
-    </form>`;
+    const allocCard = salaryAlloc(cfg, cur.expected || cur.got, monthWord, ro);
 
-    const extraForm = ro ? "" : `<form class="card mform" data-form="salary-extra"><h3>Премия или подработка</h3>
-      <div class="row"><label class="sr" for="se-amount">Сумма</label><input class="inp amt-in" id="se-amount" inputmode="decimal" placeholder="Сумма, ₽" autocomplete="off">
-        <label class="sr" for="se-cat">Что это</label><select class="sel" id="se-cat">${["Премия", "Подработка", "Возвраты и кэшбэк", "Другое"].map((c) => `<option>${esc(c)}</option>`).join("")}</select></div>
-      <div class="row"><label class="sr" for="se-note">Комментарий</label><input class="inp" id="se-note" placeholder="Комментарий, например «квартальная премия»" autocomplete="off"></div>
-      <div class="row"><button class="btn primary" type="submit">Записать</button></div></form>`;
+    const extraForm = salaryExtraForm(ro);
 
     return `<div class="stack">${hero}
       <div class="bgrid"><div class="stack">${slotsCard}${extraForm}</div><div class="stack">${histCard}${allocCard}
@@ -1996,7 +2099,9 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
       if (S.capMode) { S.preview = null; renderPreview(); status(""); }
       S.capMode = mode;
     }
-    const m = MODES[mode];
+    // with a percent salary, dictation records a payout (a share of someone else's income), not new income
+    const m = mode === "salary" && salMode() === "percent"
+      ? { ...MODES.salary, sub: "Скажите, сколько выплатили зарплаты. Число можно назвать или поправить потом.", ph: "Выплатил Светлане 20 тысяч за октябрь." } : MODES[mode];
     box.dataset.mode = mode;
     $("#capLabel").textContent = m.title;
     $("#capSub").textContent = m.sub;
@@ -2204,7 +2309,7 @@ ${funds}
       for (const t of items.filter((x) => x.kind === "task")) await addTask({ ...t, title: t.title.trim() });
       for (const m of items.filter((x) => isMoney(x.kind))) await addMoney({
         type: m.kind === "income" ? "in" : m.kind === "save" ? "save" : "out", amount: parseAmount(m.amount, m.kind === "save"),
-        cat: m.kind === "save" ? null : m.category, note: (m.title || "").trim(), who: m.who, date: m.date || today(), fund: m.kind === "save" ? m.fund : null,
+        cat: m.kind === "save" ? null : m.category, note: (m.title || "").trim(), who: m.who, date: m.date || today(), fund: m.kind === "save" ? m.fund : null, transfer: S.capMode === "salary" && salMode() === "percent" && m.kind === "income",
       });
       S.preview = null; renderPreview();
       $("#dictation").value = ""; ls.set("draft:" + (S.capMode || "tasks"), "");
@@ -2317,6 +2422,17 @@ ${funds}
       }
       else if (act === "ddel") { S.confirm = "debt:" + id; renderView(); }
       else if (act === "ddel-yes") { S.confirm = null; await delDebt(id); toast("Долг удалён"); }
+      else if (act === "salmonth") { const v = +b.dataset.v; S.salMonth = v ? shiftMonth(S.salMonth || thisYm(), v) : null; S.editing = null; renderView(); }
+      else if (act === "pay-all") {
+        const amount = +b.dataset.amount; if (!(amount > 0)) return;
+        burstFrom(b, false, true);
+        await addMoney({ type: "in", amount, cat: "Зарплата", note: "Выплата зарплаты", who: salaryWho(), date: today(), transfer: true });
+        toast(`Выплачено ${rub(amount)}`);
+      }
+      else if (act === "share-undo") {
+        for (const m of S.money.filter((x) => isPayout(x) && x.forIncome === id)) await delMoney(m.id);
+        toast("Выплата отменена");
+      }
       else if (act === "sal-edit") { S.salaryEdit = true; renderView(); }
       else if (act === "sal-cancel") { S.salaryEdit = false; renderView(); }
       else if (act === "sal-undo") { await delMoney(id); toast("Запись удалена"); }
@@ -2377,6 +2493,7 @@ ${funds}
       catch (err) { toast("Не получилось загрузить фото. Попробуйте другое"); }
       return;
     }
+    if (e.target.id === "sal-type") { const pb = document.getElementById("sal-pct-box"), fb = document.getElementById("sal-fixed-box"); if (pb) pb.hidden = e.target.value !== "percent"; if (fb) fb.hidden = e.target.value !== "fixed"; }
     if (e.target.id === "sal-mode") { const r = document.getElementById("sal-row2"); if (r) r.hidden = e.target.value !== "two"; }
     if (e.target.id === "ng-metric") { const box = document.getElementById("ng-target"); if (box) box.closest("label").hidden = e.target.value === "steps"; }
     if (e.target.name === "me") chooseMe(e.target.value);
@@ -2456,12 +2573,46 @@ ${funds}
         await patchDebt(d.id, { balance: Math.max(0, Math.round((bal - pay) * 100) / 100) });
         if (pay >= bal) { celebrate(); toast("Долг погашен! Поздравляем"); } else { burstFrom(e.submitter, false, true); toast(`Внесено ${rub(pay)}. Долг стал меньше`); }
       } else if (kind === "salary-cfg") {
-        const two = $("#sal-mode").value === "two";
-        const read = (n, id) => ({ id, label: $("#sal-l" + n).value.trim() || (n === 1 && two ? "Аванс" : "Зарплата"), day: Math.min(31, Math.max(1, parseInt($("#sal-d" + n).value, 10) || 1)), amount: parseAmount($("#sal-a" + n).value) || 0 });
-        const slots = [read(1, "s1")]; if (two) slots.push(read(2, "s2"));
-        if (!slots.some((x) => x.amount)) { toast("Укажите хотя бы одну сумму"); $("#sal-a1").focus(); return; }
-        const cfg = { who: $("#sal-who").value, shift: $("#sal-shift").checked, slots, alloc: (S.salary && S.salary.alloc) || { need: 50, save: 20, life: 30 } };
-        S.salaryEdit = false; await saveSalary(cfg); toast("График зарплаты сохранён");
+        const type = $("#sal-type").value, who = $("#sal-who").value, old = S.salary || {};
+        const alloc = old.alloc || { need: 50, save: 20, life: 30 };
+        let cfg;
+        if (type === "percent") {
+          const pct = parseFloat(String($("#sal-pct").value).replace(",", "."));
+          if (!(pct > 0 && pct <= 100)) { toast("Процент должен быть от 0,5 до 100"); $("#sal-pct").focus(); return; }
+          const earner = $("#sal-earner").value;
+          if (earner === who) { toast("Чей доход считаем: выберите другого человека"); return; }
+          const cats = [...document.querySelectorAll("[data-salcat]")].filter((x) => x.checked).map((x) => x.dataset.salcat);
+          if (!cats.length) { toast("Отметьте хотя бы один вид дохода"); return; }
+          cfg = { mode: "percent", who, earner, pct, since: $("#sal-since").value || thisYm() + "-01", cats, alloc };
+        } else {
+          const two = $("#sal-mode").value === "two";
+          const read = (n, id) => ({ id, label: $("#sal-l" + n).value.trim() || (n === 1 && two ? "Аванс" : "Зарплата"), day: Math.min(31, Math.max(1, parseInt($("#sal-d" + n).value, 10) || 1)), amount: parseAmount($("#sal-a" + n).value) || 0 });
+          const slots = [read(1, "s1")]; if (two) slots.push(read(2, "s2"));
+          if (!slots.some((x) => x.amount)) { toast("Укажите хотя бы одну сумму"); $("#sal-a1").focus(); return; }
+          cfg = { mode: "fixed", who, shift: $("#sal-shift").checked, slots, alloc };
+        }
+        S.salaryEdit = false; S.salMonth = null; await saveSalary(cfg); toast("Настройки зарплаты сохранены");
+      } else if (kind === "salary-pay") {
+        const st = shareState(), ai = $("#sp-amount");
+        const typed = String(ai.value || "").trim(), amount = typed ? parseAmount(typed) : st.owed > 0 ? st.owed : null;
+        if (amount == null) { toast("Укажите сумму выплаты"); ai.focus(); return; }
+        const date = isISO($("#sp-date").value) ? $("#sp-date").value : today();
+        const note = $("#sp-note").value.trim() || "Выплата зарплаты";
+        ai.value = ""; $("#sp-note").value = "";
+        burstFrom(e.submitter, false, true);
+        await addMoney({ type: "in", amount, cat: "Зарплата", note, who: salaryWho(), date, transfer: true });
+        toast(`Выплата ${rub(amount)} записана`);
+      } else if (kind === "salary-share") {
+        const inc = S.money.find((x) => x.id === f.dataset.id); if (!inc) return;
+        const ai = f.querySelector('input[inputmode="decimal"]'), typed = String(ai.value || "").trim();
+        const linked = S.money.filter((x) => isPayout(x) && x.forIncome === inc.id).reduce((t2, x) => t2 + (+x.amount || 0), 0);
+        const amount = typed ? parseAmount(typed) : shareOf(inc) - linked;
+        if (amount == null || amount <= 0) { toast("Укажите сумму выплаты"); ai.focus(); return; }
+        const di = f.querySelector('input[type="date"]'), date = isISO(di.value) ? di.value : today();
+        ai.value = "";
+        burstFrom(e.submitter, false, true);
+        await addMoney({ type: "in", amount, cat: "Зарплата", note: `Доля от «${inc.note || inc.cat || "дохода"}»`, who: salaryWho(), date, transfer: true, forIncome: inc.id });
+        toast(`Выплата ${rub(amount)} записана`);
       } else if (kind === "salary-got") {
         const inp = f.querySelector("input"), amount = parseAmount(inp.value);
         if (amount == null) { toast("Укажите, сколько пришло"); inp.focus(); return; }
