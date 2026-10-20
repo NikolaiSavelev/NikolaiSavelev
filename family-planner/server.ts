@@ -53,7 +53,7 @@ const MAX_PHOTO = 6 * 1024 * 1024;
 // changing FAMILY_PIN signs everyone out
 const TOKEN = createHmac("sha256", secret).update("family:" + PIN).digest("hex");
 
-const COLLECTIONS = new Set(["tasks", "goals", "money", "funds", "family", "budget"]);
+const COLLECTIONS = new Set(["tasks", "goals", "money", "funds", "family", "budget", "payments", "debts"]);
 const ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
 const MAX_BODY = 64 * 1024;
 
@@ -178,6 +178,72 @@ async function pushTo(person: string | null, payload: { title: string; body: str
 }
 const subscribedPeople = () => [...new Set(subsAll.all().map((s) => s.person))];
 
+// ---- money reminders: payments, instalments, pay days, monthly summary ----
+const daysIn = (ym: string) => new Date(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)), 0).getDate();
+const monthDate = (ym: string, day: number) => `${ym}-${String(Math.min(Math.max(1, Math.round(+day) || 1), daysIn(ym))).padStart(2, "0")}`;
+const shiftYm = (ym: string, n: number) => new Date(Date.UTC(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)) - 1 + n, 1)).toISOString().slice(0, 7);
+const payDay = (ym: string, day: number, shift: boolean) => {
+  let d = monthDate(ym, day);
+  if (shift) { const w = new Date(d + "T12:00:00Z").getUTCDay(); if (w === 6) d = addDaysIso(d, -1); else if (w === 0) d = addDaysIso(d, -2); }
+  return d;
+};
+const rubS = (n: number) => new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 }).format(Math.round(n || 0)) + " ₽";
+const genitive = (n: string) => {
+  const last = n.slice(-1).toLowerCase(), prev = n.slice(-2, -1).toLowerCase();
+  if (last === "й" || last === "ь") return n.slice(0, -1) + "я";
+  if (last === "я") return n.slice(0, -1) + "и";
+  if (last === "а") return n.slice(0, -1) + (/[кгхжшчщ]/.test(prev) ? "и" : "ы");
+  if (/[бвгджзклмнпрстфхцчшщ]/.test(last)) return n + "а";
+  return n;
+};
+const MONTHS = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
+
+function dueLines(date: string, person: string | null, evening: boolean): string[] {
+  const ym = date.slice(0, 7), money = listOf("money"), lines: string[] = [];
+  const items: { key: string; title: string; amount: number; day: number; who: string; remind: number; created?: number }[] = [];
+  for (const p of listOf("payments")) items.push({ key: "p:" + p.id, title: p.title, amount: +p.amount || 0, day: +p.day || 1, who: p.who || "both", remind: Number(p.remind ?? 3), created: p.createdAt });
+  for (const d of listOf("debts")) if ((+d.balance || 0) > 0 && (+d.payment || 0) > 0) items.push({ key: "d:" + d.id, title: d.title, amount: Math.min(+d.payment, +d.balance), day: +d.day || 1, who: d.who || "both", remind: 3, created: d.createdAt });
+  for (const it of items) {
+    if (!forPerson(it.who, person) || money.some((m) => m.payKey === `${it.key}:${ym}`)) continue;
+    const due = monthDate(ym, it.day), n = daysBetween(due, date);
+    if (n < 0 && it.created && new Date(it.created).toISOString().slice(0, 10) > due) continue; // added after this month's date
+    if (!(evening ? n === 1 : n === it.remind || n === 1 || n === 0 || n === -1)) continue;
+    if (n === -1) lines.push(`Вчера был срок платежа: ${it.title} (${rubS(it.amount)}). Отметьте, если уже оплатили`);
+    else lines.push(`${n === 0 ? "Сегодня" : n === 1 ? "Завтра" : `Через ${n} ${plural(n, ["день", "дня", "дней"])}`} платёж: ${it.title}, ${rubS(it.amount)}`);
+  }
+  return lines;
+}
+
+function salaryLines(date: string, evening: boolean): string[] {
+  const row = getDoc.get("budget", "salary"); if (!row) return [];
+  let c: any; try { c = JSON.parse(row.data); } catch { return []; }
+  if (!Array.isArray(c.slots) || !c.slots.length) return [];
+  const members = getDoc.get("family", "members");
+  let name = "";
+  try { name = (JSON.parse(members!.data).people || []).find((p: any) => p.id === c.who)?.name || ""; } catch {}
+  const money = listOf("money"), lines: string[] = [], ym = date.slice(0, 7);
+  for (const mm of [ym, shiftYm(ym, 1)]) {
+    const slots = c.slots.map((s: any) => ({ ...s, date: payDay(mm, s.day, c.shift !== false), amount: +s.amount || 0 })).sort((a: any, b: any) => a.date.localeCompare(b.date));
+    const got = money.filter((m) => m.type === "in" && m.cat === "Зарплата" && m.who === c.who && typeof m.date === "string" && m.date.startsWith(mm)).length;
+    slots.forEach((s: any, i: number) => {
+      if (i < got) return;
+      const n = daysBetween(s.date, date);
+      if (evening ? n === 1 : n === 0 || n === 1) lines.push(`${n === 0 ? "Сегодня" : "Завтра"} ждём ${String(s.label || "зарплату").toLowerCase()}${name ? " " + genitive(name) : ""}${s.amount ? `, ${rubS(s.amount)}` : ""}`);
+    });
+  }
+  return lines;
+}
+
+function summaryText(date: string) {
+  const ym = shiftYm(date.slice(0, 7), -1);
+  const rows = listOf("money").filter((m) => typeof m.date === "string" && m.date.startsWith(ym));
+  const sum = (t: string) => rows.filter((m) => m.type === t).reduce((a, m) => a + (+m.amount || 0), 0);
+  const inc = sum("in"), out = sum("out"), sav = sum("save");
+  if (!inc && !out && !sav) return null;
+  const rate = inc > 0 ? ` (${Math.round((sav / inc) * 100)}% доходов)` : "";
+  return { title: `Итоги: ${MONTHS[Number(ym.slice(5, 7)) - 1]}`, body: `Заработали ${rubS(inc)}, потратили ${rubS(out)}, отложили ${rubS(sav)}${rate}. Подробности в разделе «Бюджет».` };
+}
+
 function morningText(person: string | null, date: string) {
   const tasks = listOf("tasks").filter((t) => !t.done && t.date && t.date <= date && forPerson(t.who, person));
   const late = tasks.filter((t) => t.date < date).length;
@@ -198,6 +264,7 @@ function morningText(person: string | null, date: string) {
     const saved = saves.filter((m) => m.fund === f.id).reduce((s, m) => s + (+m.amount || 0), 0);
     if (saved < +f.target) lines.push(`Копилка «${f.title}»: собрано ${Math.round(saved / +f.target * 100)}%, срок через ${daysBetween(f.deadline, date)} дн.`);
   }
+  lines.push(...salaryLines(date, false), ...dueLines(date, person, false));
   return lines.length ? lines.join("\n") : null;
 }
 
@@ -207,6 +274,7 @@ function eveningText(person: string | null, date: string) {
     .sort((a, b) => (a.time || "99").localeCompare(b.time || "99"));
   const lines: string[] = [];
   if (tasks.length) lines.push(`Завтра ${tasks.length} ${plural(tasks.length, ["дело", "дела", "дел"])}: ${tasks.slice(0, 3).map((t) => (t.time ? `${t.time} ` : "") + t.title).join(", ")}${tasks.length > 3 ? "…" : ""}`);
+  lines.push(...salaryLines(date, true), ...dueLines(date, person, true));
   if (!listOf("money").some((m) => m.date === date)) lines.push("Сегодня трат не записано — скажите их голосом, это пара секунд.");
   return lines.length ? lines.join("\n") : null;
 }
@@ -229,6 +297,10 @@ async function tick() {
       if (minutes >= m0 && minutes < m0 + 180 && once(`m:${date}:${person}`)) {
         const body = morningText(person, date);
         if (body) await pushTo(person, { title: "Доброе утро! План на сегодня", body, tag: "morning" });
+      }
+      if (date.endsWith("-01") && minutes >= m0 && minutes < m0 + 180 && once(`sum:${date}:${person}`)) {
+        const sm = summaryText(date);
+        if (sm) await pushTo(person, { title: sm.title, body: sm.body, tag: "summary" });
       }
       if (minutes >= e0 && minutes < e0 + 120 && once(`e:${date}:${person}`)) {
         const body = eveningText(person, date);
