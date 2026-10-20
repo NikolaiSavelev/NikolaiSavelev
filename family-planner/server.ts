@@ -335,11 +335,11 @@ const PAGE = await buildPage();
 const STANDALONE_JS = await Bun.file(new URL("./standalone.js", import.meta.url)).text();
 const SW_JS = await Bun.file(new URL("./sw.js", import.meta.url)).text();
 const CREST_SVG: Record<string, string> = {};
-for (const k of ["a", "b", "c", "d"]) CREST_SVG[k] = await Bun.file(new URL(`./crests/${k}.svg`, import.meta.url)).text();
-const crestChoice = () => { try { const r = getDoc.get("family", "crest"); const v = r && JSON.parse(r.data).v; return CREST_SVG[v] ? v : "b"; } catch { return "b"; } };
+for (const k of ["e", "f", "g", "h"]) CREST_SVG[k] = await Bun.file(new URL(`./crests/${k}.svg`, import.meta.url)).text();
+const crestChoice = () => { try { const r = getDoc.get("family", "crest"); const v = r && JSON.parse(r.data).v; return CREST_SVG[v] ? v : "f"; } catch { return "f"; } };
 const PNG = { "/icon-192.png": new URL("./icon-192.png", import.meta.url), "/icon-512.png": new URL("./icon-512.png", import.meta.url) } as Record<string, URL>;
 
-const ICON = CREST_SVG.b.replace('viewBox="0 0 240 316"', 'viewBox="34 0 172 236"');
+const ICON = CREST_SVG.f.replace('viewBox="0 0 240 300"', 'viewBox="6 6 228 232"');
 const MANIFEST = JSON.stringify({
   name: "Дела Савельевых", short_name: "Дела", start_url: "/", display: "standalone",
   background_color: "#F5F1E8", theme_color: "#123A30", lang: "ru",
@@ -357,7 +357,7 @@ const loginPage = () => `${HEAD}<title>Дела Савельевых</title>
 @media (prefers-color-scheme:dark){:root{--bg:#0B110F;--surface:#131C18;--ink:#F1ECE1;--muted:#AEB5AE;--accent:#86CBB0;--line:#26312B;--warn:#EE9A62;--gold:#DDBE74;color-scheme:dark}}
 body{background:radial-gradient(60vmax 50vmax at 108% -8%,rgba(184,145,63,.16),transparent 62%),radial-gradient(60vmax 55vmax at -12% 108%,rgba(28,74,62,.14),transparent 62%),var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:16px;box-sizing:border-box}
 form{box-sizing:border-box;background:var(--surface);border-radius:30px;padding:30px 24px 26px;max-width:380px;width:100%;box-shadow:0 0 0 1px rgba(184,145,63,.35),0 30px 60px -30px rgba(30,44,24,.45);display:flex;flex-direction:column;gap:14px;text-align:center}
-.crest{height:190px;margin:-4px auto 0;display:block;filter:drop-shadow(0 10px 14px rgba(11,36,29,.3))}.crest svg{height:100%;width:auto}
+.crest{height:200px;margin:-4px auto 0;display:block;filter:drop-shadow(0 10px 14px rgba(11,36,29,.3))}.crest svg{height:100%;width:auto}
 h1{font-family:'Cormorant Garamond',Georgia,serif;margin:2px 0 0;font-size:34px;line-height:1;font-weight:700;letter-spacing:-.005em}p{margin:0;color:var(--muted)}
 .rule{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border:0;margin:0}
 input{font:inherit;font-size:22px;text-align:center;letter-spacing:.2em;padding:13px;border-radius:16px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--bg);color:var(--ink)}
@@ -398,7 +398,7 @@ const server = Bun.serve({
     if (path === "/sw.js") return new Response(SW_JS, { headers: { "content-type": "text/javascript; charset=utf-8", "cache-control": "no-cache" } });
     if (path === "/manifest.webmanifest") return new Response(MANIFEST, { headers: { "content-type": "application/manifest+json" } });
 
-    const cm = path.match(/^\/crests\/([a-d])\.svg$/);
+    const cm = path.match(/^\/crests\/([e-h])\.svg$/);
     if (cm) return new Response(CREST_SVG[cm[1]], { headers: { "content-type": "image/svg+xml", "cache-control": "public, max-age=86400" } });
 
     if (path === "/api/login" && req.method === "POST") {
