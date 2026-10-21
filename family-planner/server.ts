@@ -319,7 +319,7 @@ setInterval(tick, 60_000);
 // ---- page ----
 const HEAD =`<!doctype html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#123A30">
+<meta name="theme-color" content="#FBF3E8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Дела">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -342,7 +342,7 @@ const PNG = { "/icon-192.png": new URL("./icon-192.png", import.meta.url), "/ico
 const ICON = CREST_SVG.f.replace('viewBox="0 0 240 300"', 'viewBox="6 6 228 232"');
 const MANIFEST = JSON.stringify({
   name: "Дела Савельевых", short_name: "Дела", start_url: "/", display: "standalone",
-  background_color: "#F5F1E8", theme_color: "#123A30", lang: "ru",
+  background_color: "#FBF3E8", theme_color: "#FBF3E8", lang: "ru",
   icons: [
     { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
     { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
@@ -353,16 +353,16 @@ const MANIFEST = JSON.stringify({
 const loginPage = () => `${HEAD}<title>Дела Савельевых</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Manrope:wght@500;700;800&display=swap">
 <style>
-:root{--bg:#F5F1E8;--surface:#FFFDF8;--ink:#17211D;--muted:#555E59;--accent:#1C4A3E;--line:#E4DCCB;--warn:#B0521D;--gold:#B8913F}
-@media (prefers-color-scheme:dark){:root{--bg:#0B110F;--surface:#131C18;--ink:#F1ECE1;--muted:#AEB5AE;--accent:#86CBB0;--line:#26312B;--warn:#EE9A62;--gold:#DDBE74;color-scheme:dark}}
-body{background:radial-gradient(60vmax 50vmax at 108% -8%,rgba(184,145,63,.16),transparent 62%),radial-gradient(60vmax 55vmax at -12% 108%,rgba(28,74,62,.14),transparent 62%),var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:16px;box-sizing:border-box}
-form{box-sizing:border-box;background:var(--surface);border-radius:30px;padding:30px 24px 26px;max-width:380px;width:100%;box-shadow:0 0 0 1px rgba(184,145,63,.35),0 30px 60px -30px rgba(30,44,24,.45);display:flex;flex-direction:column;gap:14px;text-align:center}
+:root{--bg:#FBF3E8;--surface:#FFFBF4;--ink:#3D2E28;--muted:#76655B;--accent:#4F7D66;--line:#EBDCC9;--warn:#BF612E;--gold:#C9A04C}
+@media (prefers-color-scheme:dark){:root{--bg:#1C1613;--surface:#261E1A;--ink:#F5ECE2;--muted:#BFB0A4;--accent:#9CCDB1;--line:#3B2F28;--warn:#F0A272;--gold:#E3C27A;color-scheme:dark}}
+body{background:radial-gradient(60vmax 50vmax at 108% -8%,rgba(244,168,140,.22),transparent 62%),radial-gradient(60vmax 55vmax at -12% 108%,rgba(138,186,150,.18),transparent 62%),var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:16px;box-sizing:border-box}
+form{box-sizing:border-box;background:var(--surface);border-radius:30px;padding:30px 24px 26px;max-width:380px;width:100%;box-shadow:0 0 0 1px rgba(201,160,76,.4),0 30px 60px -30px rgba(170,100,70,.4);display:flex;flex-direction:column;gap:14px;text-align:center}
 .crest{height:200px;margin:-4px auto 0;display:block;filter:drop-shadow(0 10px 14px rgba(11,36,29,.3))}.crest svg{height:100%;width:auto}
 h1{font-family:'Cormorant Garamond',Georgia,serif;margin:2px 0 0;font-size:34px;line-height:1;font-weight:700;letter-spacing:-.005em}p{margin:0;color:var(--muted)}
 .rule{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border:0;margin:0}
 input{font:inherit;font-size:22px;text-align:center;letter-spacing:.2em;padding:13px;border-radius:16px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--bg);color:var(--ink)}
 input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--accent),0 0 0 4px rgba(184,145,63,.22)}
-button{font:inherit;font-weight:800;letter-spacing:.02em;border:0;border-radius:999px;padding:14px;background:linear-gradient(180deg,#266050,#143F34);color:#F3E2B0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(233,212,154,.45),0 14px 24px -12px rgba(11,36,29,.7)}
+button{font:inherit;font-weight:800;letter-spacing:.02em;border:0;border-radius:999px;padding:14px;background:linear-gradient(180deg,#7FAA92,#4F7D66);color:#fff;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 14px 24px -12px rgba(79,125,102,.6)}
 .err{color:var(--warn);min-height:1.4em}
 .motto{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;color:var(--ink);line-height:1.4;font-size:19px}.motto small{font-family:Manrope,sans-serif;font-style:normal;font-weight:800;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;font-size:11px}
 </style></head><body>

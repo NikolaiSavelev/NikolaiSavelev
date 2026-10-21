@@ -7,15 +7,24 @@
 /* Layout: a warm greeting with today's family progress, then the voice box, then sections.
    Phone: one column with an app-style bottom bar; desktop: tabs under the greeting, per-person columns. */
 :root {
-  /* family palette: deep emerald = steadiness, champagne gold = faith and celebration, garnet = love, warm ivory paper */
-  --bg: #F5F1E8; --bg2: #ECE5D6; --surface: #FFFDF8; --sunk: #F4EFE5; --ink: #17211D; --muted: #555E59;
-  --line: #E4DCCB; --accent: #1C4A3E; --accent-ink: #FFFDF8; --accent-soft: #E2EBE4; --sun: #B8913F; --sun-soft: #F5ECD7;
-  --peach: #F4E7DF; --rose: #A63A5E; --rose-soft: #F6E5EA; --warn: #B0521D; --ok: #2D7552;
-  --c1: #2E5A82; --c2: #A9466A; --c3: #6A58A8; --c4: #9A6E1E; --both: #B08A3E;
-  --gold: #B8913F; --gold-hi: #E9D49A; --deep: #123A30; --deep-2: #0B241D;
-  --shadow: 0 0 0 1px rgba(70, 56, 24, .07), 0 1px 2px rgba(40, 32, 10, .04), 0 18px 40px -22px rgba(40, 44, 24, .30);
-  --shadow-lift: 0 0 0 1px rgba(70, 56, 24, .09), 0 2px 4px rgba(40, 32, 10, .04), 0 30px 60px -26px rgba(30, 44, 24, .38);
-  --glow1: rgba(184, 145, 63, .13); --glow2: rgba(28, 74, 62, .10); --glass: rgba(255, 253, 248, .74);
+  /* soft and warm: cream paper, blush peach, sage green, honey gold */
+  --bg: #FBF3E8; --bg2: #F3E5D3; --surface: #FFFBF4; --sunk: #F8EDDF; --ink: #3D2E28; --muted: #76655B;
+  --line: #EBDCC9; --accent: #4F7D66; --accent-ink: #FFFDF8; --accent-soft: #E3EEE3; --sun: #D6A24A; --sun-soft: #FBEBC9;
+  --peach: #FADFD2; --rose: #CB5F78; --rose-soft: #FBE3E7; --warn: #BF612E; --ok: #43875F;
+  --c1: #5E86A8; --c2: #CC6B87; --c3: #8B77BE; --c4: #C08A2C; --both: #CF9E48;
+  --gold: #C9A04C; --gold-hi: #F0DAA2; --deep: #4B3A33; --deep-2: #392B26;
+  --shadow: 0 0 0 1px rgba(150, 100, 60, .08), 0 1px 2px rgba(120, 80, 50, .05), 0 18px 38px -22px rgba(150, 95, 60, .32);
+  --shadow-lift: 0 0 0 1px rgba(150, 100, 60, .1), 0 2px 4px rgba(120, 80, 50, .05), 0 30px 56px -26px rgba(150, 95, 60, .42);
+  --glow1: rgba(244, 168, 140, .20); --glow2: rgba(138, 186, 150, .16); --glass: rgba(255, 251, 244, .76);
+  --hero-bg: linear-gradient(155deg, #FFF4E9 0%, #FCE6DA 50%, #F7EBD8 100%);
+  --hero-glow1: rgba(245, 170, 150, .38); --hero-glow2: rgba(150, 192, 154, .30);
+  --hero-ink: #43322C; --hero-muted: #7C6A60; --hero-sub: #5B4941; --hero-motto: #6E4636; --hero-eyebrow: #A5712A;
+  --hero-line: rgba(190, 140, 90, .30); --hero-edge: rgba(212, 170, 100, .55); --hero-edge-soft: rgba(212, 170, 100, .30); --hero-glass: rgba(255, 252, 247, .74);
+  --hero-shadow: 0 30px 50px -30px rgba(170, 100, 70, .40);
+  --cap-bg: linear-gradient(155deg, #EEF4E7 0%, #E4EEDD 55%, #F5EDD9 100%); --cap-glow: rgba(255, 216, 170, .45);
+  --cap-ink: #34423A; --cap-k: #8A6A2A; --cap-muted: #62705F; --cap-stat: rgba(255, 255, 255, .62);
+  --cap-edge: rgba(150, 175, 130, .55); --cap-edge-soft: rgba(150, 175, 130, .32); --cap-shadow: 0 30px 50px -32px rgba(90, 120, 80, .45);
+  --crest-bg: linear-gradient(155deg, #FFF3DC 0%, #FAE5C4 58%, #F8DCC4 100%);
   --f-display: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
   --f-body: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --r-lg: 24px;
@@ -23,24 +32,40 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0B110F; --bg2: #111915; --surface: #131C18; --sunk: #0F1713; --ink: #F1ECE1; --muted: #AEB5AE;
-    --line: #26312B; --accent: #86CBB0; --accent-ink: #0B110F; --accent-soft: #183229; --sun: #DDBE74; --sun-soft: #33291A;
-    --peach: #2E1F22; --rose: #EE8BA8; --rose-soft: #37202A; --warn: #EE9A62; --ok: #6CC897;
-    --c1: #8DB7DE; --c2: #EE90AE; --c3: #B8A6FF; --c4: #E5B65B; --both: #DDBE74;
-    --gold: #DDBE74; --gold-hi: #F3E2B0; --deep: #12302A; --deep-2: #0A1D18;
-    --shadow: 0 0 0 1px rgba(255, 240, 200, .06), 0 1px 2px rgba(0, 0, 0, .3), 0 18px 40px -18px rgba(0, 0, 0, .6); --shadow-lift: 0 0 0 1px rgba(255, 240, 200, .09), 0 28px 56px -18px rgba(0, 0, 0, .7);
-    --glow1: rgba(221, 190, 116, .07); --glow2: rgba(134, 203, 176, .06); --glass: rgba(19, 28, 24, .74);
+    --bg: #1C1613; --bg2: #271F1A; --surface: #261E1A; --sunk: #1F1815; --ink: #F5ECE2; --muted: #BFB0A4;
+    --line: #3B2F28; --accent: #9CCDB1; --accent-ink: #17110E; --accent-soft: #2B3A31; --sun: #E3C27A; --sun-soft: #3A2E1C;
+    --peach: #3A2622; --rose: #F0919F; --rose-soft: #3C242B; --warn: #F0A272; --ok: #7FCB9C;
+    --c1: #8FB8DA; --c2: #EE93A6; --c3: #B8A6FF; --c4: #E5B65B; --both: #E3C27A;
+    --gold: #E3C27A; --gold-hi: #F5E3B4; --deep: #3A2C26; --deep-2: #2A201C;
+    --shadow: 0 0 0 1px rgba(255, 220, 190, .06), 0 1px 2px rgba(0, 0, 0, .3), 0 18px 40px -18px rgba(0, 0, 0, .6); --shadow-lift: 0 0 0 1px rgba(255, 220, 190, .09), 0 28px 56px -18px rgba(0, 0, 0, .7);
+    --glow1: rgba(240, 150, 140, .09); --glow2: rgba(150, 200, 170, .07); --glass: rgba(38, 30, 26, .76);
+    --hero-bg: linear-gradient(155deg, #3C2B28 0%, #2D2220 55%, #28211C 100%); --hero-glow1: rgba(240, 150, 140, .20); --hero-glow2: rgba(150, 200, 170, .14);
+    --hero-ink: #F8EEE3; --hero-muted: #D3C4B8; --hero-sub: #E8DACD; --hero-motto: #F3DFC4; --hero-eyebrow: #F0D9A0;
+    --hero-line: rgba(240, 215, 160, .26); --hero-edge: rgba(240, 215, 160, .34); --hero-edge-soft: rgba(240, 215, 160, .2); --hero-glass: rgba(60, 46, 40, .6);
+    --hero-shadow: 0 30px 50px -30px rgba(0, 0, 0, .7);
+    --cap-bg: linear-gradient(155deg, #26332B 0%, #202B25 60%, #2A2A20 100%); --cap-glow: rgba(240, 200, 140, .12);
+    --cap-ink: #EEF3EA; --cap-k: #EBD59A; --cap-muted: #BFCDBF; --cap-stat: rgba(255, 255, 255, .06);
+    --cap-edge: rgba(190, 220, 190, .28); --cap-edge-soft: rgba(190, 220, 190, .16); --cap-shadow: 0 30px 50px -30px rgba(0, 0, 0, .7);
+    --crest-bg: linear-gradient(155deg, #3A2E22 0%, #2F2620 60%, #2B2420 100%);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0B110F; --bg2: #111915; --surface: #131C18; --sunk: #0F1713; --ink: #F1ECE1; --muted: #AEB5AE;
-  --line: #26312B; --accent: #86CBB0; --accent-ink: #0B110F; --accent-soft: #183229; --sun: #DDBE74; --sun-soft: #33291A;
-  --peach: #2E1F22; --rose: #EE8BA8; --rose-soft: #37202A; --warn: #EE9A62; --ok: #6CC897;
-  --c1: #8DB7DE; --c2: #EE90AE; --c3: #B8A6FF; --c4: #E5B65B; --both: #DDBE74;
-  --gold: #DDBE74; --gold-hi: #F3E2B0; --deep: #12302A; --deep-2: #0A1D18;
-  --shadow: 0 0 0 1px rgba(255, 240, 200, .06), 0 1px 2px rgba(0, 0, 0, .3), 0 18px 40px -18px rgba(0, 0, 0, .6); --shadow-lift: 0 0 0 1px rgba(255, 240, 200, .09), 0 28px 56px -18px rgba(0, 0, 0, .7);
-  --glow1: rgba(221, 190, 116, .07); --glow2: rgba(134, 203, 176, .06); --glass: rgba(19, 28, 24, .74);
+  --bg: #1C1613; --bg2: #271F1A; --surface: #261E1A; --sunk: #1F1815; --ink: #F5ECE2; --muted: #BFB0A4;
+  --line: #3B2F28; --accent: #9CCDB1; --accent-ink: #17110E; --accent-soft: #2B3A31; --sun: #E3C27A; --sun-soft: #3A2E1C;
+  --peach: #3A2622; --rose: #F0919F; --rose-soft: #3C242B; --warn: #F0A272; --ok: #7FCB9C;
+  --c1: #8FB8DA; --c2: #EE93A6; --c3: #B8A6FF; --c4: #E5B65B; --both: #E3C27A;
+  --gold: #E3C27A; --gold-hi: #F5E3B4; --deep: #3A2C26; --deep-2: #2A201C;
+  --shadow: 0 0 0 1px rgba(255, 220, 190, .06), 0 1px 2px rgba(0, 0, 0, .3), 0 18px 40px -18px rgba(0, 0, 0, .6); --shadow-lift: 0 0 0 1px rgba(255, 220, 190, .09), 0 28px 56px -18px rgba(0, 0, 0, .7);
+  --glow1: rgba(240, 150, 140, .09); --glow2: rgba(150, 200, 170, .07); --glass: rgba(38, 30, 26, .76);
+  --hero-bg: linear-gradient(155deg, #3C2B28 0%, #2D2220 55%, #28211C 100%); --hero-glow1: rgba(240, 150, 140, .20); --hero-glow2: rgba(150, 200, 170, .14);
+  --hero-ink: #F8EEE3; --hero-muted: #D3C4B8; --hero-sub: #E8DACD; --hero-motto: #F3DFC4; --hero-eyebrow: #F0D9A0;
+  --hero-line: rgba(240, 215, 160, .26); --hero-edge: rgba(240, 215, 160, .34); --hero-edge-soft: rgba(240, 215, 160, .2); --hero-glass: rgba(60, 46, 40, .6);
+  --hero-shadow: 0 30px 50px -30px rgba(0, 0, 0, .7);
+  --cap-bg: linear-gradient(155deg, #26332B 0%, #202B25 60%, #2A2A20 100%); --cap-glow: rgba(240, 200, 140, .12);
+  --cap-ink: #EEF3EA; --cap-k: #EBD59A; --cap-muted: #BFCDBF; --cap-stat: rgba(255, 255, 255, .06);
+  --cap-edge: rgba(190, 220, 190, .28); --cap-edge-soft: rgba(190, 220, 190, .16); --cap-shadow: 0 30px 50px -30px rgba(0, 0, 0, .7);
+  --crest-bg: linear-gradient(155deg, #3A2E22 0%, #2F2620 60%, #2B2420 100%);
   color-scheme: dark;
 }
 
@@ -637,6 +662,56 @@ h1, h2, h3, .brand-name, .cap-label { font-family: var(--f-display); }
 .crest-card .legend-l b { color: var(--gold-hi); font-weight: 800; white-space: nowrap; }
 .crest-card .btn { background: rgba(255, 255, 255, .08); color: #F3E2B0; box-shadow: inset 0 0 0 1px rgba(233, 212, 154, .45); }
 @media (max-width: 560px) { .crest-card { grid-template-columns: 1fr; justify-items: center; text-align: center; padding: 26px 20px; } .crest-card .legend-l li { text-align: left; } }
+
+/* Warm and soft: cream, blush and sage instead of deep emerald */
+body::before { opacity: .3; }
+.crest-mark { filter: drop-shadow(0 4px 8px rgba(150, 95, 60, .25)); }
+.hero { --ink: var(--hero-ink); --muted: var(--hero-muted); --line: var(--hero-line); --glass: var(--hero-glass);
+  background: radial-gradient(80% 120% at 100% 0%, var(--hero-glow1) 0%, transparent 58%), radial-gradient(90% 120% at 0% 110%, var(--hero-glow2) 0%, transparent 60%), var(--hero-bg);
+  box-shadow: 0 0 0 1px var(--hero-edge), inset 0 1px 0 rgba(255, 255, 255, .55), var(--hero-shadow); }
+.hero::before { border-color: var(--hero-edge-soft); }
+.hero .eyebrow, .motto cite { color: var(--hero-eyebrow); }
+.hero .sub { color: var(--hero-sub); }
+.motto q { color: var(--hero-motto); }
+.hero .badge { background: var(--hero-glass); box-shadow: inset 0 0 0 1px var(--hero-line); color: var(--hero-ink); }
+.hero .badge.sun, .hero .badge.mint { background: color-mix(in srgb, var(--gold) 18%, var(--hero-glass)); }
+.hero .badge svg { color: var(--hero-eyebrow) !important; }
+.hero .ring .trk { stroke: color-mix(in srgb, var(--hero-ink) 12%, transparent); }
+.hero .ring .lbl span { color: var(--hero-muted); }
+.hero .ring.full .val { stroke: var(--gold); }
+.hero-photo { background: #4A3A33; box-shadow: 0 0 0 1px var(--hero-edge); }
+.hero-photo .ring { --ink: #FFF7EE; --muted: #F1DFD0; background: rgba(62, 42, 36, .55); box-shadow: 0 0 0 1px rgba(255, 235, 200, .4), 0 8px 20px -8px rgba(0, 0, 0, .45); color: #FFF7EE; }
+.hero-photo .ring .trk { stroke: rgba(255, 255, 255, .28); }
+.hero-photo .ring .lbl span { color: #F1DFD0; }
+
+.tab[aria-selected="true"] { background: linear-gradient(180deg, #7FAA92, #5B8A72); color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .35), 0 8px 16px -8px rgba(80, 120, 100, .55); }
+.tabs { box-shadow: 0 0 0 1px rgba(201, 160, 76, .26), 0 14px 30px -18px rgba(150, 95, 60, .35); }
+@media (max-width: 640px) {
+  .tab[aria-selected="true"] { background: color-mix(in srgb, var(--gold) 18%, transparent); color: var(--accent); box-shadow: none; }
+  .tabs { box-shadow: 0 -1px 0 rgba(201, 160, 76, .3), 0 -10px 30px rgba(150, 95, 60, .12); }
+}
+.btn.primary { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 12px 22px -10px color-mix(in srgb, var(--accent) 60%, transparent); }
+.mic, .fab { background: linear-gradient(160deg, #78A58D, #4F7D66); color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 12px 24px -8px rgba(79, 125, 102, .5); }
+.capture textarea { box-shadow: inset 0 1px 3px rgba(150, 100, 60, .1); }
+.toast { background: var(--deep); color: #FBEBC9; box-shadow: var(--shadow-lift); }
+
+.capital, .crest-card { color: var(--cap-ink); }
+.capital { background: radial-gradient(90% 130% at 100% 0%, var(--cap-glow), transparent 55%), var(--cap-bg); box-shadow: 0 0 0 1px var(--cap-edge), inset 0 1px 0 rgba(255, 255, 255, .55), var(--cap-shadow); }
+.capital::before { border-color: var(--cap-edge-soft); }
+.capital .cap-k, .cap-stat .k { color: var(--cap-k); }
+.capital .cap-s, .cap-stat .n { color: var(--cap-muted); }
+.cap-stat { background: var(--cap-stat); box-shadow: inset 0 0 0 1px var(--cap-edge-soft); }
+.cap-stat.good .v { color: var(--ok); } .cap-stat.mid .v { color: #A5712A; } .cap-stat.low .v { color: var(--warn); }
+.wm { opacity: .05; }
+.hero .wm { opacity: .045; }
+.crest-card { background: radial-gradient(90% 120% at 0% 0%, rgba(255, 220, 170, .35), transparent 55%), var(--crest-bg); box-shadow: 0 0 0 1px var(--cap-edge), inset 0 1px 0 rgba(255, 255, 255, .5), 0 30px 50px -32px rgba(170, 110, 60, .45); }
+.crest-card::before { border-color: rgba(201, 160, 76, .35); }
+.crest-card svg.crest-big { filter: drop-shadow(0 12px 16px rgba(150, 95, 60, .3)); }
+.crest-card h2 { color: var(--ink); }
+.crest-card p { color: var(--muted); }
+.crest-card .legend-l { color: var(--ink); }
+.crest-card .legend-l b { color: var(--cap-k); }
+.crest-card .btn { background: rgba(255, 255, 255, .6); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(201, 160, 76, .5); }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
