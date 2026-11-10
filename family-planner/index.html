@@ -729,9 +729,8 @@ body::before { opacity: .3; }
   --glow1:rgba(180,154,114,.07); --glow2:rgba(105,116,94,.05); --glass:#FFFFFF;
   --r-lg:20px; --r-md:14px;
 }
-:root[data-theme="dark"], :root:not([data-theme="light"]) {
-  color-scheme:dark;
-}
+:root { color-scheme:light; }
+:root[data-theme="dark"] { color-scheme:dark; }
 @media (prefers-color-scheme:dark) {
   :root:not([data-theme="light"]) {
     --bg:#171B18; --bg2:#202520; --surface:#222823; --sunk:#1B211C; --ink:#F0F0E9; --muted:#A8ADA2;
