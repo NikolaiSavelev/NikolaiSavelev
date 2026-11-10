@@ -877,6 +877,15 @@ body::before, body::after { display:none !important; }
   *,*::before,*::after { transition-duration:.01ms !important; animation-duration:.01ms !important; }
 }
 
+
+/* Hero inherits the same neutral ink in both themes (the legacy hero used local cream tokens). */
+:root { --premium-ink:#252922; --premium-muted:#777B71; --premium-line:#E5E4DC; }
+:root[data-theme="dark"] { --premium-ink:#F0F0E9; --premium-muted:#A8ADA2; --premium-line:#343C35; }
+@media (prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]) { --premium-ink:#F0F0E9; --premium-muted:#A8ADA2; --premium-line:#343C35; }
+}
+.hero { --ink:var(--premium-ink); --muted:var(--premium-muted); --line:var(--premium-line); }
+
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
